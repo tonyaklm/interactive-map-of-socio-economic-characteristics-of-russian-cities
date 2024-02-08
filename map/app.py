@@ -1,3 +1,5 @@
+import colordict as colordict
+from IPython.display import display
 from flask import Flask, render_template
 import folium
 import geopandas as gpd
@@ -9,6 +11,7 @@ import json
 from folium.features import GeoJson, GeoJsonTooltip, GeoJsonPopup
 
 # from osgeo import gdal
+from sqlalchemy.dialects import plugins
 
 app = Flask(__name__)
 
@@ -28,12 +31,34 @@ def render_map():
 
     df_cities = pd.read_csv('cities_data/icsid_cities.csv', encoding='utf8')
 
-    for row in df_cities.itertuples():
-        folium.Marker(
-            location=[float(row.latitude_dd), float(row.longitude_dd)],
-            popup=row.population,
-            tooltip=row.settlement
-        ).add_to(m)
+    # for row in df_cities.itertuples():
+    #     folium.Marker(
+    #         location=[float(row.latitude_dd), float(row.longitude_dd)],
+    #         popup=row.population,
+    #         tooltip=row.settlement
+    #     ).add_to(m)
+
+    df_cities = df_cities.sort_values(by='population')
+
+    for lat, long, index, poplulation in zip(df_cities.latitude_dd, df_cities.longitude_dd, df_cities.index,
+                                             df_cities.population):
+        # print(index)
+        folium.CircleMarker([lat, long],
+                            radius=0.01 * (index + 2),
+                            popup='Population:' + str(poplulation),
+                            fill=True, color='r',
+                            fill_color='red' if index < 500 else 'green',
+                            fill_opacity=0.7).add_to(m)
+
+    tile_layer = folium.TileLayer(
+        tiles="https://{s}.basemaps.cartocdn.com/rastertiles/dark_all/{z}/{x}/{y}.png",
+        attr='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+        max_zoom=19,
+        name='darkmatter',
+        control=False,
+        opacity=0.7
+    )
+    tile_layer.add_to(m)
 
     popup = GeoJsonPopup(
         fields=['NL_NAME_1', 'GID_1'],
@@ -79,6 +104,16 @@ def render_map():
         },
         tooltip=tooltip,
         popup=popup).add_to(g)
+    folium.LayerControl().add_to(m)
+
+    # layer = "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+    #
+    # folium.raster_layers.TileLayer(
+    #     tiles=layer, name="OpenStreetMap", attr="attribution"
+    # ).add_to(m)  # added other countries
+    # # add layer control to show different maps
+    # folium.LayerControl().add_to(m)
+    # m._repr_html_()
     # return f
     m.save("templates/map.html")
     return render_template('map.html')
