@@ -7,6 +7,7 @@ import folium
 import branca
 import requests
 import json
+from branca.colormap import linear
 from folium.features import GeoJson, GeoJsonTooltip, GeoJsonPopup
 
 data = pd.read_csv('../map/shapefiles/icsid_cities_without_nan.csv')
@@ -111,54 +112,56 @@ def add_marker(row, folium_map):  # маркеры в виде геометок
                   popup=str_popup).add_to(folium_map)
 
 
-def add_circle_marker(row, folium_map, type):  # маркеры в виде кружков в пропорции с населением
-    str_popup = str(row["settlement"]) + ", " + str(row['region'])
-    if type == "Population":
-        type = "population"
-    elif type == "Children":
-        type = "children"
+def add_colorbar(folium_map, indicator):
+    if indicator in ['Population', 'Children']:
+        indicator = indicator.lower()
+    colormap = linear.OrRd_03.scale(
+        data[indicator].min(),
+        data[indicator].max()
+    )
 
-    # popup_text = f'''{str_popup}
-    #     Население: {str(row["population"])}'''
-    # str_tooltip = f'<b>{row["settlement"]}</b><br>Население: {str(row["population"])}'
+    colormap.caption = indicator
+    folium_map.add_child(colormap)
+    return colormap
+
+
+def add_circle_marker(row, folium_map, indicator: str, colormap):  # маркеры в виде кружков в пропорции с населением
+    str_popup = str(row["settlement"]) + ", " + str(row['region'])
+
+    if indicator == "Population":
+        indicator = "population"
+    elif indicator == "Children":
+        indicator = "children"
 
     popup_text = f'{str_popup}, \n' \
-                 f'{type}: {str(row[type])}'
+                 f'{indicator}: {str(row[indicator])}'
 
-    str_tooltip = f'<b>{row["settlement"]}</b><br>{type}: {str(row[type])}'
+    str_tooltip = f'<b>{row["settlement"]}</b><br>{indicator}: {str(row[indicator])}'
 
     iframe = folium.IFrame(popup_text,
                            width=200,
                            height=100)
 
     folium_popup = folium.Popup(iframe, min_width=200, max_width=300)
-    if type != 'population' and type != 'children':
-        flag_type = type + '_nan'
+    if indicator != 'population' and indicator != 'children':
+        flag_type = indicator + '_nan'
     else:
-        flag_type = type
+        flag_type = indicator
     if row[flag_type] is True:
-        str_tooltip = f'<b>{row["settlement"]}</b><br>{type} (NaN): {str(row[type])}'
+        str_tooltip = f'<b>{row["settlement"]}</b><br>{indicator} (NaN): {str(row[indicator])}'
         folium.CircleMarker([row["latitude_dd"], row["longitude_dd"]],
-                            radius=0.00002 * int(row[type]),
+                            radius=0.00002 * int(row[indicator]),
                             popup=folium_popup,
                             tooltip=str_tooltip,
                             fill=True, color='white',
                             fill_color='white',
                             fill_opacity=1.0).add_to(folium_map)
-    else:
-        folium.CircleMarker([row["latitude_dd"], row["longitude_dd"]],
-                            radius=0.00002 * int(row[type]),
-                            popup=folium_popup,
-                            tooltip=str_tooltip,
-                            fill=True, color='blue',
-                            fill_color='blue',
-                            fill_opacity=1.0).add_to(folium_map)
-    folium.CircleMarker([row["latitude_dd"], row["longitude_dd"]],
-                        radius=0.00002 * int(row["population"]),  # пропорция по population
-                        popup=folium_popup,
-                        tooltip=str_tooltip,
-                        fill=True, color=dict_colors[row['region']],
-                        fill_color=dict_colors[row['region']],
-                        fill_opacity=1.0).add_to(folium_map)
-
-
+        return
+    marker = folium.CircleMarker([row["latitude_dd"], row["longitude_dd"]],
+                                 radius=10,
+                                 popup=folium_popup,
+                                 tooltip=str_tooltip,
+                                 fill=True, color=colormap(row[indicator]),
+                                 fill_color=colormap(row[indicator]),
+                                 fill_opacity=1.0).add_to(folium_map)
+    folium_map.keep_in_front(marker)

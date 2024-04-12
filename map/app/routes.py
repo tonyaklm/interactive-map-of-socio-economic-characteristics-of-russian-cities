@@ -10,15 +10,16 @@ import requests
 import json
 import os
 from folium.features import GeoJson, GeoJsonTooltip, GeoJsonPopup
-from app.map import color_region_by_id, data, add_circle_marker, add_marker
+from app.map import color_region_by_id, data, add_circle_marker, add_marker, add_colorbar
 
 cur_map_name = "map"
 
+
 @app.route("/")
 def render_map():
-    print(os.listdir("../map/templates"))
     folium_map = folium.Map(location=[69, 88], zoom_start=3, control_scale=True)
-    # data.apply(add_marker, axis=1, args=(folium_map,))
+    colormap = add_colorbar(folium_map, "Population")
+    data.apply(add_circle_marker, axis=1, args=(folium_map, "Population", colormap,))
 
     with open('../map/shapefiles/russia_geojson.geojson') as response:
         russia = json.load(response)
@@ -41,7 +42,7 @@ def render_map():
     folium.LayerControl().add_to(folium_map)
 
     folium_map.save("templates/map.html")
-    
+
     return render_template('index.html', selected='Empty Map')
     # return render_template('map.html')
 
@@ -82,7 +83,8 @@ def chosen_indicator():
     folium.LayerControl().add_to(folium_map)
 
     if indicator != 'Empty Map':
-        data.apply(add_circle_marker, axis=1, args=(folium_map, indicator,))
+        colormap = add_colorbar(folium_map, indicator)
+        data.apply(add_circle_marker, axis=1, args=(folium_map, indicator, colormap,))
 
     cur_map_name = 'map_' + indicator
     filename = cur_map_name + '.html'
