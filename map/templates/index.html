@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Folium Map with Dropdown</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+    <style>
+        #label {
+            font-size: 25px;
+            color: teal;
+        }
+        #map {
+            height: 550px;
+            width: 90%;
+        }
+        #dropdown {
+              width: 200px;
+              height: 25px;
+              border: 1px solid #999;
+              font-size: 18px;
+              color: grey;
+              background-color: #eee;
+              margin-top: 50px;
+              margin-bottom: 10px;
+        }
+        #myIframe {
+<!--            margin-top: 70px;-->
+        }
+        #timelabel_before {
+              font-size: 25px;
+              color: teal;
+              margin-top: 50px;
+              margin-bottom: 10px;
+              padding-left: 8%;
+        }
+        #time_before {
+              width: 200px;
+              height: 25px;
+              border: 1px solid #999;
+              font-size: 18px;
+              color: grey;
+              background-color: #eee;
+              margin-top: 50px;
+              margin-bottom: 10px;
+              border-radius:6px;
+        }
+        #timelabel_after {
+              font-size: 25px;
+              color: teal;
+<!--              margin-top: 50px;-->
+<!--              margin-bottom: 10px;-->
+<!--              padding-left: 10%;-->
+        }
+        #time_after {
+               width: 200px;
+              height: 25px;
+              border: 1px solid #999;
+              font-size: 18px;
+              color: grey;
+              background-color: #eee;
+              margin-top: 50px;
+              margin-bottom: 10px;
+              border-radius:6px;
+        }
+        #submit {
+              width: 100px;
+              height: 25px;
+              border: 1px solid #999;
+              font-size: 18px;
+              color: black;
+              background-color: #eee;
+              margin-top: 50px;
+              margin-bottom: 10px;
+              border-radius:6px;
+        }
+    </style>
+</head>
+<body>
+<h1>
+    <h2 align="center" style="color:teal">Интерактивная карта социально-экономических индикаторов городов России</h2>
+     <form action="/indicator" method="get">
+    <label id="label" for="dropdown">Выберите индикатор:</label>
+    <select id="dropdown" name="indicator" onchange="this.form.submit()">
+        <option value="selected">{{selected}}</option>
+        <option value="Empty Map">Empty Map</option>
+        <option value="Population">Population</option>
+        <option value="Children">Children</option>
+        <optgroup label="Index">
+            <option value="Index_2000">Index_2000</option>
+            <option value="Index_2001">Index_2001</option>
+            <option value="Index_2002">Index_2002</option>
+            <option value="Index_2003">Index_2003</option>
+            <option value="Index_2004">Index_2004</option>
+            <option value="Index_2005">Index_2005</option>
+            <option value="Index_2006">Index_2006</option>
+            <option value="Index_2007">Index_2007</option>
+            <option value="Index_2008">Index_2008</option>
+            <option value="Index_2009">Index_2009</option>
+            <option value="Index_2010">Index_2010</option>
+            <option value="Index_2011">Index_2011</option>
+            <option value="Index_2012">Index_2012</option>
+            <option value="Index_2013">Index_2013</option>
+            <option value="Index_2014">Index_2014</option>
+            <option value="Index_2015">Index_2015</option>
+            <option value="Index_2016">Index_2016</option>
+            <option value="Index_2017">Index_2017</option>
+            <option value="Index_2018">Index_2018</option>
+            <option value="Index_2019">Index_2019</option>
+            <option value="Index_2020">Index_2020</option>
+            <option value="Index_2021">Index_2021</option>
+        </optgroup>
+        <optgroup label="Index100">
+            <option value="Index100_2000">Index100_2000</option>
+            <option value="Index100_2001">Index100_2001</option>
+            <option value="Index100_2002">Index100_2002</option>
+            <option value="Index100_2003">Index100_2003</option>
+            <option value="Index100_2004">Index100_2004</option>
+            <option value="Index100_2005">Index100_2005</option>
+            <option value="Index100_2006">Index100_2006</option>
+            <option value="Index100_2007">Index100_2007</option>
+            <option value="Index100_2008">Index100_2008</option>
+            <option value="Index100_2009">Index100_2009</option>
+            <option value="Index100_2010">Index100_2010</option>
+            <option value="Index100_2011">Index100_2011</option>
+            <option value="Index100_2012">Index100_2012</option>
+            <option value="Index100_2013">Index100_2013</option>
+            <option value="Index100_2014">Index100_2014</option>
+            <option value="Index100_2015">Index100_2015</option>
+            <option value="Index100_2016">Index100_2016</option>
+            <option value="Index100_2017">Index100_2017</option>
+            <option value="Index100_2018">Index100_2018</option>
+            <option value="Index100_2019">Index100_2019</option>
+            <option value="Index100_2020">Index100_2020</option>
+            <option value="Index100_2021">Index100_2021</option>
+        </optgroup>
+        <optgroup label="Value">
+            <option value="Value_2000">Value_2000</option>
+            <option value="Value_2001">Value_2001</option>
+            <option value="Value_2002">Value_2002</option>
+            <option value="Value_2003">Value_2003</option>
+            <option value="Value_2004">Value_2004</option>
+            <option value="Value_2005">Value_2005</option>
+            <option value="Value_2006">Value_2006</option>
+            <option value="Value_2007">Value_2007</option>
+            <option value="Value_2008">Value_2008</option>
+            <option value="Value_2009">Value_2009</option>
+            <option value="Value_2010">Value_2010</option>
+            <option value="Value_2011">Value_2011</option>
+            <option value="Value_2012">Value_2012</option>
+            <option value="Value_2013">Value_2013</option>
+            <option value="Value_2014">Value_2014</option>
+            <option value="Value_2015">Value_2015</option>
+            <option value="Value_2016">Value_2016</option>
+            <option value="Value_2017">Value_2017</option>
+            <option value="Value_2018">Value_2018</option>
+            <option value="Value_2019">Value_2019</option>
+            <option value="Value_2020">Value_2020</option>
+            <option value="Value_2021">Value_2021</option>
+        </optgroup>
+        <optgroup label="Type">
+            <option value="Type_2000">Type_2000</option>
+            <option value="Type_2001">Type_2001</option>
+            <option value="Type_2002">Type_2002</option>
+            <option value="Type_2003">Type_2003</option>
+            <option value="Type_2004">Type_2004</option>
+            <option value="Type_2005">Type_2005</option>
+            <option value="Type_2006">Type_2006</option>
+            <option value="Type_2007">Type_2007</option>
+            <option value="Type_2008">Type_2008</option>
+            <option value="Type_2009">Type_2009</option>
+            <option value="Type_2010">Type_2010</option>
+            <option value="Type_2011">Type_2011</option>
+            <option value="Type_2012">Type_2012</option>
+            <option value="Type_2013">Type_2013</option>
+            <option value="Type_2014">Type_2014</option>
+            <option value="Type_2015">Type_2015</option>
+            <option value="Type_2016">Type_2016</option>
+            <option value="Type_2017">Type_2017</option>
+            <option value="Type_2018">Type_2018</option>
+            <option value="Type_2019">Type_2019</option>
+            <option value="Type_2020">Type_2020</option>
+            <option value="Type_2021">Type_2021</option>
+        </optgroup>
+
+    </select>
+
+
+    <label id = "timelabel_before" for="time_before">Введите временной промежуток: c </label>
+    <input type="text" id="time_before" name="time_before" required minlength="4" maxlength="4" size="15" />
+    <label id = "timelabel_after" for="time_after"> по </label>
+    <input type="text" id="time_after" name="time_after" required minlength="4" maxlength="4" size="15" />
+    <input type="submit" id="submit" value="Submit">
+    </form>
+
+</h1>
+<iframe id="myIframe" class="map" src="/map" width="100.0%" height="650" frameborder="1"></iframe>
+<h3><b style="background-color: lightcoral; color: lightcyan;">
+</b></h3>
+</body>
+</html>
