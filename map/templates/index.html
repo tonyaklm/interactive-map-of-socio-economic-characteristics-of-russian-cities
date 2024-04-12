@@ -14,10 +14,10 @@
         }
         #dropdown {
               width: 200px;
-              height: 30px;
+              height: 25px;
               border: 1px solid #999;
               font-size: 18px;
-              color: black;
+              color: grey;
               background-color: #eee;
               margin-top: 50px;
               margin-bottom: 10px;
@@ -25,7 +25,53 @@
         #myIframe {
 <!--            margin-top: 70px;-->
         }
-
+        #timelabel_before {
+              font-size: 25px;
+              color: teal;
+              margin-top: 50px;
+              margin-bottom: 10px;
+              padding-left: 8%;
+        }
+        #time_before {
+              width: 200px;
+              height: 25px;
+              border: 1px solid #999;
+              font-size: 18px;
+              color: grey;
+              background-color: #eee;
+              margin-top: 50px;
+              margin-bottom: 10px;
+              border-radius:6px;
+        }
+        #timelabel_after {
+              font-size: 25px;
+              color: teal;
+<!--              margin-top: 50px;-->
+<!--              margin-bottom: 10px;-->
+<!--              padding-left: 10%;-->
+        }
+        #time_after {
+               width: 200px;
+              height: 25px;
+              border: 1px solid #999;
+              font-size: 18px;
+              color: grey;
+              background-color: #eee;
+              margin-top: 50px;
+              margin-bottom: 10px;
+              border-radius:6px;
+        }
+        #submit {
+              width: 100px;
+              height: 25px;
+              border: 1px solid #999;
+              font-size: 18px;
+              color: black;
+              background-color: #eee;
+              margin-top: 50px;
+              margin-bottom: 10px;
+              border-radius:6px;
+        }
     </style>
 </head>
 <body>
@@ -136,7 +182,15 @@
         </optgroup>
 
     </select>
+
+
+    <label id = "timelabel_before" for="time_before">Введите временной промежуток: c </label>
+    <input type="text" id="time_before" name="time_before" required minlength="4" maxlength="4" size="15" />
+    <label id = "timelabel_after" for="time_after"> по </label>
+    <input type="text" id="time_after" name="time_after" required minlength="4" maxlength="4" size="15" />
+    <input type="submit" id="submit" value="Submit">
     </form>
+
 </h1>
 <iframe id="myIframe" class="map" src="/map" width="100.0%" height="650" frameborder="1"></iframe>
 <h3><b style="background-color: lightcoral; color: lightcyan;">
