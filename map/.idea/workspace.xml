@@ -4,7 +4,14 @@
     <list default="true" id="c4792fa3-292c-4578-9a25-ab97c97a61fa" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/app.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/map.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/map.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/shapefiles/index.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/shapefiles/map_Children.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/shapefiles/map_Population.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/shapefiles/russia_geojson.geojson" beforeDir="false" afterPath="$PROJECT_DIR$/shapefiles/russia_geojson.geojson" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/map.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/map_Children.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/map_Population.html" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -29,6 +36,7 @@
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/shapefiles" />
+      <recent name="$PROJECT_DIR$/templates" />
       <recent name="$PROJECT_DIR$" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
@@ -159,5 +167,6 @@
         </entry>
       </map>
     </option>
+    <option name="oldMeFiltersMigrated" value="true" />
   </component>
 </project>
