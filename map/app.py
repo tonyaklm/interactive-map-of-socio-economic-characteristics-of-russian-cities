@@ -1,17 +1,13 @@
-import colordict as colordict
-from IPython.display import display
 from flask import Flask, render_template
-import folium
-import geopandas as gpd
 import pandas as pd
 import folium
 import branca
-import requests
 import json
-from folium.features import GeoJson, GeoJsonTooltip, GeoJsonPopup
+import matplotlib
+from branca.colormap import linear
 
-# from osgeo import gdal
-from sqlalchemy.dialects import plugins
+matplotlib.use('Agg')
+import plotly.graph_objects as go
 
 app = Flask(__name__)
 
@@ -86,12 +82,39 @@ for i in range(len(colors)):
     dict_colors[colors[i]] = colors_names[j]
     j += 1
 
+colormap = linear.OrRd_03.scale(
+    data["population"].min(),
+    data["population"].max()
+)
+
 
 def add_marker(row, folium_map):  # маркеры в виде геометок
     str_tooltip = f'<b>{row["settlement"]}</b><br>Население: {str(row["population"])}'
     str_popup = f'''{row["settlement"]}
         Население: {str(row["population"])}'''
-    folium.Marker([row["latitude_dd"], row["longitude_dd"]], icon=folium.Icon(dict_colors[row['region']]),
+    first_year = 2014
+    second_year = 2020
+    index_name = 'Index100'
+    if row["settlement"] == "Москва":
+        x = [str(year) for year in range(first_year, second_year)]
+        y = [row[f"{index_name}_{year}"] for year in x]
+        fig = go.Figure(
+            layout=go.Layout(
+                title=go.layout.Title(text=f"Значение {index_name} по годам")
+            )
+        )
+        fig['layout']['xaxis']['title'] = 'year'
+        fig['layout']['yaxis']['title'] = index_name
+        fig.add_trace(go.Scatter(x=x, y=y, mode='lines', name='Life expectancy'))
+
+        # Создание HTML для попапа с интерактивным графиком
+        html = fig.to_html(full_html=False)
+
+        # Создание попапа с HTML-кодом
+        str_popup = folium.Popup(branca.element.IFrame(html, width=700, height=400))
+
+    folium.Marker([row["latitude_dd"], row["longitude_dd"]],
+                  icon=folium.Icon(dict_colors[row['region']]),
                   tooltip=str_tooltip,
                   popup=str_popup).add_to(folium_map)
 
@@ -109,13 +132,36 @@ def add_circle_marker(row, folium_map):  # маркеры в виде кружк
 
     folium_popup = folium.Popup(iframe, max_width=int(0.00002 * int(row["population"])))
 
-    folium.CircleMarker([row["latitude_dd"], row["longitude_dd"]],
-                        radius=0.00002 * int(row["population"]),  # пропорция по population
-                        popup=folium_popup,
-                        tooltip=str_tooltip,
-                        fill=True, color=dict_colors[row['region']],
-                        fill_color=dict_colors[row['region']],
-                        fill_opacity=1.0).add_to(folium_map)
+    first_year = 2000
+    second_year = 2020
+    index_name = 'Index100'
+
+    if row["settlement"] == "Москва":
+        x = [str(year) for year in range(first_year, second_year)]
+        y = [row[f"{index_name}_{year}"] for year in x]
+        fig = go.Figure(
+            layout=go.Layout(
+                title=go.layout.Title(text=f"Значение {index_name} по годам")
+            )
+        )
+        fig['layout']['xaxis']['title'] = 'year'
+        fig['layout']['yaxis']['title'] = index_name
+        fig.add_trace(go.Scatter(x=x, y=y, mode='lines', name='Life expectancy'))
+
+        # Создание HTML для попапа с интерактивным графиком
+        html = fig.to_html(full_html=False)
+
+        # Создание попапа с HTML-кодом
+        folium_popup = folium.Popup(branca.element.IFrame(html, width=700, height=400))
+
+    marker = folium.CircleMarker([row["latitude_dd"], row["longitude_dd"]],
+                                 radius=10,
+                                 popup=folium_popup,
+                                 tooltip=str_tooltip,
+                                 fill=True, color=colormap(row["population"]),
+                                 fill_color=colormap(row["population"]),
+                                 fill_opacity=1.0).add_to(folium_map)
+    folium_map.keep_in_front(marker)
 
 
 def color_region_by_id(id_region, folium_map):
@@ -129,7 +175,7 @@ def color_region_by_id(id_region, folium_map):
                        'color': colors_names[id_region % 10],
                        'weight': 2,
                        'fillOpacity': 0.5,
-                   },
+                   }, show=False,
                    name=name_region,
                    tooltip=str_tooltip,
                    popup=folium.GeoJsonPopup(fields=['name'],
@@ -141,8 +187,10 @@ def color_region_by_id(id_region, folium_map):
 @app.route("/")
 def render_map():
     folium_map = folium.Map(location=[50, 77], zoom_start=3, control_scale=True)
-    data.apply(add_marker, axis=1, args=(folium_map,))
-    # data.apply(add_circle_marker, axis=1, args=(folium_map,))
+    # data.apply(add_marker, axis=1, args=(folium_map,))
+    data.apply(add_circle_marker, axis=1, args=(folium_map,))
+    colormap.caption = "Population"
+    folium_map.add_child(colormap)
 
     with open('shapefiles/russia_geojson.geojson') as response:
         russia = json.load(response)
@@ -156,7 +204,7 @@ def render_map():
             'dashArray': '0.2, 0.2'
         },
         # tooltip=tooltip,
-    ).add_to(folium_map)
+    ).add_to(folium_map, )
 
     for region in russia['features']:
         region_id = region['properties']['id']
@@ -178,76 +226,5 @@ def render_map():
     return render_template('map.html')
 
 
-##ВИКА
-
-
-# folium.Choropleth(
-#     geo_data=russia,
-#     data=data,
-#     columns=["region", "population"],
-#     # key_on="feature.id",
-#     fill_color="YlGn",
-#     fill_opacity=0.7,
-#     line_opacity=0.2,
-#     legend_name="Population Rate",
-# ).add_to(map)
-# #
-# folium.LayerControl().add_to(map)
-
-# gdal.SetConfigOption('SHAPE_RESTORE_SHX', 'YES')
-# gdf = gpd.read_file('shapefiles/gadm41_RUS_1.shp')
-# with open('shapefiles/gadm41_RUS_1.json') as response:
-#     russia = json.load(response)
-# white_tile = branca.utilities.image_to_url([[2, 2], [2, 2]])
-# f = folium.Figure(width=500, height=500)
-# m = folium.Map(location=[50, 77], maxZoom=400, minZoom=1, zoom_control=True, zoom_start=2,
-#                scrollWheelZoom=True, tiles=white_tile, attr='white tile',
-#                dragging=True).add_to(f)
-# # folium.Marker([65.25, 94.15], popup='Russia')
-# popup = GeoJsonPopup(
-#     fields=['NAME_1', 'GID_1'],
-#     # aliases=['State', "Data points"],
-#     localize=True,
-#     labels=True,
-#     style="background-color: yellow;",
-# )
-# tooltip = GeoJsonTooltip(
-#     fields=['NAME_1', 'GID_1'],
-#     # aliases=['State', "Data points"],
-#     localize=True,
-#     sticky=False,
-#     labels=True,
-#     style="""
-#         background-color: #F0EFEF;
-#         border: 1px solid black;
-#         border-radius: 1px;
-#         box-shadow: 3px;
-#     """,
-#     max_width=1000,
-# )
-# # Add choropleth layer
-# g = folium.Choropleth(
-#     geo_data=russia,
-#     data=gdf,
-#     columns=['NAME_1', 'GID_1'],
-#     # key_on='properties.st_nm',
-#     fill_color='YlGn',
-#     fill_opacity=0.4,
-#     line_opacity=0.4,
-#     # legend_name='Data Points',
-#     highlight=True,
-#
-# ).add_to(m)
-# folium.GeoJson(
-#     russia,
-#     style_function=lambda feature: {
-#         'fillColor': '#ffff00',
-#         'color': 'black',
-#         'weight': 0.2,
-#         'dashArray': '5, 5'
-#     },
-#     tooltip=tooltip,
-#     popup=popup).add_to(g)
-
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, port=5001)
