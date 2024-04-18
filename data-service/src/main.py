@@ -4,7 +4,7 @@ from routers import data, upload_data
 
 app = FastAPI()
 
-# app.include_router(data.router)
+app.include_router(data.router)
 app.include_router(upload_data.router)
 
 if __name__ == "__main__":
