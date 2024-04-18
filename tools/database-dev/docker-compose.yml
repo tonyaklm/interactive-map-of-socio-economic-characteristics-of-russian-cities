@@ -1,0 +1,84 @@
+version: "3"
+
+services:
+  postgresql:
+    build:
+      dockerfile: Dockerfile
+    container_name: "interactive-map-postgresql"
+    image: postgres:15.5
+    restart: unless-stopped
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_MULTIPLE_DATABASES: data_service
+    ports:
+      - "5432:5432"
+    networks:
+      - interactive-map-network
+    volumes:
+      - ./configs/create-multiple-db-with-users.sh:/docker-entrypoint-initdb.d/create-multiple-db-with-users.sh:ro
+    healthcheck:
+      test: "pg_isready -U postgres"
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  liquibase-migrations-data:
+    image: liquibase/liquibase:4.19.0
+    networks:
+      - interactive-map-network
+    depends_on:
+      - postgresql
+    volumes:
+      - ../../data-service/migrations:/app_data
+    command: --defaultsFile=/app_data/dev.properties update
+
+  pgadmin:
+    container_name: "interactive-map-pgadmin"
+    image: dpage/pgadmin4
+    restart: unless-stopped
+    entrypoint: >
+      /bin/sh -c "
+      cp -f /pgadmin4/pgpass /var/lib/pgadmin/;
+      chmod 600 /var/lib/pgadmin/pgpass;
+      /entrypoint.sh
+      "
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: root
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+      PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED: 'False'
+    ports:
+      - "8080:80"
+    networks:
+      - interactive-map-network
+    volumes:
+      - ./configs/servers.json:/pgadmin4/servers.json:ro
+      - ./configs/pgpass:/pgadmin4/pgpass:ro
+
+  data-service:
+    container_name: "data-service"
+    image: data-service
+    restart: unless-stopped
+    ports:
+      - "0.0.0.0:8000:8000"
+    build:
+      context: ../../
+      dockerfile: data-service/src/Dockerfile
+    networks:
+      - interactive-map-network
+#  form-data:
+#    container_name: "form-data"
+#    image: form-data
+#    restart: unless-stopped
+#    ports:
+#      - "0.0.0.0:8001:8001"
+#    build:
+#      context: ../../
+#      dockerfile: form-data/src/Dockerfile
+#    networks:
+#      - interactive-map-network
+
+networks:
+  interactive-map-network:
+    name: "interactive-map-network"
