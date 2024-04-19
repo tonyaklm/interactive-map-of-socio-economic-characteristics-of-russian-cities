@@ -10,23 +10,16 @@ import requests
 import json
 import os
 from folium.features import GeoJson, GeoJsonTooltip, GeoJsonPopup
-<<<<<<< HEAD
 from app.map import color_region_by_id, data, add_circle_marker, add_marker, add_colorbar
-=======
-from app.map import color_region_by_id, data, add_circle_marker, add_marker
 from app.forms import LoginForm, RegisterForm
 from flask import Flask, render_template, flash, redirect, request, session, logging, url_for
 from app.models import User
 from app import db
->>>>>>> c91245e (register-login)
+
 
 cur_map_name = "map"
 
 
-<<<<<<< HEAD
-@app.route("/")
-def render_map():
-=======
 @app.route('/')
 def home():
     return render_template('main.html')
@@ -100,7 +93,6 @@ def login():
 @app.route("/map/")
 def render_map():
     # print(os.listdir("../map/templates"))
->>>>>>> c91245e (register-login)
     folium_map = folium.Map(location=[69, 88], zoom_start=3, control_scale=True)
     colormap = add_colorbar(folium_map, "Population")
     data.apply(add_circle_marker, axis=1, args=(folium_map, "Population", colormap,))
