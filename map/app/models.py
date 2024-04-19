@@ -10,6 +10,7 @@ class User(db.Model):
     username = db.Column(db.String(30), nullable=False, unique=True)
     login = db.Column(db.String(60), nullable=False, unique=True)
     password_hash = db.Column(db.String(256), unique=True)
+    admin = db.Column(db.Boolean, default=False)
 
     def hash_password(self, password):
         self.password_hash = pwd_context.encrypt(password)
