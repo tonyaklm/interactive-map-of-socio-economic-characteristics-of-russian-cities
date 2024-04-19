@@ -1,0 +1,78 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+        xmlns:pro="http://www.liquibase.org/xml/ns/pro"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd
+        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd
+        http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-latest.xsd">
+
+    <changeSet author="antonina" id="create-data-table">
+        <createTable tableName="data" remarks="Таблица с данными">
+            <column autoIncrement="false" name="id" type="INTEGER" remarks="id муниципалитета">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="municipality_pkey"/>
+            </column>
+
+            <column name="region_id" type="INTEGER" remarks="id региона">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="region" type="VARCHAR" remarks="Название региона">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="municipality" type="VARCHAR" remarks="Название муниципали">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="settlement" type="VARCHAR" remarks="Название города">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="type" type="VARCHAR" remarks="Тип населенного пункта">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="population" type="INTEGER" remarks="Население">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="children" type="INTEGER" remarks="Дети">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="latitude_dms" type="VARCHAR" remarks="Ширина dms">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="longitude_dms" type="VARCHAR" remarks="Долгота dms">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="latitude_dd" type="FLOAT" remarks="Ширина dd">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="longitude_dd" type="FLOAT" remarks="Долгота dd">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="oktmo" type="FLOAT"
+                    remarks="Общероссийский классификатор территорий муниципальных образований">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="dadata" type="INTEGER" remarks="dadata">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="rosstat" type="INTEGER" remarks="rosstat">
+                <constraints nullable="false"/>
+            </column>
+
+
+        </createTable>
+    </changeSet>
+
+</databaseChangeLog>
