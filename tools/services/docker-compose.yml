@@ -6,9 +6,24 @@ services:
     image: data-service
     restart: unless-stopped
     ports:
-      - "0.0.0.0:8000:8000"
+      - "8000:8000"
     build:
       context: ../../
       dockerfile: data-service/src/Dockerfile
+    env_file:
+      - ../../.env
+    networks:
+      - interactive-map-network
+  user-service:
+    container_name: "user-service"
+    image: user-service
+    restart: unless-stopped
+    ports:
+      - "8001:8000"
+    build:
+      context: ../../
+      dockerfile: user_service/src/Dockerfile
+    env_file:
+      - ../../.env
     networks:
       - interactive-map-network

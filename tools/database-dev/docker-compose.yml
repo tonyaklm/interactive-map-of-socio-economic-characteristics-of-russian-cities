@@ -10,7 +10,7 @@ services:
     environment:
       POSTGRES_PASSWORD: postgres
       POSTGRES_USER: postgres
-      POSTGRES_MULTIPLE_DATABASES: data_service
+      POSTGRES_MULTIPLE_DATABASES: data_service, user_service
     ports:
       - "5432:5432"
     networks:
