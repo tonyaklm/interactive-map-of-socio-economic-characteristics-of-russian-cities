@@ -29,7 +29,7 @@ async def index(file: UploadFile = File(...), column_type: str = Form(...),
                 session)
 
         return RedirectResponse(url="/upload_file", status_code=status.HTTP_303_SEE_OTHER)
-    return templates.TemplateResponse(name="index.html", context={"request": file})
+    return templates.TemplateResponse(name="upload_file.html", context={"request": file})
 
 
 @router.get("/")
@@ -39,4 +39,4 @@ async def get_upload_form(request: Request):
         if attribute != attribute.upper() and hasattr(getattr(types, attribute), '__visit_name__'):
             camel_case_types.append(attribute)
 
-    return templates.TemplateResponse(name="index.html", context={"request": request, "selected": camel_case_types})
+    return templates.TemplateResponse(name="upload_file.html", context={"request": request, "types": camel_case_types})

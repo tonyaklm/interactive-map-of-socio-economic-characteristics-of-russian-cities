@@ -1,0 +1,16 @@
+version: "3"
+
+services:
+  liquibase-migrations-data:
+    image: liquibase/liquibase:4.19.0
+    networks:
+      - interactive-map-network
+    depends_on:
+      - postgresql
+    volumes:
+      - ../../data-service/migrations:/app_data
+    command: --defaultsFile=/app_data/dev.properties update
+
+networks:
+  interactive-map-network:
+    name: "interactive-map-network"

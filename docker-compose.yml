@@ -1,0 +1,7 @@
+networks:
+  interactive-map-network:
+    name: "interactive-map-network"
+include:
+  - tools/database-dev/docker-compose.yml
+  - tools/migrations/docker-compose.yml
+  - tools/services/docker-compose.yml

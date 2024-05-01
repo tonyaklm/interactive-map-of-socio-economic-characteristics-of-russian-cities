@@ -1,0 +1,14 @@
+version: "3"
+
+services:
+  data-service:
+    container_name: "data-service"
+    image: data-service
+    restart: unless-stopped
+    ports:
+      - "0.0.0.0:8000:8000"
+    build:
+      context: ../../
+      dockerfile: data-service/src/Dockerfile
+    networks:
+      - interactive-map-network
