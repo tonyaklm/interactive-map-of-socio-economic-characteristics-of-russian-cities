@@ -19,13 +19,18 @@ async def render_map(request: Request, session: AsyncSession = Depends(get_sessi
     for row in data:
         add_circle_marker(row, folium_map, "Population", colormap)
 
-    folium_map.save("templates/map.html")
+    folium_map.get_root().width = "100.0%"
+    folium_map.get_root().height = "1050px"
+    iframe = folium_map.get_root()._repr_html_()
 
     # return render_template('index.html', selected='Empty Map')
     columns = await get_column_names(session)
-    return templates.TemplateResponse(name="index.html",
+
+    resp = templates.TemplateResponse(name="index.html",
                                       context={"request": request, "columns": columns['column_names'],
-                                               "groups": columns['column_types']})
+                                               "groups": columns['column_types'], "iframe": iframe})
+
+    return resp
 
 
 @router.get('/indicator')
@@ -45,9 +50,13 @@ async def chosen_indicator(request: Request, indicator: str = Query(...), time_b
         for row in data:
             add_circle_marker(row, folium_map, indicator, colormap)
 
-    cur_map_name = 'map_' + indicator
-    filename = cur_map_name + '.html'
-    folium_map.save(f"templates/{filename}")
+    folium_map.get_root().width = "100.0%"
+    folium_map.get_root().height = "1050px"
+    iframe = folium_map.get_root()._repr_html_()
 
-    return templates.TemplateResponse(name=filename,
-                                      context={"request": request})
+    columns = await get_column_names(session)
+
+    return templates.TemplateResponse(name="index.html",
+                                      context={"request": request, "columns": columns['column_names'],
+                                               "groups": columns['column_types'], "selected": indicator,
+                                               "iframe": iframe})

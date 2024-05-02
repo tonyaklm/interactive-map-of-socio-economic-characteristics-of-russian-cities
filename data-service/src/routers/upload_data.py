@@ -11,7 +11,7 @@ from models.data_models import CreateColumn, UpdateData
 
 templates = Jinja2Templates(directory="templates")
 
-router = APIRouter(prefix="/upload_file")
+router = APIRouter(prefix="/upload_data")
 
 
 @router.post("/")
@@ -28,7 +28,7 @@ async def index(file: UploadFile = File(...), column_type: str = Form(...),
                 UpdateData(data_id=row['id'], column=new_column_name, new_value=row[new_column_name]),
                 session)
 
-        return RedirectResponse(url="/upload_file", status_code=status.HTTP_303_SEE_OTHER)
+        return RedirectResponse(url="/upload_data", status_code=status.HTTP_303_SEE_OTHER)
     return templates.TemplateResponse(name="upload_file.html", context={"request": file})
 
 

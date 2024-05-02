@@ -56,7 +56,7 @@ def login():
 
                 # set_access_cookies(response, access_token)
                 # return response, 200
-                map_address = settings.data_service_address + '/map/'
+                map_address = settings.data_service_address + '/upload_data/'
                 return redirect(map_address, code=302)
             else:
                 # return jsonify({'message': 'Invalid password'}), 401

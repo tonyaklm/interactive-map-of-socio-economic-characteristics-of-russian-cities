@@ -2,7 +2,7 @@
 <html>
 <head>
     <title>Folium Map with Dropdown</title>
-        <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
     <style>
         #label {
             font-size: 25px;
@@ -114,6 +114,7 @@
           background-color: #DDD;
         }
 
+
     </style>
 </head>
 <body>
@@ -147,7 +148,7 @@
     </form>
 
 </h1>
-<iframe id="myIframe" class="map" src="templates/map.html" width="100.0%" height="650" frameborder="1"></iframe>
+{{ iframe|safe }}
 <h3><b style="background-color: lightcoral; color: lightcyan;">
 </b></h3>
 </body>
@@ -176,6 +177,7 @@
             optgroup.appendChild(newOption);
         });
     }
+
 
 
 
