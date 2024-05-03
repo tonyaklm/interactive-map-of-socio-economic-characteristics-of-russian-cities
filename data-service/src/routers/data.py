@@ -3,7 +3,7 @@ from sqlalchemy import Column
 from sqlalchemy import types
 from models import data_models
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.exc import DataError, DBAPIError, ProgrammingError
+from sqlalchemy.exc import DataError, DBAPIError, ProgrammingError, InvalidRequestError
 from common.repository import repo
 from tables.data import DataDao
 from utils.session import get_session
@@ -30,12 +30,16 @@ async def update_data(update_data: data_models.UpdateData,
 @router.post("/create", status_code=200, summary="Create new column", tags=['data'])
 async def create_column(new_column: data_models.CreateColumn,
                         session: AsyncSession = Depends(get_session)):
-    setattr(DataDao, new_column.column_name,
-            Column(new_column.column_name, getattr(types, new_column.column_type)))
+    try:
+        setattr(DataDao, new_column.column_name,
+                Column(new_column.column_name, getattr(types, new_column.column_type)))
+    except InvalidRequestError:
+        raise HTTPException(status_code=400, detail="Не получилось создать")
     try:
         await add_column('data', new_column.column_name, new_column.column_type, session)
     except ProgrammingError:
         raise HTTPException(status_code=400, detail="Не получилось создать")
+
     return {}
 
 
@@ -43,6 +47,8 @@ async def create_column(new_column: data_models.CreateColumn,
 async def get_column_names(session: AsyncSession = Depends(get_session)):
     columns = await get_columns(DataDao.__tablename__, session)
     column_names = list(columns.keys())[15:]
+    # static_columns = ['Population', 'Children']
+    # column_names = DataDao.__table__.columns.keys()[15:] + static_columns
 
     column_types = []
     for column in column_names:
@@ -59,8 +65,6 @@ async def get_indicator(indicator: str, session: AsyncSession = Depends(get_sess
     summ_flag = True if indicator in ['population', 'children'] else False
     if indicator not in DataDao.__table__.columns.keys():
         raise HTTPException(status_code=404, detail={'no such indicator'})
-
     selected_data = await repo.select_columns(DataDao, selected_columns, indicator, session, summ=summ_flag)
-    print(len([row._asdict() for row in selected_data]))
     return [row._asdict() for row in selected_data]
     # return [row._asdict() for row in selected_data]

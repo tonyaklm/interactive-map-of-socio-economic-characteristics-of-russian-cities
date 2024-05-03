@@ -2,16 +2,18 @@ import uvicorn
 from fastapi import FastAPI
 from routers import data, upload_data, map
 from contextlib import asynccontextmanager
-from default_map import create_default_map
+from cache.cache_maps import cache_maps
+from fastapi.staticfiles import StaticFiles
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    create_default_map()
+    await cache_maps()
     yield
 
 
 app = FastAPI(lifespan=lifespan)
+app.mount("/static", StaticFiles(directory="static"), name="static")
 
 app.include_router(data.router)
 app.include_router(upload_data.router)

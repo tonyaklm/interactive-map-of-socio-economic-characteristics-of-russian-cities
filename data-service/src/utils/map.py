@@ -3,6 +3,8 @@ from typing import List, Dict
 import folium
 import json
 import math
+
+import numpy as np
 from branca.colormap import linear, LinearColormap
 from folium import Map
 
@@ -33,14 +35,13 @@ def color_region_by_id(id_region: int, folium_map: Map):
 
 
 def add_colorbar(data: List[Dict], folium_map: Map, indicator: str):
-    if indicator in ['Population', 'Children']:
-        indicator = indicator.lower()
 
     min_value = 1e9
     max_value = -1e9
     for row in data:
-        min_value = min(row[indicator], min_value)
-        max_value = max(row[indicator], max_value)
+        if not math.isnan(row[indicator]):
+            min_value = min(row[indicator], min_value)
+            max_value = max(row[indicator], max_value)
     colormap = linear.YlGnBu_05.scale(
         min_value,
         max_value
