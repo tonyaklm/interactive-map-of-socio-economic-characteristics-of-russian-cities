@@ -32,7 +32,18 @@ class Repository:
             getattr(table, indicator)).label(indicator)
 
         stmt = select(*[getattr(table, column) for column in columns],
-                      agg_func).group_by(*[getattr(table, column) for column in columns])
+                      agg_func,
+                      func.min(table.id).label('min_municipality_id')).group_by(
+            *[getattr(table, column) for column in columns])
+        results = await session.execute(stmt)
+        return results.all()
+
+    async def select_mean_indicator(self, table: Base, columns: list, indicators: list, session: AsyncSession):
+        agg_funcs = [func.avg(getattr(table, indicator)).label(indicator) for indicator in indicators]
+        stmt = select(*[getattr(table, column) for column in columns],
+                      *agg_funcs,
+                      func.min(table.id).label('min_municipality_id')).group_by(
+            *[getattr(table, column) for column in columns])
         results = await session.execute(stmt)
         return results.all()
 
