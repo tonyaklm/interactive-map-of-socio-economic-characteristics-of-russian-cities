@@ -26,8 +26,7 @@ async def render_map(request: Request, session: AsyncSession = Depends(get_sessi
 
 
 @router.get('/indicator')
-async def chosen_indicator(request: Request, indicator: str = Query(...), time_before: int = Query(...),
-                           time_after: int = Query(...), session: AsyncSession = Depends(get_session)):
+async def chosen_indicator(request: Request, indicator: str = Query(...), session: AsyncSession = Depends(get_session)):
     input_indicator = indicator
     if indicator in ['Population', 'Children']:
         indicator = indicator.lower()

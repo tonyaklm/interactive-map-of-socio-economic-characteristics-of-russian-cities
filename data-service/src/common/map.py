@@ -1,3 +1,4 @@
+import decimal
 import math
 from typing import List, Dict
 
@@ -36,41 +37,36 @@ class FoliumMap:
         folium.LayerControl().add_to(self.map)
 
     def add_marker(self, item: Dict) -> None:
-        str_popup = str(item["settlement"]) + ", " + str(item['region'])
-        popup_text = f'{str_popup}, \n' \
-                     f'{self.indicator}: {str(item[self.indicator])}'
+        tooltip_text = f'Регион: <b>{item["region"]}</b><br>Город: <b>{item["settlement"]}</b>'
 
-        str_tooltip = f'<b>{item["settlement"]}</b><br>{self.indicator}: {str(item[self.indicator])}'
-
-        iframe = folium.IFrame(popup_text,
-                               width=200,
-                               height=100)
-
-        folium_popup = folium.Popup(iframe, min_width=200, max_width=300)
+        popup_text = f'Значение <b>{self.indicator}</b> для города <b>{item["settlement"]}</b><br>:' \
+                     f' {str(item[self.indicator])}<br><br>' \
+                     f'Посмотреть <a href="http://localhost:8000/dashboard/{item["min_municipality_id"]}/">график</a>' \
+                     f' индикаторов по годам'
 
         marker_color = 'while'
-        if not math.isnan(item[self.indicator]):
+        if item[self.indicator] is not None and not math.isnan(item[self.indicator]):
             marker_color = self.colormap(item[self.indicator])
 
         marker = folium.CircleMarker([item["latitude_dd"], item["longitude_dd"]],
                                      radius=10,
-                                     popup=folium_popup,
-                                     tooltip=str_tooltip,
+                                     popup=folium.Popup(popup_text, min_width=300, max_width=300),
+                                     tooltip=folium.Tooltip(tooltip_text),
                                      fill=True, color=marker_color,
                                      fill_color=marker_color,
                                      fill_opacity=1.0).add_to(self.map)
         self.map.keep_in_front(marker)
 
     def add_colormap(self, data: List[Dict]) -> None:
-        min_value = 1e9
-        max_value = -1e9
+        min_value = 1e5
+        max_value = -1e5
         for row in data:
-            if not math.isnan(row[self.indicator]):
+            if row[self.indicator] is not None and not math.isnan(row[self.indicator]):
                 min_value = min(row[self.indicator], min_value)
                 max_value = max(row[self.indicator], max_value)
         self.colormap = linear.YlGnBu_05.scale(
-            min_value,
-            max_value
+            float(min_value),
+            float(max_value)
         ).to_step(10)
         self.colormap.caption = self.indicator
         self.map.add_child(self.colormap)

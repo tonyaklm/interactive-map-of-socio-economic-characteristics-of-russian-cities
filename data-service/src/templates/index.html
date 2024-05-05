@@ -115,6 +115,7 @@
         }
 
 
+
     </style>
 </head>
 <body>
@@ -128,27 +129,30 @@
             <option value="Empty Map">Empty Map</option>
             <option value="Population">Population</option>
             <option value="Children">Children</option>
-            <optgroup label="Index">
-            </optgroup>
-            <optgroup label="Index100">
-            </optgroup>
-            <optgroup label="Value">
-            </optgroup>
-            <optgroup label="Type">
-            </optgroup>
 
         </select>
 
-
-        <label id="timelabel_before" for="time_before">Введите временной промежуток: c </label>
-        <input type="text" id="time_before" name="time_before" required minlength="4" maxlength="4" size="15"/>
-        <label id="timelabel_after" for="time_after"> по </label>
-        <input type="text" id="time_after" name="time_after" required minlength="4" maxlength="4" size="15"/>
         <input type="submit" id="submit" value="Submit">
     </form>
 
 </h1>
-<iframe id="myIframe" class="map" src={{template_name}} width="100.0%" height="650" frameborder="1"></iframe>
+
+<div id="loading" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;">
+    <img src="../static/images/loader.gif" alt="Loading..."
+         style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">
+</div>
+
+<script type="text/javascript">
+      function hideLoading() {
+           document.getElementById("loading").style.display = "none";
+      }
+
+</script>
+
+<iframe id="myIframe" class="map" src={{template_name}} width="100.0%" height="650" frameborder="1"
+        onload="window.parent.hideLoading();">
+</iframe>
+
 <h3><b style="background-color: lightcoral; color: lightcyan;">
 </b></h3>
 </body>
