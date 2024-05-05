@@ -1,0 +1,43 @@
+{% block title %}Home{% endblock %}
+{% block body %}
+
+<div class="jumbotron">
+    <h1 style='text-align: center'>Загрузка новых данных</h1>
+</div>
+
+
+<div>
+    <p class="lead">Загрузите файл формата csv и выберите тип нового столбца</p>
+    <form method="POST" action="/upload_data/" enctype="multipart/form-data">
+        <label id="label" for="dropdown">Выберите тип данных:</label>
+        <select id="dropdown" name="column_type">
+        </select><br><br><br>
+        <input name="file" type="file" accept=".csv">
+        <input type="submit">
+    </form>
+</div>
+
+<script>
+
+    var types = {{ types|tojson }};
+    addOptions(types);
+
+    function addOptions(types) {
+        var dropdown = document.getElementById("dropdown");
+
+        types.forEach(function(option) {
+            var newOption = document.createElement("option");
+            newOption.text = option;
+            newOption.value = option;
+            dropdown.add(newOption);
+        });
+    }
+
+
+
+</script>
+
+
+{% endblock %}
+
+

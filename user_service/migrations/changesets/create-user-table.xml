@@ -1,0 +1,36 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+        xmlns:pro="http://www.liquibase.org/xml/ns/pro"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd
+        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd
+        http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-latest.xsd">
+
+    <changeSet author="antonina" id="create-user-table">
+        <createTable tableName="user" remarks="Таблица пользователей">
+            <column autoIncrement="true" name="id" type="INTEGER" remarks="id пользователя">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="user_pkey"/>
+            </column>
+
+             <column name="username" type="VARCHAR" remarks="username пользователя">
+                <constraints nullable="false" unique="true"/>
+            </column>
+
+            <column name="login" type="VARCHAR" remarks="Логин пользователя">
+                <constraints nullable="false" unique="true"/>
+            </column>
+
+            <column name="password_hash" type="VARCHAR" remarks="Пароль пользователя">
+                <constraints nullable="false" unique="true"/>
+            </column>
+
+            <column name="admin" type="BOOLEAN" remarks="Пароль пользователя" defaultValueBoolean="false">
+                <constraints nullable="false"/>
+            </column>
+
+        </createTable>
+    </changeSet>
+
+</databaseChangeLog>

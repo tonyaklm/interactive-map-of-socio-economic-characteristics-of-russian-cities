@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block body %}
+
+{% from "includes/formhelpers.html" import render_field %}
+
+<div class="row justify-content-center align-items-center text-center" style="height: 100vh;">
+    <div class="col-md-6">
+        <h4><strong>Login</strong></h4>
+        <hr>
+        <form method="POST">
+            {{ render_field(form.login, class="form-control") }}
+            {{ render_field(form.password, class="form-control") }}
+            <button type="submit" class="btn btn-primary">Login</button>
+        </form>
+        <hr>
+        <a href="/register">Create a New Account!</a>
+    </div>
+</div>
+
+{% endblock body %}

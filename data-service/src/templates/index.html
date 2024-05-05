@@ -1,43 +1,189 @@
-{% block title %}Home{% endblock %}
-{% block body %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Folium Map with Dropdown</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+    <style>
+        #label {
+            font-size: 25px;
+            color: teal;
+        }
+        #map {
+            height: 550px;
+            width: 90%;
+        }
+        #dropdown {
+              width: 200px;
+              height: 25px;
+              border: 1px solid #999;
+              font-size: 18px;
+              color: grey;
+              background-color: #eee;
+              margin-top: 50px;
+              margin-bottom: 10px;
+        }
+        #myIframe {
+<!--            margin-top: 70px;-->
+        }
+        #timelabel_before {
+              font-size: 25px;
+              color: teal;
+              margin-top: 50px;
+              margin-bottom: 10px;
+              padding-left: 8%;
+        }
+        #time_before {
+              width: 200px;
+              height: 25px;
+              border: 1px solid #999;
+              font-size: 18px;
+              color: grey;
+              background-color: #eee;
+              margin-top: 50px;
+              margin-bottom: 10px;
+              border-radius:6px;
+        }
+        #timelabel_after {
+              font-size: 25px;
+              color: teal;
+<!--              margin-top: 50px;-->
+<!--              margin-bottom: 10px;-->
+<!--              padding-left: 10%;-->
+        }
+        #time_after {
+               width: 200px;
+              height: 25px;
+              border: 1px solid #999;
+              font-size: 18px;
+              color: grey;
+              background-color: #eee;
+              margin-top: 50px;
+              margin-bottom: 10px;
+              border-radius:6px;
+        }
+        #submit {
+              width: 100px;
+              height: 25px;
+              border: 1px solid #999;
+              font-size: 18px;
+              color: black;
+              background-color: #eee;
+              margin-top: 50px;
+              margin-bottom: 10px;
+              border-radius:6px;
+        }
+        #button {
+          /* Box in the button */
+          display: block;
+          width: 200px;
+          height: 100px;
+          padding: 12px 28px;
+          color: teal;
+          float: right;
+          border-radius: 0.2em; /* Радиус скругления */
+          position:absolute;
+          top:0.2px;
+          right:1px;
+        }
 
-<div class="jumbotron">
-    <h1 style='text-align: center'>Загрузка новых данных</h1>
-</div>
+        #button a {
+          text-decoration: none;
+          /* Remove the underline from the links. */
+        }
+
+        #button ul {
+          list-style-type: none;
+          /* Remove the bullets from the list */
+        }
+
+        #button .top {
+          background-color: #DDD;
+          text-align: center;
+          /* The button background */
+        }
+
+        #button ul li.item {
+          display: none;
+          /* By default, do not display the items (which contains the links) */
+        }
+
+        #button ul:hover .item {
+          /* When the user hovers over the button (or any of the links) */
+          display: block;
+          border: 1px solid white;
+          background-color: #DDD;
+        }
 
 
-<div>
-    <p class="lead">Загрузите файл формата csv и выберите тип нового столбца</p>
-    <form method="POST" action="/upload_file/" enctype="multipart/form-data">
-        <label id="label" for="dropdown">Выберите тип данных:</label>
-        <select id="dropdown" name="column_type">
-        </select><br><br><br>
-        <input name="file" type="file" accept=".csv">
-        <input type="submit">
+    </style>
+</head>
+<body>
+<h1>
+    <h2 align="center" style="color:teal" class="logo">Интерактивная карта социально-экономических индикаторов городов
+        России</h2>
+    <form action="/map/indicator" method="get">
+        <label id="label" for="dropdown">Выберите индикатор:</label>
+        <select id="dropdown" name="indicator" onchange="this.form.submit()">
+            <option value="selected">{{selected}}</option>
+            <option value="Empty Map">Empty Map</option>
+            <option value="Population">Population</option>
+            <option value="Children">Children</option>
+            <optgroup label="Index">
+            </optgroup>
+            <optgroup label="Index100">
+            </optgroup>
+            <optgroup label="Value">
+            </optgroup>
+            <optgroup label="Type">
+            </optgroup>
+
+        </select>
+
+
+        <label id="timelabel_before" for="time_before">Введите временной промежуток: c </label>
+        <input type="text" id="time_before" name="time_before" required minlength="4" maxlength="4" size="15"/>
+        <label id="timelabel_after" for="time_after"> по </label>
+        <input type="text" id="time_after" name="time_after" required minlength="4" maxlength="4" size="15"/>
+        <input type="submit" id="submit" value="Submit">
     </form>
-</div>
+
+</h1>
+<iframe id="myIframe" class="map" src={{template_name}} width="100.0%" height="650" frameborder="1"></iframe>
+<h3><b style="background-color: lightcoral; color: lightcyan;">
+</b></h3>
+</body>
 
 <script>
 
-    var selected = {{ selected|tojson }};
-    addOptions(selected);
+    var columns = {{ columns|tojson }};
+    var groups = {{ groups|tojson }};
+    addOptions(columns, groups);
 
-    function addOptions(selected) {
+    function addOptions(columns, groups) {
         var dropdown = document.getElementById("dropdown");
 
-        selected.forEach(function(option) {
+        columns.forEach(function(option, index) {
             var newOption = document.createElement("option");
             newOption.text = option;
             newOption.value = option;
-            dropdown.add(newOption);
+
+            var groupName = groups[index];
+            var optgroup = dropdown.querySelector('optgroup[label="' + groupName + '"]');
+            if (!optgroup) {
+                optgroup = document.createElement('optgroup');
+                optgroup.label = groupName;
+                dropdown.appendChild(optgroup);
+            }
+            optgroup.appendChild(newOption);
         });
     }
 
 
 
+
 </script>
 
+</html>
 
-{% endblock %}
 
 
