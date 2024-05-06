@@ -1,80 +1,98 @@
 from datetime import datetime, timezone, timedelta
-
+from flask_jwt_extended import jwt_required, get_jwt_identity, set_access_cookies, get_jwt, \
+    create_access_token
 from flask import Blueprint
-from flask_jwt_extended import get_jwt, create_access_token, get_jwt_identity, set_access_cookies
+from flask import flash, make_response
+from flask_jwt_extended import get_jwt, create_access_token, get_jwt_identity, set_access_cookies, set_refresh_cookies, \
+    create_refresh_token, unset_jwt_cookies
 from utils.forms import LoginForm, RegisterForm
-from flask import render_template, flash, redirect, request, session, url_for
+from flask import render_template, flash, redirect, request, url_for
 from tables.user import User
 from db import db_session
 from config import settings
+from flask import request, jsonify
+
 
 blueprint = Blueprint('user', __name__, template_folder='templates')
 
 
 @blueprint.route('/register/', methods=['GET', 'POST'])
+@jwt_required()
 def register():
-    form = RegisterForm(request.form)
-    if request.method == 'POST' and form.validate():
-        if db_session.query(User).filter_by(login=form.login.data).first() is None:
-            new_user = User(username=form.username.data, login=form.login.data)
-            new_user.hash_password(form.password.data)
-            db_session.add(new_user)
-            db_session.commit()
+    user_id = get_jwt_identity()
+    user = db_session.query(User).filter_by(id=user_id).first()
+    if user and user.admin:
+        form = RegisterForm(request.form)
+        if request.method == 'POST' and form.validate():
+            if db_session.query(User).filter_by(login=form.login.data).first() is None:
+                new_user = User(username=form.username.data, login=form.login.data, admin=form.admin.data)
+                new_user.hash_password(form.password.data)
+                db_session.add(new_user)
+                db_session.commit()
 
-            # access_token = new_user.get_token()
-            # response = jsonify({'message': f'User-{new_user.username} registered successfully'})
-            # set_access_cookies(response, access_token)
-            # return response, 201
-            flash('You have successfully registered', 'success')
-            return redirect(url_for('user.login'))
+                flash('Вы успешно зарегистрировали нового пользователя', 'success')
+                return render_template('register.html', form=RegisterForm())
+            else:
+                flash('Пользователь с таким Login уже существует', 'error')
+                return render_template('register.html', form=form)
         else:
-            # return jsonify({'message': 'Existing user'}), 400
-            flash('Such login already exists', 'fail')
-            return redirect(url_for('user.login'))
+            return render_template('register.html', form=form)
     else:
-        return render_template('register.html', form=form)
+        # flash('У Вас нет доступа к регистрации новых пользователей', 'error')
+        map_address = settings.data_service_address + '/map/'
+        return redirect(map_address)
 
 
 @blueprint.route('/login/', methods=['GET', 'POST'])
 def login():
     form = LoginForm(request.form)
     map_address = settings.data_service_address + '/map/'
-    print(map_address)
 
-    if request.method == 'POST' and form.validate:
+    if request.method == 'POST' and form.validate():
         user = db_session.query(User).filter_by(login=form.login.data).first()
         if user is None:
-            # return jsonify({'message': 'Invalid username'}), 401
+            flash('Неверный Login пользователя', 'error')
             return render_template('login.html', form=form)
         else:
             if user is not None and user.verify_password(form.password.data):
-                # access_token = user.get_token()
-                flash('You have successfully logged in.', "success")
-                session['logged_in'] = True
-                # session['email'] = user.email
-                session['username'] = user.username
+                access_token, refresh_token = user.get_token()
 
-                # set_access_cookies(response, access_token)
-                # return response, 200
-                map_address = settings.data_service_address + '/upload_data/'
-                return redirect(map_address, code=302)
+                response = make_response(redirect(map_address, code=302))
+
+                set_access_cookies(response, access_token)
+                set_refresh_cookies(response, refresh_token)
+
+                return response
             else:
-                # return jsonify({'message': 'Invalid password'}), 401
-                flash('Login or Password Incorrect', "Danger")
+                flash('Неверный Password пользователя', "error")
+                return render_template('login.html', form=form)
+    else:
+        return render_template('login.html', form=form)
 
-                return redirect(url_for('login'))
-    return render_template('login.html', form=form)
 
+# @blueprint.after_request
+# def refresh_expiring_jwts(response):
+#     try:
+#         exp_timestamp = get_jwt()["exp"]
+#         now = datetime.now(timezone.utc)
+#         target_timestamp = datetime.timestamp(now + timedelta(minutes=300))
+#
+#         # map_address = settings.data_service_address + '/map/'
+#         # response = make_response(redirect(map_address, code=302))
+#         if target_timestamp > exp_timestamp:
+#             access_token = create_access_token(identity=get_jwt_identity())
+#             refresh_token = create_refresh_token(identity=get_jwt_identity())
+#             set_access_cookies(response, access_token)
+#             set_refresh_cookies(response, refresh_token)
+#         return response
+#     except (RuntimeError, KeyError):
+#         return response
 
-@blueprint.after_request
-def refresh_expiring_jwts(response):
-    try:
-        exp_timestamp = get_jwt()["exp"]
-        now = datetime.now(timezone.utc)
-        target_timestamp = datetime.timestamp(now + timedelta(minutes=30))
-        if target_timestamp > exp_timestamp:
-            access_token = create_access_token(identity=get_jwt_identity())
-            set_access_cookies(response, access_token)
-        return response
-    except (RuntimeError, KeyError):
-        return response
+@blueprint.route('/logout/')
+@jwt_required()
+def logout():
+    map_address = settings.data_service_address + '/map/'
+    response = make_response(redirect(map_address, code=302))
+    response.delete_cookie("access_token_cookie")
+    response.delete_cookie("refresh_token_cookie")
+    return response
