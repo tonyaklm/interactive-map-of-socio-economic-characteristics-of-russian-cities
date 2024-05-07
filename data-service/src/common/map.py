@@ -41,7 +41,7 @@ class FoliumMap:
 
         popup_text = f'Значение <b>{self.indicator}</b> для города <b>{item["settlement"]}</b><br>:' \
                      f' {str(item[self.indicator])}<br><br>' \
-                     f'Посмотреть <a href="http://localhost:8000/dashboard/{item["min_municipality_id"]}/">график</a>' \
+                     f'Посмотреть <a href="http://localhost:8005/dashboard/{item["min_municipality_id"]}/">график</a>' \
                      f' индикаторов по годам'
 
         marker_color = 'while'

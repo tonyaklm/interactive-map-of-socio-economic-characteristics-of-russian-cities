@@ -12,9 +12,9 @@ async def cache_maps():
     async with async_session() as session:
         await check_columns(session)
 
-        # for indicator in static_columns + DataDao.__table__.columns.keys()[15:]:
-        #     await cache_map(indicator, session)
-        # FoliumMap().save()
+        for indicator in static_columns + DataDao.__table__.columns.keys()[15:]:
+            await cache_map(indicator, session)
+        FoliumMap().save()
 
 
 async def cache_map(indicator: str, session: AsyncSession):
