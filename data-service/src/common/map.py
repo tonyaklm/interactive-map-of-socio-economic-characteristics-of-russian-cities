@@ -6,6 +6,7 @@ import folium
 import json
 from utils.map import color_region_by_id
 from branca.colormap import linear
+import os
 
 
 class FoliumMap:
@@ -41,7 +42,7 @@ class FoliumMap:
 
         popup_text = f'Значение <b>{self.indicator}</b> для города <b>{item["settlement"]}</b><br>:' \
                      f' {str(item[self.indicator])}<br><br>' \
-                     f'Посмотреть <a href="http://localhost:8005/dashboard/{item["min_municipality_id"]}/">график</a>' \
+                     f'Посмотреть <a href="http://{os.getenv("INTERNAL_ADDRESS")}:{os.getenv("DATA_SERVICE_PORT")}/dashboard/{item["min_municipality_id"]}/">график</a>' \
                      f' индикаторов по годам'
 
         marker_color = 'while'
