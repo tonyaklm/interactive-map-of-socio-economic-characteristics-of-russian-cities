@@ -34,12 +34,6 @@
         #myIframe {
 <!--            margin-top: 70px;-->
         }
-        #submit {
-              width: 100px;
-              height: 25px;
-              border: 1px solid #999;
-              font-size: 18px;
-              color: black;
         #timelabel_before {
               font-size: 25px;
               color: teal;
@@ -76,18 +70,6 @@
               margin-bottom: 10px;
               border-radius:6px;
         }
-        #button {
-          /* Box in the button */
-          display: block;
-          width: 200px;
-          height: 100px;
-          padding: 12px 28px;
-          color: teal;
-          float: right;
-          border-radius: 0.2em; /* Радиус скругления */
-          position:absolute;
-          top:0.2px;
-          right:1px;
 
         #timelabel_after {
               font-size: 25px;
@@ -131,62 +113,28 @@
             top: 10px; /* Расстояние от верхнего края страницы */
             left: 10px; /* Расстояние от правого края страницы */
         }
-        #button ul {
-          list-style-type: none;
-          /* Remove the bullets from the list */
-        }
-
-        #button .top {
-          background-color: #DDD;
-          text-align: center;
-          /* The button background */
-        }
-
-        #button ul li.item {
-          display: none;
-          /* By default, do not display the items (which contains the links) */
-        }
-
-        #button ul:hover .item {
-          /* When the user hovers over the button (or any of the links) */
-          display: block;
-          border: 1px solid white;
-          background-color: #DDD;
-        }
-
-        .top-left-button {
-            position: fixed;
-            top: 10px; /* Расстояние от верхнего края */
-            left: 10px; /* Расстояние от левого края */
-            background-color: #3498db; /* Цвет фона кнопки */
-            color: white; /* Цвет текста */
-            padding: 10px 20px; /* Внутренние отступы */
-            border: none;
-            border-radius: 5px; /* Закругление углов */
-            cursor: pointer;
-        }
 
 
     </style>
 
-    <!--    <script>-->
-    <!--        function setHref() {-->
-    <!--            document.getElementById('login').href = window.location.protocol + "//" + window.location.hostname + ":8006/login/";-->
-    <!--            document.getElementById('register').href = window.location.protocol + "//" + window.location.hostname + ":8006/register/";-->
-    <!--            document.getElementById('logout').href = window.location.protocol + "//" + window.location.hostname + ":8006/logout/";-->
-    <!--        }-->
-    <!--        window.onload = setHref;-->
+<!--    <script>-->
+<!--        function setHref() {-->
+<!--            document.getElementById('login').href = window.location.protocol + "//" + window.location.hostname + ":8006/login/";-->
+<!--            document.getElementById('register').href = window.location.protocol + "//" + window.location.hostname + ":8006/register/";-->
+<!--            document.getElementById('logout').href = window.location.protocol + "//" + window.location.hostname + ":8006/logout/";-->
+<!--        }-->
+<!--        window.onload = setHref;-->
 
-    <!--    </script>-->
+<!--    </script>-->
 
 
 </head>
 <body>
 <h1 align="center" class="lead label">Интерактивная карта социально-экономических индикаторов городов
     России</h1>
-<!--<header>-->
+<header>
     <div class="btn-group">
-        <button type="button" class="btn btn-primary top-left-button">Меню</button>
+        <button type="button" class="btn btn-primary">Меню</button>
         <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
                 aria-expanded="false">
         </button>
@@ -197,7 +145,7 @@
                 <a id="login" class="dropdown-item" href="{{ href_login }}">Войти</a>
             {% endif %}
             {% if is_login %}
-                <a class="dropdown-item" href="/post/column/">Загрузить данные</a>
+                <a class="dropdown-item" href="/upload_data/">Загрузить данные</a>
             {% endif %}
             {% if is_login %}
                 <a class="dropdown-item" href="/delete/column/">Удалить данные</a>
@@ -208,13 +156,13 @@
             {% if is_login %}
                 <a class="dropdown-item" href="/update/">Обновить одно значение</a>
             {% endif %}
-                <a class="dropdown-item" href="#">Инструкция</a>
+            <a class="dropdown-item" href="#">Инструкция</a>
             {% if is_admin %}
                 <a id="register" class="dropdown-item" href="{{ href_register }}">Добавить пользователя</a>
             {% endif %}
         </div>
     </div>
-<!--</header>-->
+</header>
 
 <form action="/map/indicator" method="get">
     <div class="input-group mb-3">
@@ -227,10 +175,17 @@
             <option value="Children">Children</option>
         </select>
     </div>
-<!--    <input type="submit" id="submit" value="Submit">-->
+
+    <!--    <div class="input-group mb-3">-->
+    <!--        <label class="input-group-text time_label" for="time-form" style="color:teal">Введите года</label>-->
+    <!--        <input required type="text" id="time-form" class="form-control first_time" name="time_before" placeholder="с"-->
+    <!--               aria-label="First date">-->
+    <!--        <input required type="text" class="form-control second_time" name="time_after" placeholder="по"-->
+    <!--               aria-label="Last date">-->
+    <!--        <input class="btn btn-primary submit" type="submit" id="submit" value="Submit">-->
+    <!--    </div>-->
+
 </form>
-
-
 
 <div id="loading" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;">
     <img src="../static/images/loader.gif" alt="Loading..."
@@ -244,42 +199,11 @@
 
 </script>
 
-<!--<iframe id="myIframe" class="map" src={{template_name}} width="100.0%" height="650" frameborder="1"-->
-<!--        onload="window.parent.hideLoading();">-->
-<!--</iframe>-->
-
-
-<!--<div class="input-group mb-3">-->
-<!--    <label class="input-group-text time_label" for="time-form" style="color:teal">Введите года</label>-->
-<!--    <input required type="text" id="time-form" class="form-control first_time" name="time_before" placeholder="с"-->
-<!--           aria-label="First date">-->
-<!--    <input required type="text" class="form-control second_time" name="time_after" placeholder="по"-->
-<!--           aria-label="Last date">-->
-<!--    <input class="btn btn-primary submit" type="submit" id="submit" value="Submit">-->
-<!--</div>-->
-
-<!--</form>-->
-
-
-<!--<iframe id="myIframe" class="map" src={{template_name}} width="100.0%" height="650" frameborder="1"-->
-<!--        onload="window.parent.hideLoading();"></iframe>-->
-
-
-<!--    <div class="input-group mb-3">-->
-<!--        <label class="input-group-text time_label" for="time-form" style="color:teal">Введите года</label>-->
-<!--        <input required type="text" id="time-form" class="form-control first_time" name="time_before" placeholder="с"-->
-<!--               aria-label="First date">-->
-<!--        <input required type="text" class="form-control second_time" name="time_after" placeholder="по"-->
-<!--               aria-label="Last date">-->
-<!--        <input class="btn btn-primary submit" type="submit" id="submit" value="Submit">-->
-<!--    </div>-->
-
-<!--</form>-->
-
 <iframe id="myIframe" class="map" src={{template_name}} width="100.0%" height="650" frameborder="1"
         onload="window.parent.hideLoading();"></iframe>
 <h3><b style="background-color: lightcoral; color: lightcyan;">
 </b></h3>
+
 
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
         integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
@@ -318,12 +242,6 @@
         });
     }
 
-
-
-
 </script>
 
 </html>
-
-
-
