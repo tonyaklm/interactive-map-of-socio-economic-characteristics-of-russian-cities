@@ -115,17 +115,19 @@
         }
 
 
+
+
     </style>
 
-<!--    <script>-->
-<!--        function setHref() {-->
-<!--            document.getElementById('login').href = window.location.protocol + "//" + window.location.hostname + ":8006/login/";-->
-<!--            document.getElementById('register').href = window.location.protocol + "//" + window.location.hostname + ":8006/register/";-->
-<!--            document.getElementById('logout').href = window.location.protocol + "//" + window.location.hostname + ":8006/logout/";-->
-<!--        }-->
-<!--        window.onload = setHref;-->
+    <!--    <script>-->
+    <!--        function setHref() {-->
+    <!--            document.getElementById('login').href = window.location.protocol + "//" + window.location.hostname + ":8006/login/";-->
+    <!--            document.getElementById('register').href = window.location.protocol + "//" + window.location.hostname + ":8006/register/";-->
+    <!--            document.getElementById('logout').href = window.location.protocol + "//" + window.location.hostname + ":8006/logout/";-->
+    <!--        }-->
+    <!--        window.onload = setHref;-->
 
-<!--    </script>-->
+    <!--    </script>-->
 
 
 </head>
@@ -140,25 +142,25 @@
         </button>
         <div class="dropdown-menu">
             {% if is_login %}
-                <a id="logout" class="dropdown-item" href="{{ href_logout }}">Выйти</a>
+            <a id="logout" class="dropdown-item" href="{{ href_logout }}">Выйти</a>
             {% else %}
-                <a id="login" class="dropdown-item" href="{{ href_login }}">Войти</a>
+            <a id="login" class="dropdown-item" href="{{ href_login }}">Войти</a>
             {% endif %}
             {% if is_login %}
-                <a class="dropdown-item" href="/post/column/">Загрузить данные</a>
+            <a class="dropdown-item" href="/post/column/">Загрузить данные</a>
             {% endif %}
             {% if is_login %}
-                <a class="dropdown-item" href="/delete/column/">Удалить данные</a>
+            <a class="dropdown-item" href="/delete/column/">Удалить данные</a>
             {% endif %}
             {% if is_login %}
-                <a class="dropdown-item" href="/update/column/">Обновить несколько индикаторов</a>
+            <a class="dropdown-item" href="/update/column/">Обновить несколько индикаторов</a>
             {% endif %}
             {% if is_login %}
-                <a class="dropdown-item" href="/update/">Обновить одно значение</a>
+            <a class="dropdown-item" href="/update/">Обновить одно значение</a>
             {% endif %}
             <a class="dropdown-item" href="#">Инструкция</a>
             {% if is_admin %}
-                <a id="register" class="dropdown-item" href="{{ href_register }}">Добавить пользователя</a>
+            <a id="register" class="dropdown-item" href="{{ href_register }}">Добавить пользователя</a>
             {% endif %}
         </div>
     </div>
@@ -187,20 +189,32 @@
 
 </form>
 
-<div id="loading" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;">
-    <img src="../static/images/loader.gif" alt="Loading..."
-         style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 10%; height: 10%;">
-</div>
 
 <script type="text/javascript">
-      function hideLoading() {
-           document.getElementById("loading").style.display = "none";
-      }
+
+    function hideLoading() {
+        document.getElementById("loading").style.display = "none";
+    }
+
+    function showError() {
+        document.getElementById("error_img").style.display = "block";
+    }
+
+
+
 
 </script>
 
-<iframe id="myIframe" class="map" src={{template_name}} width="100.0%" height="650" frameborder="1"
-        onload="window.parent.hideLoading();"></iframe>
+<div id="loading" style="display: block; position: absolute; top: 60%; left: 50%; transform: translate(-50%, -50%);">
+    <img src="../static/images/loading_circle.gif" alt="Loading..." style="width: 100px; height: 100px;">
+</div>
+
+<div id="error_img" style="display: none; position: absolute; top: 60%; left: 50%; transform: translate(-50%, -50%);">
+    <img src="../static/images/error_img.jpeg" alt="Error..." style="width: 50%; height: 50%;">
+</div>
+
+<iframe id="myIframe" class="map" src="{{ template_name }}" width="100%" height="650" frameborder="1"
+        onload="window.parent.hideLoading();" onerror="window.parent.showError();"></iframe>
 <h3><b style="background-color: lightcoral; color: lightcyan;">
 </b></h3>
 
@@ -241,6 +255,14 @@
             optgroup.appendChild(newOption);
         });
     }
+
+
+
+
+
+
+
+
 
 </script>
 
