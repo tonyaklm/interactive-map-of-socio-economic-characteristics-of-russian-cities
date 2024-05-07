@@ -3,7 +3,7 @@ from utils.check_columns import check_columns
 from db import async_session
 from tables.data import DataDao
 from common.map import FoliumMap
-from routers.data import get_indicator
+from utils.data import get_indicator
 
 static_columns = ['population', 'children']
 
@@ -12,9 +12,9 @@ async def cache_maps():
     async with async_session() as session:
         await check_columns(session)
 
-        for indicator in static_columns + DataDao.__table__.columns.keys()[15:]:
-            await cache_map(indicator, session)
-        FoliumMap().save()
+        # for indicator in static_columns + DataDao.__table__.columns.keys()[15:]:
+        #     await cache_map(indicator, session)
+        # FoliumMap().save()
 
 
 async def cache_map(indicator: str, session: AsyncSession):

@@ -74,33 +74,33 @@
             <column name="Index_2000" type="FLOAT" remarks="Index_2000">
                 <constraints nullable="true"/>
             </column>
-<!--            <column name="Index100_2000" type="FLOAT" remarks="Index100_2000">-->
-<!--                <constraints nullable="true"/>-->
-<!--            </column>-->
-<!--            <column name="Value_2000" type="FLOAT" remarks="Value_2000">-->
-<!--                <constraints nullable="true"/>-->
-<!--            </column>-->
-<!--            <column name="Index_2001" type="FLOAT" remarks="Index_2001">-->
-<!--                <constraints nullable="true"/>-->
-<!--            </column>-->
-<!--            <column name="Index100_2001" type="FLOAT" remarks="Index100_2001">-->
-<!--                <constraints nullable="true"/>-->
-<!--            </column>-->
-<!--            <column name="Value_2001" type="FLOAT" remarks="Value_2001">-->
-<!--                <constraints nullable="true"/>-->
-<!--            </column>-->
-<!--            <column name="Index_2002" type="FLOAT" remarks="Index_2002">-->
-<!--                <constraints nullable="true"/>-->
-<!--            </column>-->
-<!--            <column name="Index100_2002" type="FLOAT" remarks="Index100_2002">-->
-<!--                <constraints nullable="true"/>-->
-<!--            </column>-->
-<!--            <column name="Value_2002" type="FLOAT" remarks="Value_2002">-->
-<!--                <constraints nullable="true"/>-->
-<!--            </column>-->
-<!--            <column name="Index_2003" type="FLOAT" remarks="Index_2003">-->
-<!--                <constraints nullable="true"/>-->
-<!--            </column>-->
+            <column name="Index100_2000" type="FLOAT" remarks="Index100_2000">
+                <constraints nullable="true"/>
+            </column>
+            <column name="Value_2000" type="FLOAT" remarks="Value_2000">
+                <constraints nullable="true"/>
+            </column>
+            <column name="Index_2001" type="FLOAT" remarks="Index_2001">
+                <constraints nullable="true"/>
+            </column>
+            <column name="Index100_2001" type="FLOAT" remarks="Index100_2001">
+                <constraints nullable="true"/>
+            </column>
+            <column name="Value_2001" type="FLOAT" remarks="Value_2001">
+                <constraints nullable="true"/>
+            </column>
+            <column name="Index_2002" type="FLOAT" remarks="Index_2002">
+                <constraints nullable="true"/>
+            </column>
+            <column name="Index100_2002" type="FLOAT" remarks="Index100_2002">
+                <constraints nullable="true"/>
+            </column>
+            <column name="Value_2002" type="FLOAT" remarks="Value_2002">
+                <constraints nullable="true"/>
+            </column>
+            <column name="Index_2003" type="FLOAT" remarks="Index_2003">
+                <constraints nullable="true"/>
+            </column>
 <!--            <column name="Index100_2003" type="FLOAT" remarks="Index100_2003">-->
 <!--                <constraints nullable="true"/>-->
 <!--            </column>-->

@@ -1,0 +1,30 @@
+{% block title %}{% endblock %}
+{% block body %}
+
+<div class="jumbotron">
+    <h1 style='text-align: center'>Обновление данных в формате файла</h1>
+</div><br>
+
+<div class="jumbotron">
+    <h3 style='text-align: center'>Загрузите файл с сопоставляющей колонкой из {{matching_columns}} и последующими
+        колонками для обновления. <br>
+        <br>Обновляемые колонки не могут быть среди дефолтных: {{unupdateable_columns}}<br><br><br>
+    </h3>
+</div>
+
+<div>
+    <p class="lead">Загрузите файл формата csv с обновленными данными</p>
+    <form method="POST" action="/update/column" enctype="multipart/form-data">
+        <input name="file" type="file" accept=".csv" required>
+        <input type="submit">
+    </form>
+</div><br><br><br>
+
+<div style="text-align: center;">
+    <p style="color: {{color}}; font-size:20px;">{{message}}</p>
+</div>
+
+
+{% endblock %}
+
+

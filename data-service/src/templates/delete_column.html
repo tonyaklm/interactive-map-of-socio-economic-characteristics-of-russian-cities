@@ -1,0 +1,56 @@
+{% block title %}{% endblock %}
+{% block body %}
+
+<div class="jumbotron">
+    <h1 style='text-align: center'>Удаление индикатора</h1>
+</div>
+
+<div class="jumbotron">
+    <h3 style='text-align: center'>Удалить столбец с данными можно только из числовых индикаторов, приведенных ниже в
+        спике.<br>
+    </h3>
+</div>
+
+
+<div>
+    <form method="POST" action="/delete/column" enctype="multipart/form-data">
+        <label id="label" for="dropdown">Выберите колонку, которую хотите удалить:</label>
+        <select id="dropdown" name="column_name">
+        </select><br><br><br>
+        <input type="submit">
+
+    </form>
+</div><br><br><br>
+
+
+<div style="text-align: center;">
+    <p style="color: {{color}}; font-size:20px;">{{message}}</p>
+</div>
+
+
+<script>
+
+    var columns = {{ columns|tojson }};
+    addOptions(columns);
+
+    function addOptions(columns) {
+        var dropdown = document.getElementById("dropdown");
+
+        columns.forEach(function(option) {
+            var newOption = document.createElement("option");
+            newOption.text = option;
+            newOption.value = option;
+            dropdown.add(newOption);
+        });
+    }
+
+
+
+
+
+</script>
+
+
+{% endblock %}
+
+
