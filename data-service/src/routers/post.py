@@ -116,7 +116,6 @@ async def get_upload_form(request: Request, message: str = "", color: str = None
         if not claims.get('is_admin'):
             url = f'http://{os.getenv("INTERNAL_ADDRESS")}:{os.getenv("USER_SERVICE_PORT")}/login/'
             return RedirectResponse(url=url)
-        return RedirectResponse(url=url)
     return templates.TemplateResponse(name="post_column.html",
                                       context={"request": request,
                                                "types": ['Float', 'Integer'],
