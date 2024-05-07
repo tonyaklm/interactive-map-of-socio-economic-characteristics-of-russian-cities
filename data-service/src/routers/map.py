@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Request, Depends, Query, status
 from fastapi.responses import RedirectResponse
 from fastapi.templating import Jinja2Templates
-from routers.data import get_column_names, get_indicator
+from utils.data import get_column_names, get_indicator
 from utils.session import get_session
 from sqlalchemy.ext.asyncio import AsyncSession
 from cache.maps import get_map

@@ -8,7 +8,6 @@ class Graph:
     def __init__(self, settlement: str, municipality: int, indicators_data: Dict[str, List[Dict]],
                  indicators_years: Dict[str, List[int]]):
         self.path: str = '/dashboard/{}/'.format(municipality)
-        # print(self.path)
         self.settlement: str = settlement
         self.app: Dash = Dash(__name__, external_stylesheets=['https://codepen.io/chriddyp/pen/bWLwgP.css'],
                               requests_pathname_prefix=self.path)
@@ -24,19 +23,13 @@ class Graph:
                 html.Div([
                     html.Label(['Выберите индикатор:'], style={'font-weight': 'bold'}),
                     dcc.Dropdown(
-                        self.indicators,
-                        self.indicators[0],
                         placeholder='Выберите индикатор',
                         id='dropdown',
                     )
                 ],
                     style={'width': '49%', 'display': 'inline-block'}),
                 html.Div(children='Выберите промежуток времени'),
-                dcc.RangeSlider(min=min(self.indicators_years[self.indicators[0]]),
-                                max=max(self.indicators_years[self.indicators[0]]),
-                                marks={i: '{}'.format(i) for i in self.indicators_years[self.indicators[0]]}, step=1,
-                                value=[min(self.indicators_years[self.indicators[0]]),
-                                       max(self.indicators_years[self.indicators[0]])],
+                dcc.RangeSlider(step=1,
                                 id='range'),
 
                 html.Div([
@@ -49,6 +42,15 @@ class Graph:
 
         ])
 
+    def add_update_dropdown_callback(self) -> None:
+        @self.app.callback(
+            Output('dropdown', 'options'),
+            [Input('dropdown', 'value'),
+             Input('dropdown', 'options')]
+        )
+        def update_dropdown(indicator_chosen, dropdown_indicators):
+            return self.indicators
+
     def add_update_range_callback(self) -> None:
         @self.app.callback(
             [Output('range', 'marks'),
@@ -58,6 +60,8 @@ class Graph:
             [Input('dropdown', 'value')]
         )
         def update_range(indicator_chosen):
+            if not indicator_chosen:
+                return None, None, None, None
             min_value = min(self.indicators_years[indicator_chosen])
             max_value = max(self.indicators_years[indicator_chosen])
             range_value = [min(self.indicators_years[indicator_chosen]), max(self.indicators_years[indicator_chosen])]
@@ -71,17 +75,25 @@ class Graph:
              Input('dropdown', 'value')]
         )
         def update_graph(range_chosen, indicator_chosen):
+            if not indicator_chosen:
+                return px.line()
             title_graph = 'Значение индикатора {} по городу {}'.format(indicator_chosen, self.settlement)
 
             dff = pd.DataFrame.from_records(self.indicators_data[indicator_chosen])
 
-            fig = px.line(dff[(dff.Year >= range_chosen[0]) & (dff.Year <= range_chosen[1])].sort_values(['Year']),
+            new_df = dff[(dff.Year >= range_chosen[0]) & (dff.Year <= range_chosen[1])].sort_values(['Year'])
+            fig = px.line(new_df,
                           x='Year',
                           y=indicator_chosen)
             fig.update_layout(title=title_graph,
                               xaxis_title='Год',
                               yaxis_title='Значение индикатора',
-                              hovermode='x'
+                              hovermode='x',
+                              xaxis=dict(
+                                  tickmode='array',
+                                  tickvals=new_df.Year.tolist(),
+                                  ticktext=new_df.Year.tolist()
+                              )
                               )
 
             return fig
@@ -91,3 +103,10 @@ class Graph:
 
     def get_app(self) -> Dash:
         return self.app
+
+    def update_data(self, settlement: str, indicators_data: Dict[str, List[Dict]],
+                    indicators_years: Dict[str, List[int]]) -> None:
+        self.settlement = settlement
+        self.indicators_data = indicators_data
+        self.indicators_years = indicators_years
+        self.indicators = list(indicators_data.keys())

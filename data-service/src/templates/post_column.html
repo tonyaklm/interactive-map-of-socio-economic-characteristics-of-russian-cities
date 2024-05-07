@@ -1,0 +1,69 @@
+{% block title %}{% endblock %}
+{% block body %}
+
+<div class="jumbotron">
+    <h1 style='text-align: center'>Загрузка нового индикатора</h1>
+</div>
+
+<div class="jumbotron">
+    <h3 style='text-align: center'> Для добавления данных необзодимо загрузить файл в формате csv, <br>
+        где имя первой колонки будет соответствовать сопоставляющей (id, oktmo, dadata) <br>
+        и ее значения, а имя второй колонки соответствовать новой колонке и ее значения. <br>
+        Также необходимо выбрать тип колонки (int = Integer, float = Float) <br>
+
+        <div style="text-align: center;">
+            <p style="color: blue;">Если в индикаторе используется '_', то после знака '_' должен быть год из
+                чисел</p>
+        </div>
+        <br>
+    </h3>
+</div>
+
+
+<div>
+    <p class="lead">Загрузите файл формата csv и выберите тип нового столбца</p>
+    <form method="POST" action="/post/column/" enctype="multipart/form-data">
+        <label id="label" for="dropdown">Выберите тип данных:</label>
+        <select id="dropdown" name="column_type">
+        </select><br><br><br>
+        <input name="file" type="file" accept=".csv" required>
+        <input type="submit">
+    </form>
+</div>
+
+
+<div style="text-align: center;">
+    <p style="color: {{color}}; font-size:20px;">{{message}}</p>
+</div>
+
+<script>
+
+    var types = {{ types|tojson }};
+    addOptions(types);
+
+    function addOptions(types) {
+        var dropdown = document.getElementById("dropdown");
+
+        types.forEach(function(option) {
+            var newOption = document.createElement("option");
+            newOption.text = option;
+            newOption.value = option;
+            dropdown.add(newOption);
+        });
+    }
+
+
+
+
+
+
+
+
+
+
+</script>
+
+
+{% endblock %}
+
+

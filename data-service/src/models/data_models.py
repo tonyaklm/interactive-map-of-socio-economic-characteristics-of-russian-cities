@@ -3,7 +3,8 @@ from typing import Any
 
 
 class UpdateData(BaseModel):
-    data_id: int
+    matching_column_value: float
+    matching_column_name: str
     column: str
     new_value: Any
 

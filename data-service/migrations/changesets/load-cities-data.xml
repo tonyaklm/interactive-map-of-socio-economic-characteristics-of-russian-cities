@@ -9,17 +9,17 @@
         http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-latest.xsd">
 
     <changeSet author="antonina" id="load-cities-data">
-        <loadData file="cities.csv" tableName="data">
+        <loadData file="save_cities.csv" tableName="data">
             <column name="Index_2000" type="FLOAT"/>
-<!--            <column name="Index100_2000" type="FLOAT"/>-->
-<!--            <column name="Value_2000" type="FLOAT"/>-->
-<!--            <column name="Index_2001" type="FLOAT"/>-->
-<!--            <column name="Index100_2001" type="FLOAT"/>-->
-<!--            <column name="Value_2001" type="FLOAT"/>-->
-<!--            <column name="Index_2002" type="FLOAT"/>-->
-<!--            <column name="Index100_2002" type="FLOAT"/>-->
-<!--            <column name="Value_2002" type="FLOAT"/>-->
-<!--            <column name="Index_2003" type="FLOAT"/>-->
+            <column name="Index100_2000" type="FLOAT"/>
+            <column name="Value_2000" type="FLOAT"/>
+            <column name="Index_2001" type="FLOAT"/>
+            <column name="Index100_2001" type="FLOAT"/>
+            <column name="Value_2001" type="FLOAT"/>
+            <column name="Index_2002" type="FLOAT"/>
+            <column name="Index100_2002" type="FLOAT"/>
+            <column name="Value_2002" type="FLOAT"/>
+            <column name="Index_2003" type="FLOAT"/>
 <!--            <column name="Index100_2003" type="FLOAT"/>-->
 <!--            <column name="Value_2003" type="FLOAT"/>-->
 <!--            <column name="Index_2004" type="FLOAT"/>-->

@@ -2,9 +2,8 @@ from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession
 
 
-async def add_column(table_name: str, column_name: str, column_type: str, session: AsyncSession):
+async def add_column(table_name: str, column_name: str, column_type: str, session: AsyncSession) -> None:
     await session.execute(text('ALTER TABLE "%s" ADD COLUMN "%s" %s NULL' % (table_name, column_name, column_type)))
-    await session.commit()
 
 
 async def get_columns(table_name: str, session: AsyncSession):
@@ -12,6 +11,11 @@ async def get_columns(table_name: str, session: AsyncSession):
     await session.commit()
 
     return result
+
+
+async def delete_column(table_name: str, column_name: str, session: AsyncSession) -> None:
+    await session.execute(text('ALTER TABLE "%s" DROP COLUMN "%s"' % (table_name, column_name)))
+    await session.commit()
 
 
 async def get_column_type(column_name: str, table_name: str, session: AsyncSession):

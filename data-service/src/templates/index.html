@@ -25,42 +25,6 @@
         #myIframe {
 <!--            margin-top: 70px;-->
         }
-        #timelabel_before {
-              font-size: 25px;
-              color: teal;
-              margin-top: 50px;
-              margin-bottom: 10px;
-              padding-left: 8%;
-        }
-        #time_before {
-              width: 200px;
-              height: 25px;
-              border: 1px solid #999;
-              font-size: 18px;
-              color: grey;
-              background-color: #eee;
-              margin-top: 50px;
-              margin-bottom: 10px;
-              border-radius:6px;
-        }
-        #timelabel_after {
-              font-size: 25px;
-              color: teal;
-<!--              margin-top: 50px;-->
-<!--              margin-bottom: 10px;-->
-<!--              padding-left: 10%;-->
-        }
-        #time_after {
-               width: 200px;
-              height: 25px;
-              border: 1px solid #999;
-              font-size: 18px;
-              color: grey;
-              background-color: #eee;
-              margin-top: 50px;
-              margin-bottom: 10px;
-              border-radius:6px;
-        }
         #submit {
               width: 100px;
               height: 25px;
@@ -116,6 +80,7 @@
 
 
 
+
     </style>
 </head>
 <body>
@@ -139,13 +104,14 @@
 
 <div id="loading" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;">
     <img src="../static/images/loader.gif" alt="Loading..."
-         style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">
+         style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 10%; height: 10%;">
 </div>
 
 <script type="text/javascript">
       function hideLoading() {
            document.getElementById("loading").style.display = "none";
       }
+
 
 </script>
 
@@ -181,6 +147,7 @@
             optgroup.appendChild(newOption);
         });
     }
+
 
 
 
