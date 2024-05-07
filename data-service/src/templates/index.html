@@ -158,10 +158,13 @@
             {% if is_login %}
             <a class="dropdown-item" href="/update/">Обновить одно значение</a>
             {% endif %}
-            <a class="dropdown-item" href="#">Инструкция</a>
+            {% if is_login %}
+                <a class="dropdown-item" href="/delete/column/">Удалить данные</a>
+            {% endif %}
             {% if is_admin %}
             <a id="register" class="dropdown-item" href="{{ href_register }}">Добавить пользователя</a>
             {% endif %}
+            <a class="dropdown-item" href="#">Инструкция</a>
         </div>
     </div>
 </header>

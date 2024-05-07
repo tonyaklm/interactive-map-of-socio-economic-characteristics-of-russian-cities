@@ -52,21 +52,17 @@
         }
 
 
-
-
-
-
 </style>
 
 <body>
 
-<div class="jumbotron">
-    <h1 style='text-align: center'>Загрузка нового индикатора</h1>
+<div class="jumbotron" style="color: #001111">
+    <h2 style='text-align: center'>Загрузка нового индикатора</h2>
 </div>
 
-<div class="jumbotron">
-    <h3 style='text-align: center; color: teal;'> Для добавления данных необзодимо загрузить файл в формате csv, <br>
-        где имя первой колонки будет соответствовать сопоставляющей (id, oktmo, dadata) <br>
+<div class="">
+    <h5 style='text-align: center; color: teal;'> Для добавления данных необходимо загрузить файл в формате csv, <br>
+        где имя первой колонки будет соответствовать сопоставляющей (id, oktmo) <br>
         и ее значения, а имя второй колонки соответствовать новой колонке и ее значения. <br>
         Также необходимо выбрать тип колонки (int = Integer, float = Float) <br>
 
@@ -75,13 +71,18 @@
                 чисел</p>
         </div>
         <br>
-    </h3>
+    </h5>
 </div>
 
 <a id="backButton" class="btn btn-primary back" href="/map/" role="button">Главная</a>
 
+<hr>
+
 <div>
     <p style='text-align: center' class="lead">Загрузите файл формата csv и выберите тип нового столбца</p>
+    <div style="text-align: center;">
+        <p style="color: {{color}}; font-size:20px;">{{message}}</p>
+    </div>
     <form method="POST" action="/post/column/" enctype="multipart/form-data">
         <div class="input-group mb-3">
             <label class="input-group-text label_shape" for="dropdown" style="color:teal">Выберите тип
@@ -99,9 +100,7 @@
     </form>
 </div>
 
-<div style="text-align: center;">
-    <p style="color: {{color}}; font-size:20px;">{{message}}</p>
-</div>
+
 
 
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
