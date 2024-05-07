@@ -1,5 +1,5 @@
 import pandas as pd
-from fastapi import APIRouter, File, UploadFile, Request, status, Depends, Form
+from fastapi import APIRouter, File, UploadFile, Request, status, Depends, Form, Cookie
 from fastapi.responses import RedirectResponse
 from fastapi.templating import Jinja2Templates
 from utils.data import create_column, update_data
@@ -13,6 +13,8 @@ from cache.cache_graphs import update_all_settlements
 from common.sqlalchemy_data_type import matching_columns
 from sqlalchemy.exc import InvalidRequestError
 from tables.data import DataDao
+from typing import Optional
+import os
 
 templates = Jinja2Templates(directory="templates")
 
@@ -21,7 +23,10 @@ router = APIRouter(prefix="/post")
 
 @router.post("/column")
 async def post_file(request: Request, file: UploadFile = File(...), column_type: str = Form(...),
-                    session: AsyncSession = Depends(get_session)):
+                    session: AsyncSession = Depends(get_session), access_token_cookie: Optional[str] = Cookie(default=None)):
+    if access_token_cookie == None:
+        url = f'http://{os.getenv("INTERNAL_ADDRESS")}:{os.getenv("USER_SERVICE_PORT")}/login/'
+        return RedirectResponse(url=url)
     if not file:
         redirect_url = request.url_for('get_upload_form').include_query_params(message="Необходимо загрузить файл",
                                                                                color="red")
@@ -94,7 +99,10 @@ async def post_file(request: Request, file: UploadFile = File(...), column_type:
 
 
 @router.get("/column")
-async def get_upload_form(request: Request, message: str = "", color: str = None):
+async def get_upload_form(request: Request, message: str = "", color: str = None, access_token_cookie: Optional[str] = Cookie(default=None)):
+    if access_token_cookie == None:
+        url = f'http://{os.getenv("INTERNAL_ADDRESS")}:{os.getenv("USER_SERVICE_PORT")}/login/'
+        return RedirectResponse(url=url)
     return templates.TemplateResponse(name="post_column.html",
                                       context={"request": request,
                                                "types": ['Float', 'Integer'],

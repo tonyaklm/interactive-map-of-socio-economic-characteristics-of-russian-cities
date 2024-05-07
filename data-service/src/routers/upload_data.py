@@ -14,6 +14,7 @@ from fastapi import HTTPException
 from cache.cache_maps import cache_map
 import os
 
+
 templates = Jinja2Templates(directory="templates")
 
 router = APIRouter(prefix="/upload_data")
@@ -21,7 +22,10 @@ router = APIRouter(prefix="/upload_data")
 
 @router.post("/")
 async def index(file: UploadFile = File(...), column_type: str = Form(...),
-                session: AsyncSession = Depends(get_session)):
+                session: AsyncSession = Depends(get_session), access_token_cookie: Optional[str] = Cookie(default=None)):
+    if access_token_cookie == None:
+        url = f'http://{os.getenv("INTERNAL_ADDRESS")}:{os.getenv("USER_SERVICE_PORT")}/login/'
+        return RedirectResponse(url=url)
     if file:
         new_data = pd.read_csv(BytesIO(file.file.read()))
         new_column_name = new_data.columns[1]
