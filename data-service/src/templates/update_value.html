@@ -1,55 +1,135 @@
 {% block title %}{% endblock %}
 {% block body %}
 
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
+      integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+<style>
+        .label {
+            margin-top: 20px;
+            font-size: 25px;
+            color: teal;
+            border-radius:6px;
+        }
+
+        .label_shape {
+            border: 1px solid #999;
+            margin-top: 50px;
+            margin-bottom: 10px;
+            margin-left: 10px;
+        }
+
+        .dropdown_shape {
+            border: 1px solid #999;
+            margin-top: 50px;
+            margin-bottom: 10px;
+            margin-right: 10px;
+        }
+
+        .submit {
+            margin: 0 auto;
+            display: block;
+
+        }
+
+        .back {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+        }
+
+        .load_shape {
+            border: 1px solid #999;
+            margin-top: 50px;
+            margin-bottom: 25px;
+            margin-left: 10px;
+            margin-right: 10px;
+        }
+
+        .submit {
+                margin-left: 400x;
+                margin-right: 700px;
+                margin-top: 100px;
+        }
+
+</style>
+
+<a id="backButton" class="btn btn-primary back" href="/map/" role="button">Главная</a>
+
 <div class="jumbotron">
-    <h1 style='text-align: center'>Обновление только одного значения</h1>
+    <h2 style='text-align: center'>Обновление только одного значения</h2>
 </div><br>
 
-<div class="jumbotron">
-    <h3 style='text-align: center'>Выберите название колонки, в которой хотите обновить значение,<br>
+<div class="">
+    <h5 style='text-align: center'>Выберите название колонки, в которой хотите обновить значение,<br>
         Введите значение сопоставляющей колонки,<br>
-        Выберите сопостовляющую колонку из {{matching_columns}},<br>
+        Выберите сопоставляющую колонку из {{matching_columns}},<br>
         Введите значение на которое хотите заменить,<br>
         Введите тип нового значения<br>
-
-        <br>Обновляемые колонки не могут быть среди дефолтных: {{unupdateable_columns}}<br>
-    </h3>
-</div><br><br><br>
+        <br>
+        <br><p style="color: #004D4F;">Обновляемые колонки не могут быть среди дефолтных: {{unupdateable_columns}}</p>
+    </h5>
+</div><br><hr><br>
 
 <div>
     <form method="POST" action="/update" enctype="multipart/form-data">
-        <label id="label" for="dropdown">Выберите название колонки, которую хотите заменить:</label>
-        <select id="dropdown" name="column_name">
-        </select><br><br><br>
+        <div style="text-align: center;">
+            <p style="color: {{color}}; font-size:20px;">{{message}}</p>
+        </div>
 
-        <label id="label_matching_column" for="matching_dropdown">Выберите колонку, по которой произойдет
-            сопоставление:</label>
-        <select id="matching_dropdown" name="matching_column">
-            <option value="id">id</option>
-            <option value="oktmo">oktmo</option>
-            <option value="dadata">dadata</option>
-        </select><br><br><br>
+        <div class="input-group mb-3">
+            <label id="label" class="input-group-text label_shape" for="dropdown" style="color:teal">Выберите название колонки, которую хотите заменить:</label>
+            <select class="custom-select dropdown_shape" id="dropdown" name="column_name">
+            </select><br><br><br>
+        </div>
 
-        <label id="label_matching_value" for="matching_value"> Введите значения для сопоставления </label>
-        <input type="text" id="matching_value" name="matching_value" size="15" required/>
-        <br><br><br>
+        <br>
+        <div class="input-group mb-3">
+            <label id="label_matching_column" class="input-group-text label_shape" for="matching_dropdown" style="color:teal">Выберите колонку, по которой произойдет сопоставление:</label>
+            <select class="custom-select dropdown_shape" id="matching_dropdown" name="matching_column">
+                <option value="id">id</option>
+                <option value="oktmo">oktmo</option>
+            </select>
+        </div>
 
-        <label id="label_new_value" for="new_value"> Введите новое значение </label>
-        <input type="text" id="new_value" name="new_value" size="15" required/><br><br><br>
-        <label id="label_type_dropdown" for="type_dropdown">Выберите тип нового значения:</label>
-        <select id="type_dropdown" name="new_value_type">
-            <option value="Float">Float</option>
-            <option value="String">String</option>
-            <option value="Integer">Integer</option>
-        </select>
-        <input type="submit">
+        <br>
+
+        <div class="input-group mb-3">
+            <label class="input-group-text label_shape" id="label_matching_value" for="matching_value" style="color:teal">Введите значения для сопоставления:</label>
+            <input class="dropdown_shape" type="text" id="matching_value" name="matching_value" size="136" required/>
+        </div>
+        <br>
+
+        <div class="input-group mb-3">
+            <label class="input-group-text label_shape" style="color:teal" id="label_new_value" for="new_value">Введите новое значение:</label>
+            <input class="dropdown_shape" type="text" id="new_value" name="new_value" size="148" required/>
+        </div>
+        <br>
+
+        <div class="input-group mb-3">
+            <label class="input-group-text label_shape" style="color:teal" id="label_type_dropdown" for="type_dropdown">Выберите тип нового значения:</label>
+            <select class="custom-select dropdown_shape" id="type_dropdown" name="new_value_type">
+                <option value="Float">Float</option>
+                <option value="String">String</option>
+                <option value="Integer">Integer</option>
+            </select>
+        </div>
+        <br>
+
+        <input class="btn btn-primary submit" type="submit" id="submit" value="Отправить">
 
     </form>
 </div><br><br><br>
 
-<div style="text-align: center;">
-    <p style="color: {{color}}; font-size:20px;">{{message}}</p>
-</div>
+
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
 
 <script>
 
@@ -66,11 +146,6 @@
             dropdown.add(newOption);
         });
     }
-
-
-
-
-
 
 
 </script>

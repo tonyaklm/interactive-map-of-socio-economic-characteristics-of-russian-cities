@@ -4,7 +4,6 @@ sqlalchemy_type = {
     1043: 'String'
 }
 
-matching_columns = ['id', 'oktmo', 'dadata']
+matching_columns = ['id', 'oktmo']
 
-unupdateable_columns = {'id', 'oktmo', 'region_id', 'latitude_dms', 'longitude_dms', 'latitude_dd', 'longitude_dd',
-                        'dadata'}
+unupdateable_columns = {'id', 'oktmo', 'region_id', 'latitude_dms', 'longitude_dms', 'latitude_dd', 'longitude_dd'}
