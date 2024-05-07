@@ -25,7 +25,7 @@ async def render_map(request: Request, session: AsyncSession = Depends(get_sessi
     is_login = False
     if access_token_cookie != None:
         claims = jwt.get_unverified_claims(access_token_cookie)
-        is_admin = claims['is_admin']
+        is_admin = claims.get('is_admin')
         is_login = True
 
     href_login = "http://" + os.getenv('INTERNAL_ADDRESS') + ":" + os.getenv('USER_SERVICE_PORT') + "/login/"
@@ -44,7 +44,8 @@ async def render_map(request: Request, session: AsyncSession = Depends(get_sessi
 
 
 @router.get('/indicator')
-async def chosen_indicator(request: Request, indicator: str = Query(...), session: AsyncSession = Depends(get_session), access_token_cookie: Optional[str] = Cookie(default=None)):
+async def chosen_indicator(request: Request, indicator: str = Query(...), session: AsyncSession = Depends(get_session),
+                           access_token_cookie: Optional[str] = Cookie(default=None)):
     input_indicator = indicator
     if indicator in ['Population', 'Children']:
         indicator = indicator.lower()
@@ -57,7 +58,7 @@ async def chosen_indicator(request: Request, indicator: str = Query(...), sessio
     is_login = False
     if access_token_cookie != None:
         claims = jwt.get_unverified_claims(access_token_cookie)
-        is_admin = claims['is_admin']
+        is_admin = claims.get('is_admin')
         is_login = True
 
     href_login = "http://" + os.getenv('INTERNAL_ADDRESS') + ":" + os.getenv('USER_SERVICE_PORT') + "/login/"

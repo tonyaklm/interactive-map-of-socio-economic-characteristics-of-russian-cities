@@ -14,6 +14,7 @@ async def cache_maps():
 
         for indicator in static_columns + DataDao.__table__.columns.keys()[15:]:
             await cache_map(indicator, session)
+            break
         FoliumMap().save()
 
 

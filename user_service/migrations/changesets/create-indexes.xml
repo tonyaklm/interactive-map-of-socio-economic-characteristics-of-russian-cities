@@ -10,10 +10,6 @@
 
     <changeSet author="antonina" id="create-indexes">
 
-        <createIndex tableName="session" indexName="session_key_index">
-            <column name="session_key"/>
-        </createIndex>
-
         <createIndex tableName="user" indexName="login_index">
             <column name="login"/>
         </createIndex>

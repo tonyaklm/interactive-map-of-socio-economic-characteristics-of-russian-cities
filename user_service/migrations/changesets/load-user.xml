@@ -8,17 +8,9 @@
         http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd
         http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-latest.xsd">
 
-    <changeSet author="antonina" id="create-session-table">
-        <createTable tableName="session" remarks="Таблица сессий">
-            <column autoIncrement="false" name="user_id" type="INTEGER" remarks="id пользователя">
-                <constraints nullable="false" primaryKey="true" primaryKeyName="user_session_pkey"/>
-            </column>
-
-            <column name="session_key" type="UUID" remarks="Ключ сессии">
-                <constraints nullable="false" unique="true"/>
-            </column>
-
-        </createTable>
+    <changeSet author="antonina" id="load-users">
+        <loadData file="users.csv" tableName="user">
+        </loadData>
     </changeSet>
 
 </databaseChangeLog>

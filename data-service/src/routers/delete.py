@@ -11,6 +11,7 @@ from utils.data import delete_indicator
 from cache.cache_graphs import update_all_settlements
 from typing import Optional
 import os
+from jose import jwt
 
 templates = Jinja2Templates(directory="templates")
 
@@ -23,6 +24,11 @@ async def get_delete_page(request: Request, session: AsyncSession = Depends(get_
     if access_token_cookie == None:
         url = f'http://{os.getenv("INTERNAL_ADDRESS")}:{os.getenv("USER_SERVICE_PORT")}/login/'
         return RedirectResponse(url=url)
+    if access_token_cookie != None:
+        claims = jwt.get_unverified_claims(access_token_cookie)
+        if not claims.get('is_admin'):
+            url = f'http://{os.getenv("INTERNAL_ADDRESS")}:{os.getenv("USER_SERVICE_PORT")}/login/'
+            return RedirectResponse(url=url)
     columns = await get_columns(DataDao.__tablename__, session)
     column_names = list(columns.keys())[15:]
     return templates.TemplateResponse(name="delete_column.html",
@@ -34,10 +40,16 @@ async def get_delete_page(request: Request, session: AsyncSession = Depends(get_
 
 @router.post("/column")
 async def delete_column(request: Request, column_name: str = Form(...),
-                        session: AsyncSession = Depends(get_session), access_token_cookie: Optional[str] = Cookie(default=None)):
+                        session: AsyncSession = Depends(get_session),
+                        access_token_cookie: Optional[str] = Cookie(default=None)):
     if access_token_cookie == None:
         url = f'http://{os.getenv("INTERNAL_ADDRESS")}:{os.getenv("USER_SERVICE_PORT")}/login/'
         return RedirectResponse(url=url)
+    if access_token_cookie != None:
+        claims = jwt.get_unverified_claims(access_token_cookie)
+        if not claims.get('is_admin'):
+            url = f'http://{os.getenv("INTERNAL_ADDRESS")}:{os.getenv("USER_SERVICE_PORT")}/login/'
+            return RedirectResponse(url=url)
     columns = await get_columns(DataDao.__tablename__, session)
     column_names = list(columns.keys())[15:]
     if column_name not in column_names:
