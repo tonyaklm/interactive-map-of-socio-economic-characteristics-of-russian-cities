@@ -6,7 +6,7 @@ services:
     image: data-service
     restart: unless-stopped
     ports:
-      - "8000:8000"
+      - "8005:8000"
     build:
       context: ../../
       dockerfile: data-service/src/Dockerfile
@@ -19,7 +19,7 @@ services:
     image: user-service
     restart: unless-stopped
     ports:
-      - "8001:8000"
+      - "8006:8000"
     build:
       context: ../../
       dockerfile: user_service/src/Dockerfile

@@ -46,6 +46,3 @@ services:
       - ./configs/servers.json:/pgadmin4/servers.json:ro
       - ./configs/pgpass:/pgadmin4/pgpass:ro
 
-networks:
-  interactive-map-network:
-    name: "interactive-map-network"
