@@ -15,11 +15,11 @@ class RegisterForm(Form):
     login = StringField("Login", validators=[validators.Length(min=7, max=50),
                                              validators.DataRequired(message="Please Fill This Field")])
 
-    admin = BooleanField("Admin", validators=[validators.DataRequired(message="Does this user have admin rights?")])
+    admin = BooleanField("Admin")
 
     password = PasswordField("Password", validators=[
 
-        validators.DataRequired(message="Please Fill This Field"),
+        validators.DataRequired(message="Please Fill This Fiield"),
 
         validators.EqualTo(fieldname="confirm", message="Your Passwords Do Not Match")
     ])

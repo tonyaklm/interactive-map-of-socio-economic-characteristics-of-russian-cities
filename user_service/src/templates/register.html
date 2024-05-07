@@ -4,6 +4,47 @@
 
 {% from "includes/formhelpers.html" import render_field %}
 
+<style>
+
+    .flash {
+        padding: 10px;
+        margin-bottom: 15px;
+    }
+
+    .success {
+        background-color: #d4edda;
+        color: #155724;
+    }
+
+    .error {
+        background-color: #f8d7da;
+        color: #721c24;
+    }
+
+    .back {
+         position: absolute;
+         top: 10px;
+         left: 10px;
+    }
+
+    .center-checkbox {
+        text-align: center;
+        margin-bottom: 10px;
+        margin-top: 10px;
+        font-weight: bold;
+    }
+
+</style>
+
+<script>
+        function setHref() {
+            document.getElementById('backButton').href = window.location.protocol + "//" + window.location.hostname + ":8005/map/";
+        }
+        window.onload = setHref;
+</script>
+
+<a id="backButton" class="btn btn-primary back" href="/map/" role="button">Главная</a>
+
 <div class="row justify-content-center align-items-center text-center" style="height: 100vh;">
     <div class="col-md-6">
         <h4>
@@ -15,22 +56,33 @@
 
         <form method="POST">
 
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+            <ul class="flashes">
+                {% for category, message in messages %}
+                {% if category == 'success' %}
+                <li class="flash success">{{ message }}</li>
+                {% elif category == 'error' %}
+                <li class="flash error">{{ message }}</li>
+                {% endif %}
+                {% endfor %}
+            </ul>
+            {% endif %}
+            {% endwith %}
+
             {{ render_field(form.login, class="form-control") }}
             {{ render_field(form.username, class="form-control") }}
-            {{ render_field(form.admin, class="form-control") }}
-
-            <!--    {{ render_field(form.admin, class="form-check-input", type="checkbox") }}-->
-            <!--    <input checked class="form-check-input" id="bool_field" name="bool_field" type="checkbox" value="y">-->
             {{ render_field(form.password, class="form-control") }}
             {{ render_field(form.confirm, class="form-control") }}
-
+            <div class="form-check-inline">
+                {{ render_field(form.admin, class="form-check-input ml-2") }}
+            </div>
+            <hr>
             <button type="submit" class="btn btn-primary">Register</button>
         </form>
 
-        <hr>
-
-        <a href="/login">Login into existing account!</a>
     </div>
 </div>
+
 
 {% endblock body %}

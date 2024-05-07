@@ -1,5 +1,7 @@
+from typing import Optional
+
 import pandas as pd
-from fastapi import APIRouter, File, UploadFile, Request, status, Depends, Form
+from fastapi import APIRouter, File, UploadFile, Request, status, Depends, Form, Cookie
 from fastapi.responses import RedirectResponse
 from fastapi.templating import Jinja2Templates
 from routers.data import create_column, update_data
@@ -10,6 +12,7 @@ from sqlalchemy import types
 from models.data_models import CreateColumn, UpdateData
 from fastapi import HTTPException
 from cache.cache_maps import cache_map
+import os
 
 templates = Jinja2Templates(directory="templates")
 
@@ -42,7 +45,10 @@ async def index(file: UploadFile = File(...), column_type: str = Form(...),
 
 
 @router.get("/")
-async def get_upload_form(request: Request):
+async def get_upload_form(request: Request, access_token_cookie: Optional[str] = Cookie(default=None)):
+    if access_token_cookie == None:
+        url = f'http://{os.getenv("INTERNAL_ADDRESS")}:{os.getenv("USER_SERVICE_PORT")}/login/'
+        return RedirectResponse(url=url)
     camel_case_types = []
     for attribute in dir(types):
         if attribute != attribute.upper() and hasattr(getattr(types, attribute), '__visit_name__'):
