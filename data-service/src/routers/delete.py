@@ -12,6 +12,7 @@ from cache.cache_graphs import update_all_settlements
 from typing import Optional
 import os
 from jose import jwt
+from config import settings
 
 templates = Jinja2Templates(directory="templates")
 
@@ -22,12 +23,12 @@ router = APIRouter(prefix="/delete")
 async def get_delete_page(request: Request, session: AsyncSession = Depends(get_session), message: str = "",
                           color: str = None, access_token_cookie: Optional[str] = Cookie(default=None)):
     if access_token_cookie == None:
-        url = f'http://{os.getenv("INTERNAL_ADDRESS")}:{os.getenv("USER_SERVICE_PORT")}/login/'
+        url = f'http://{settings.user_service_address}/login/'
         return RedirectResponse(url=url)
     if access_token_cookie != None:
         claims = jwt.get_unverified_claims(access_token_cookie)
         if not claims.get('is_admin'):
-            url = f'http://{os.getenv("INTERNAL_ADDRESS")}:{os.getenv("USER_SERVICE_PORT")}/login/'
+            url = f'http://{settings.user_service_address}/login/'
             return RedirectResponse(url=url)
     columns = await get_columns(DataDao.__tablename__, session)
     column_names = list(columns.keys())[15:]
@@ -43,12 +44,12 @@ async def delete_column(request: Request, column_name: str = Form(...),
                         session: AsyncSession = Depends(get_session),
                         access_token_cookie: Optional[str] = Cookie(default=None)):
     if access_token_cookie == None:
-        url = f'http://{os.getenv("INTERNAL_ADDRESS")}:{os.getenv("USER_SERVICE_PORT")}/login/'
+        url = f'http://{settings.user_service_address}/login/'
         return RedirectResponse(url=url)
     if access_token_cookie != None:
         claims = jwt.get_unverified_claims(access_token_cookie)
         if not claims.get('is_admin'):
-            url = f'http://{os.getenv("INTERNAL_ADDRESS")}:{os.getenv("USER_SERVICE_PORT")}/login/'
+            url = f'http://{settings.user_service_address}/login/'
             return RedirectResponse(url=url)
     columns = await get_columns(DataDao.__tablename__, session)
     column_names = list(columns.keys())[15:]
