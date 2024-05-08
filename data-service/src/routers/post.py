@@ -34,7 +34,6 @@ async def post_file(request: Request, file: UploadFile = File(...), column_type:
     if not user.is_login or user.is_error:
         url = f'http://{settings.user_service_address}/login/'
         return RedirectResponse(url=url)
-
     if not file:
         redirect_url = request.url_for('get_upload_form').include_query_params(message="Необходимо загрузить файл",
                                                                                color="red")
@@ -123,7 +122,6 @@ async def get_upload_form(request: Request, message: Optional[str] = "", color: 
     if not user.is_login or user.is_error:
         url = f'http://{settings.user_service_address}/login/'
         return RedirectResponse(url=url)
-
     return templates.TemplateResponse(name="post_column.html",
                                       context={"request": request,
                                                "types": ['Float', 'Integer'],

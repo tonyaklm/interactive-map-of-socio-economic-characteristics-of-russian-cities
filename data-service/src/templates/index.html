@@ -157,11 +157,11 @@
             {% if is_login %}
                 <a class="dropdown-item" href="/update/">Обновить одно значение</a>
             {% endif %}
-            {% if is_login %}
-            <a class="dropdown-item" href="/delete/column/">Удалить данные</a>
-            {% endif %}
             {% if is_admin %}
             <a class="dropdown-item" href="/feature/description/">Изменить описание</a>
+            {% endif %}
+            {% if is_login %}
+                <a class="dropdown-item" href="/delete/column/">Удалить данные</a>
             {% endif %}
             {% if is_admin %}
                 <a id="register" class="dropdown-item" href="{{ href_register }}">Добавить пользователя</a>
@@ -205,10 +205,6 @@
     function hideLoading() {
         document.getElementById("loading").style.display = "none";
     }
-
-
-
-
 
 
 </script>
