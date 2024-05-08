@@ -19,6 +19,7 @@ from common.sqlalchemy_data_type import matching_columns, unupdateable_columns
 from typing import Optional
 import os
 from jose import jwt
+from config import settings
 
 templates = Jinja2Templates(directory="templates")
 
@@ -29,12 +30,12 @@ router = APIRouter(prefix="/update")
 async def get_update_column(request: Request, message: str = "", color: str = None,
                             access_token_cookie: Optional[str] = Cookie(default=None)):
     if access_token_cookie == None:
-        url = f'http://{os.getenv("INTERNAL_ADDRESS")}:{os.getenv("USER_SERVICE_PORT")}/login/'
+        url = f'http://{settings.user_service_address}/login/'
         return RedirectResponse(url=url)
     if access_token_cookie != None:
         claims = jwt.get_unverified_claims(access_token_cookie)
         if not claims.get('is_admin'):
-            url = f'http://{os.getenv("INTERNAL_ADDRESS")}:{os.getenv("USER_SERVICE_PORT")}/login/'
+            url = f'http://{settings.user_service_address}/login/'
             return RedirectResponse(url=url)
     return templates.TemplateResponse(name="update_column.html",
                                       context={"request": request,
@@ -77,12 +78,12 @@ async def update_column(request: Request, file: UploadFile = File(...),
                         access_token_cookie: Optional[str] = Cookie(default=None)):
     global new_data
     if access_token_cookie == None:
-        url = f'http://{os.getenv("INTERNAL_ADDRESS")}:{os.getenv("USER_SERVICE_PORT")}/login/'
+        url = f'http://{settings.user_service_address}/login/'
         return RedirectResponse(url=url)
     if access_token_cookie != None:
         claims = jwt.get_unverified_claims(access_token_cookie)
         if not claims.get('is_admin'):
-            url = f'http://{os.getenv("INTERNAL_ADDRESS")}:{os.getenv("USER_SERVICE_PORT")}/login/'
+            url = f'http://{settings.user_service_address}/login/'
             return RedirectResponse(url=url)
     if not file:
         redirect_url = request.url_for('get_update_column').include_query_params(message="Необходимо загрузить файл",
@@ -169,12 +170,12 @@ async def update_value(request: Request, column_name: str = Form(...), matching_
                        session: AsyncSession = Depends(get_session),
                        access_token_cookie: Optional[str] = Cookie(default=None)):
     if access_token_cookie == None:
-        url = f'http://{os.getenv("INTERNAL_ADDRESS")}:{os.getenv("USER_SERVICE_PORT")}/login/'
+        url = f'http://{settings.user_service_address}/login/'
         return RedirectResponse(url=url)
     if access_token_cookie != None:
         claims = jwt.get_unverified_claims(access_token_cookie)
         if not claims.get('is_admin'):
-            url = f'http://{os.getenv("INTERNAL_ADDRESS")}:{os.getenv("USER_SERVICE_PORT")}/login/'
+            url = f'http://{settings.user_service_address}/login/'
             return RedirectResponse(url=url)
     error_message = None
     if matching_column not in matching_columns:

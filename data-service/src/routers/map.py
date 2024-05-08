@@ -10,6 +10,7 @@ from cache.maps import get_map
 import time
 from jose import jwt
 import os
+from config import settings
 
 templates = Jinja2Templates(directory="templates")
 router = APIRouter(prefix='/map')
@@ -28,9 +29,9 @@ async def render_map(request: Request, session: AsyncSession = Depends(get_sessi
         is_admin = claims.get('is_admin')
         is_login = True
 
-    href_login = "http://" + os.getenv('INTERNAL_ADDRESS') + ":" + os.getenv('USER_SERVICE_PORT') + "/login/"
-    href_logout = "http://" + os.getenv('INTERNAL_ADDRESS') + ":" + os.getenv('USER_SERVICE_PORT') + "/logout/"
-    href_register = "http://" + os.getenv('INTERNAL_ADDRESS') + ":" + os.getenv('USER_SERVICE_PORT') + "/register/"
+    href_login = "http://" + settings.user_service_address + "/login/"
+    href_logout = "http://" + settings.user_service_address + "/logout/"
+    href_register = "http://" + settings.user_service_address + "/register/"
     resp = templates.TemplateResponse(name="index.html",
                                       context={"request": request, "columns": columns['column_names'],
                                                "groups": columns['column_types'],
@@ -61,9 +62,9 @@ async def chosen_indicator(request: Request, indicator: str = Query(...), sessio
         is_admin = claims.get('is_admin')
         is_login = True
 
-    href_login = "http://" + os.getenv('INTERNAL_ADDRESS') + ":" + os.getenv('USER_SERVICE_PORT') + "/login/"
-    href_logout = "http://" + os.getenv('INTERNAL_ADDRESS') + ":" + os.getenv('USER_SERVICE_PORT') + "/logout/"
-    href_register = "http://" + os.getenv('INTERNAL_ADDRESS') + ":" + os.getenv('USER_SERVICE_PORT') + "/register/"
+    href_login = "http://" + settings.user_service_address + "/login/"
+    href_logout = "http://" + settings.user_service_address + "/logout/"
+    href_register = "http://" + settings.user_service_address + "/register/"
 
     if indicator not in ['population', 'children', 'Empty_Map'] + columns['column_names']:
         return RedirectResponse(url="/map", status_code=status.HTTP_404_NOT_FOUND)

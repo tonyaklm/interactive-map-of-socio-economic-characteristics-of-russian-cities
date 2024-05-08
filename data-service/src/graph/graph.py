@@ -70,6 +70,8 @@ class Graph:
             [Input('dropdown', 'value')]
         )
         def update_range(indicator_chosen):
+            if not indicator_chosen:
+                return None, None, None, None
             min_value = min(self.indicators_years[indicator_chosen])
             max_value = max(self.indicators_years[indicator_chosen])
             range_value = [min(self.indicators_years[indicator_chosen]), max(self.indicators_years[indicator_chosen])]
@@ -83,6 +85,8 @@ class Graph:
              Input('dropdown', 'value')]
         )
         def update_graph(range_chosen, indicator_chosen):
+            if not indicator_chosen:
+                return px.line()
             title_graph = 'Значение индикатора {} по городу {}'.format(indicator_chosen, self.settlement)
 
             dff = pd.DataFrame.from_records(self.indicators_data[indicator_chosen])
