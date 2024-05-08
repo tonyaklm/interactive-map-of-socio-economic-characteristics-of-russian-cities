@@ -1,4 +1,4 @@
-from flask import Flask, redirect, url_for
+from flask import Flask, redirect, url_for, request
 
 from blueprints import user
 from flask import render_template
@@ -16,10 +16,10 @@ app.config['SECRET_KEY'] = settings.secret_key
 
 app.config['JWT_SECRET_KEY'] = os.getenv("JWT_SECRET_KEY")
 app.config['JWT_TOKEN_LOCATION'] = ['cookies']
-app.config['JWT_COOKIE_CSRF_PROTECT'] = False
-# app.config['JWT_COOKIE_CSRF_PROTECT'] = True
+# app.config['JWT_COOKIE_CSRF_PROTECT'] = False
+app.config['JWT_COOKIE_CSRF_PROTECT'] = True
 app.config['JWT_CSRF_CHECK_FORM'] = True
-app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(hours=6)
+app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(hours=24)
 app.config["JWT_REFRESH_TOKEN_EXPIRES"] = timedelta(days=30)
 
 jwt = JWTManager(app)
@@ -32,6 +32,16 @@ def my_invalid_token_callback(expired_token):
 def home():
     return render_template('main.html')
 
+# @app.before_request
+# def check_jwt_token():
+#     if request.cookies.get('access_token_cookie') is None:
+#         return redirect(url_for('user.login'))
+#
+# @app.after_request
+# def check_jwt_token(response):
+#     if request.cookies.get('access_token_cookie') is None:
+#         return redirect(url_for('user.login'))
+#     return response
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=8000, debug=True)
