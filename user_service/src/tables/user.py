@@ -2,7 +2,8 @@ from passlib.apps import custom_app_context as pwd_context
 from db import Base
 from flask_jwt_extended import create_access_token, create_refresh_token
 from sqlalchemy import Column, Integer, String, Boolean
-
+import os
+import jwt
 
 class User(Base):
     __tablename__ = 'user'
@@ -20,5 +21,8 @@ class User(Base):
         return pwd_context.verify(password, self.password_hash)
 
     def get_token(self):
-        additional_claims = {"is_admin": self.admin}
-        return create_access_token(identity=self.id, additional_claims=additional_claims), create_refresh_token(identity=self.id, additional_claims=additional_claims)
+        token = jwt.encode({'user_id': self.id, "is_admin" : self.admin}, key=os.getenv("JWT_SECRET_KEY"), algorithm='HS256')
+        return token
+
+        # additional_claims = {"is_admin": self.admin}
+        # return create_access_token(identity=self.id, additional_claims=additional_claims)
