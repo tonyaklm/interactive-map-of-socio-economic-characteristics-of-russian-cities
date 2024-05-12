@@ -30,11 +30,11 @@ async def post_file(request: Request, file: UploadFile = File(...), column_type:
     if access_token_cookie == None:
         url = f'http://{settings.user_service_address}/login/'
         return RedirectResponse(url=url)
-    if access_token_cookie != None:
-        claims = jwt.get_unverified_claims(access_token_cookie)
-        if not claims.get('is_admin'):
-            url = f'http://{settings.user_service_address}/login/'
-            return RedirectResponse(url=url)
+    # if access_token_cookie != None:
+    #     claims = jwt.get_unverified_claims(access_token_cookie)
+    #     if not claims.get('is_admin'):
+    #         url = f'http://{os.getenv("INTERNAL_ADDRESS")}:{os.getenv("USER_SERVICE_PORT")}/login/'
+    #         return RedirectResponse(url=url)
     if not file:
         redirect_url = request.url_for('get_upload_form').include_query_params(message="Необходимо загрузить файл",
                                                                                color="red")
@@ -112,11 +112,11 @@ async def get_upload_form(request: Request, message: str = "", color: str = None
     if access_token_cookie == None:
         url = f'http://{settings.user_service_address}/login/'
         return RedirectResponse(url=url)
-    if access_token_cookie != None:
-        claims = jwt.get_unverified_claims(access_token_cookie)
-        if not claims.get('is_admin'):
-            url = f'http://{settings.user_service_address}/login/'
-            return RedirectResponse(url=url)
+    # if access_token_cookie != None:
+    #     claims = jwt.get_unverified_claims(access_token_cookie)
+    #     if not claims.get('is_admin'):
+    #         url = f'http://{os.getenv("INTERNAL_ADDRESS")}:{os.getenv("USER_SERVICE_PORT")}/login/'
+    #         return RedirectResponse(url=url)
     return templates.TemplateResponse(name="post_column.html",
                                       context={"request": request,
                                                "types": ['Float', 'Integer'],

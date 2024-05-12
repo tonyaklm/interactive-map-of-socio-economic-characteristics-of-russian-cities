@@ -8,9 +8,12 @@ from utils.session import get_session
 from sqlalchemy.ext.asyncio import AsyncSession
 from cache.maps import get_map
 import time
-from jose import jwt
+# from jose import jwt
 import os
 from config import settings
+import jwt
+import httpx
+
 
 templates = Jinja2Templates(directory="templates")
 router = APIRouter(prefix='/map')
@@ -24,10 +27,41 @@ async def render_map(request: Request, session: AsyncSession = Depends(get_sessi
 
     is_admin = False
     is_login = False
-    if access_token_cookie != None:
-        claims = jwt.get_unverified_claims(access_token_cookie)
-        is_admin = claims.get('is_admin')
-        is_login = True
+    href_token = "http://" + settings.user_service_address + "/get_token/"
+    # async with httpx.AsyncClient() as client:
+    # response = httpx.get(url=href_token, headers={"SECRET_KEY" : os.getenv("DATA_SERVICE_SECRET_KEY")})
+    response = httpx.get(url=href_token, cookies={"access_token_cookie" : access_token_cookie})
+    if response.status_code == 200:
+            data = response.json()
+            is_login = data.get('is_login', False)
+            is_admin = data.get('is_admin', False)
+
+    #         try:
+    #             data = jwt.decode(token, os.getenv("JWT_SECRET_KEY"), algorithms=['HS256'])
+    #             is_login = True
+    #             is_admin = data.get('is_admin', False)
+    #         except jwt.ExpiredSignatureError:
+    #                 is_admin = False
+    #                 is_login = False
+
+    # if access_token_cookie != None:
+    #     try:
+    #         data = jwt.decode(access_token_cookie, os.getenv("JWT_SECRET_KEY"), algorithms=['HS256'])
+    #         is_login = True
+    #         is_admin = data.get('is_admin', False)
+    #
+    #     except jwt.ExpiredSignatureError:
+    #         is_admin = False
+    #         is_login = False
+    #     #     url = f'http://{settings.user_service_address}/login/'
+    #     #     return RedirectResponse(url=url)
+    #     except jwt.InvalidTokenError:
+    #         is_admin = False
+    #         is_login = False
+
+    # claims = jwt.get_unverified_claims(access_token_cookie)
+    # is_admin = claims.get('is_admin')
+    # is_login = True
 
     href_login = "http://" + settings.user_service_address + "/login/"
     href_logout = "http://" + settings.user_service_address + "/logout/"
@@ -57,10 +91,19 @@ async def chosen_indicator(request: Request, indicator: str = Query(...), sessio
 
     is_admin = False
     is_login = False
-    if access_token_cookie != None:
-        claims = jwt.get_unverified_claims(access_token_cookie)
-        is_admin = claims.get('is_admin')
-        is_login = True
+    href_token = "http://" + settings.user_service_address + "/get_token/"
+    # async with httpx.AsyncClient() as client:
+    # response = httpx.get(url=href_token, headers={"SECRET_KEY" : os.getenv("DATA_SERVICE_SECRET_KEY")})
+    response = httpx.get(url=href_token, cookies={"access_token_cookie": access_token_cookie})
+    if response.status_code == 200:
+        data = response.json()
+        is_login = data.get('is_login', False)
+        is_admin = data.get('is_admin', False)
+
+    # if access_token_cookie != None:
+    #     claims = jwt.get_unverified_claims(access_token_cookie)
+    #     is_admin = claims.get('is_admin')
+    #     is_login = True
 
     href_login = "http://" + settings.user_service_address + "/login/"
     href_logout = "http://" + settings.user_service_address + "/logout/"
