@@ -6,7 +6,7 @@ from db import Base
 class DataDao(Base):
     __tablename__ = 'data'
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=False)
-    region_id: Mapped[int] = mapped_column(primary_key=False)
+    region_id: Mapped[int] = mapped_column(nullable=False)
     region: Mapped[str] = mapped_column(nullable=False)
     municipality: Mapped[str] = mapped_column(nullable=False)
     settlement: Mapped[str] = mapped_column(nullable=False)

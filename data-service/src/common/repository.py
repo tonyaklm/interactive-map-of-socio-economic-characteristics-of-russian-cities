@@ -64,5 +64,12 @@ class Repository:
         results = await session.execute(stmt)
         return results.rowcount
 
+    async def select_indicators(self, table: Base, column: str, session):
+        items = select(getattr(table, column))
+
+        results = await session.execute(items)
+        response_json = results.scalars().all()
+        return response_json
+
 
 repo = Repository()

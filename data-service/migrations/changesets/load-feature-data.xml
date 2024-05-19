@@ -8,15 +8,16 @@
         http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd
         http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-latest.xsd">
 
-    <changeSet author="antonina" id="create-indexes">
-        <createIndex tableName="feature" indexName="drawable_index">
-            <column name="is_drawable"/>
-        </createIndex>
-
-        <createIndex tableName="feature" indexName="indicator_type_index">
-            <column name="indicator_type"/>
-        </createIndex>
-
+    <changeSet author="antonina" id="load-feature-data">
+        <loadData file="feature_table.csv" tableName="feature">
+            <column name="indicator_type" type="VARCHAR"/>
+            <column name="is_drawable" type="BOOLEAN"/>
+            <column name="years" type="INTEGER []"/>
+            <column name="min_value" type="FLOAT"/>
+            <column name="max_value" type="FLOAT"/>
+            <column name="description" type="VARCHAR"/>
+            <column name="agg_function" type="VARCHAR"/>
+        </loadData>
     </changeSet>
 
 </databaseChangeLog>

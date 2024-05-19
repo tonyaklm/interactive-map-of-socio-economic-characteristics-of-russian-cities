@@ -3,7 +3,7 @@ from fastapi import FastAPI
 from routers import update, post, map, delete
 from contextlib import asynccontextmanager
 from cache.cache_maps import cache_maps
-from cache.cache_graphs import cache_graphs
+from cache.cache_graphs import cache_main
 from fastapi.staticfiles import StaticFiles
 from subapp import graph_manager
 from fastapi.middleware.wsgi import WSGIMiddleware
@@ -12,7 +12,7 @@ from fastapi.middleware.wsgi import WSGIMiddleware
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     await cache_maps()
-    await cache_graphs()
+    await cache_main()
     sub_apps = graph_manager.get_apps()
     for sub_app_path, sub_app in sub_apps.items():
         app.mount(sub_app_path, WSGIMiddleware(sub_app.get_app().server))

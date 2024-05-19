@@ -28,6 +28,8 @@ async def render_map(request: Request, session: AsyncSession = Depends(get_sessi
         claims = jwt.get_unverified_claims(access_token_cookie)
         is_admin = claims.get('is_admin')
         is_login = True
+        print('Authorized')
+        print(claims)
 
     href_login = "http://" + settings.user_service_address + "/login/"
     href_logout = "http://" + settings.user_service_address + "/logout/"

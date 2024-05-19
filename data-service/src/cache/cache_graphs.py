@@ -8,6 +8,17 @@ from models import graph_data
 from utils.graph_data import crate_data_for_graph, get_indicators_with_years
 
 
+async def cache_main():
+    graph = Graph()
+    graph.create()
+    graph.add_update_title_callback()
+
+    # graph.add_update_range_callback()
+    # graph.add_update_dropdown_callback()
+    # graph.add_update_graph_callback()
+    graph_manager.add_app(graph.get_path(), graph)
+
+
 async def cache_graphs():
     selected_columns = ['settlement', 'longitude_dd', 'latitude_dd']
     indicators_with_years = await get_indicators_with_years()
@@ -19,6 +30,7 @@ async def cache_graphs():
 
     for settlement_data in data:
         await cache_graph(settlement_data, indicators_with_years)
+    await cache_graph(settlement_data, indicators_with_years)
 
 
 async def cache_graph(settlement_data: json, indicators_with_years):

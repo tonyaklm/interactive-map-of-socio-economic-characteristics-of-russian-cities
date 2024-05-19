@@ -199,9 +199,6 @@
         document.getElementById("loading").style.display = "none";
     }
 
-    function showError() {
-        document.getElementById("error_img").style.display = "block";
-    }
 
 
 
@@ -212,12 +209,9 @@
     <img src="../static/images/loading_circle.gif" alt="Loading..." style="width: 100px; height: 100px;">
 </div>
 
-<div id="error_img" style="display: none; position: absolute; top: 60%; left: 50%; transform: translate(-50%, -50%);">
-    <img src="../static/images/error_img.jpeg" alt="Error..." style="width: 50%; height: 50%;">
-</div>
 
 <iframe id="myIframe" class="map" src="{{ template_name }}" width="100%" height="650" frameborder="1"
-        onload="window.parent.hideLoading();" onerror="window.parent.showError();"></iframe>
+        onload="window.parent.hideLoading();" ></iframe>
 <h3><b style="background-color: lightcoral; color: lightcyan;">
 </b></h3>
 
