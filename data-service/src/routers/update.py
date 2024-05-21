@@ -13,8 +13,6 @@ from tables.data import DataDao
 from utils.convert_value import get_new_value
 from models import graph_data
 from cache.cache_maps import cache_map
-from cache.cache_graphs import update_all_settlements, update_one_settlement
-from common.repository import repo
 from common.sqlalchemy_data_type import matching_columns, unupdateable_columns
 from typing import Optional
 import os
@@ -64,7 +62,7 @@ async def get_update_value(request: Request, message: str = "", color: str = Non
 
     return templates.TemplateResponse(name="update_value.html",
                                       context={"request": request,
-                                               "columns": list(column_names),
+                                               "columns": sorted(list(column_names)),
                                                "message": message,
                                                "color": color,
                                                "matching_columns": matching_columns,
@@ -149,13 +147,6 @@ async def update_column(request: Request, file: UploadFile = File(...),
     for column in new_data.columns.values.tolist()[1:]:
         await cache_map(column, session)
 
-    for index, row in new_data.iterrows():
-        city = await repo.select_by_unique_column(DataDao, matching_column, row[matching_column], session)
-        if city:
-            await update_one_settlement(graph_data.UpdateGraphData(settlement=city.settlement,
-                                                                   longitude_dd=city.longitude_dd,
-                                                                   latitude_dd=city.latitude_dd))
-
     # await update_all_settlements()
 
     redirect_url = request.url_for('get_update_column').include_query_params(
@@ -213,12 +204,6 @@ async def update_value(request: Request, column_name: str = Form(...), matching_
     await session.commit()
 
     await cache_map(column_name, session)
-
-    city = await repo.select_by_unique_column(DataDao, matching_column, matching_value, session)
-    if city:
-        await update_one_settlement(graph_data.UpdateGraphData(settlement=city.settlement,
-                                                               longitude_dd=city.longitude_dd,
-                                                               latitude_dd=city.latitude_dd))
 
     redirect_url = request.url_for('get_update_value').include_query_params(
         message=f"""Для {column_name} с {matching_column}={matching_value}"

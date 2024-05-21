@@ -11,15 +11,15 @@
     <changeSet author="antonina" id="create-feature-table">
         <createTable tableName="feature" remarks="Таблица с описание и характеристиками индикаторов">
 
-            <column name="indicator_type" type="VARCHAR" remarks="Тип индикатора">
-                <constraints nullable="false"/>
+            <column autoIncrement="false" name="indicator_type" type="VARCHAR" remarks="Тип индикатора">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="indicator_type_pkey"/>
             </column>
 
             <column name="is_drawable" type="BOOLEAN" remarks="Нужно ли отрисовывать" defaultValueBoolean="false">
                 <constraints nullable="false"/>
             </column>
 
-            <column name="years" type="INTEGER []" remarks="Годы, за которые индикатор доступен">
+            <column name="years" type="INTEGER[]" remarks="Годы, за которые индикатор доступен" defaultValue="{}">
                 <constraints nullable="false"/>
             </column>
 
@@ -31,7 +31,7 @@
                 <constraints nullable="true"/>
             </column>
 
-            <column name="description" type="VARCHAR" remarks="Описание индикатора">
+            <column name="description" type="VARCHAR" remarks="Описание индикатора" defaultValue="">
                 <constraints nullable="true"/>
             </column>
 

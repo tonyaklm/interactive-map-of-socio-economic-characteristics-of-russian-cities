@@ -6,8 +6,10 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.exc import DataError, DBAPIError, ProgrammingError, InvalidRequestError
 from common.repository import repo
 from tables.data import DataDao
+from tables.feature import FeatureDao
 from utils.column import add_column, get_columns, delete_column
 from utils.check_columns import check_columns
+from common.sqlalchemy_data_type import technical_columns
 
 
 async def update_data(update_data: data_models.UpdateData,
@@ -41,25 +43,24 @@ async def create_column(new_column: data_models.CreateColumn,
                                                      Используйте метод "Обновить данные"''')
 
 
-async def get_column_names(session: AsyncSession):
+async def get_indicator_names(session: AsyncSession):
     columns = await get_columns(DataDao.__tablename__, session)
-    column_names = list(columns.keys())[15:]
+    column_names = set(columns.keys()).difference(technical_columns)
 
-    column_types = []
-    for column in column_names:
-        column_types.append(column.split('_')[0])
-    return {'column_names': column_names,
-            'column_types': column_types}
+    return column_names
 
 
 async def get_indicator(indicator: str, session: AsyncSession):
     await check_columns(session)
     selected_columns = ['region', 'settlement', 'longitude_dd', 'latitude_dd']
 
-    summ_flag = True if indicator in ['population', 'children'] else False
     if indicator not in DataDao.__table__.columns.keys():
         raise HTTPException(status_code=404, detail={'no such indicator'})
-    selected_data = await repo.select_columns(DataDao, selected_columns, indicator, session, summ=summ_flag)
+    indicator_type = indicator.split('_')[0] if indicator.find('_') != -1 else indicator
+    funcs = await repo.select_indicators([FeatureDao.agg_function], [FeatureDao.indicator_type == indicator_type],
+                                         session)
+    agg_func = funcs.scalars().all()[0]
+    selected_data = await repo.select_columns(DataDao, selected_columns, indicator, session, agg_func)
     return [row._asdict() for row in selected_data]
 
 

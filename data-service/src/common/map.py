@@ -17,20 +17,21 @@ class FoliumMap:
         self.create()
         self.indicator = indicator
         self.template_name = "static/{}.html".format(self.indicator)
+        self.none_markers = folium.FeatureGroup(name='Нулевые маркеры')
 
     def create(self) -> None:
         with open('../shapefiles/russia_geojson.geojson') as response:
             russia = json.load(response)
 
-        folium.GeoJson(
-            russia,
-            style_function=lambda feature: {
-                'fillColor': 'blue',
-                'color': 'black',
-                'weight': 1,
-                'dashArray': '0.2, 0.2'
-            }
-        ).add_to(self.map)
+        # folium.GeoJson(
+        #     russia,
+        #     style_function=lambda feature: {
+        #         'fillColor': 'blue',
+        #         'color': 'black',
+        #         'weight': 1,
+        #         'dashArray': '0.2, 0.2'
+        #     }
+        # ).add_to(self.map)
 
         for region in russia['features']:
             region_id = region['properties']['id']
@@ -43,7 +44,7 @@ class FoliumMap:
 
         popup_text = f'Значение <b>{self.indicator}</b> для города <b>{item["settlement"]}</b><br>:' \
                      f' {str(item[self.indicator])}<br><br>' \
-                     f'Посмотреть <a href="http://{settings.data_service_address}/dashboard/{item["min_municipality_id"]}/"' \
+                     f'Посмотреть <a href="http://{settings.data_service_address}/dashboard/?id={item["min_municipality_id"]}"' \
                      f' target="_blank">график</a>' \
                      f' индикаторов по годам'
 

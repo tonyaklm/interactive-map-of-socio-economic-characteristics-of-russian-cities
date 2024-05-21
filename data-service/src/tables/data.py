@@ -11,8 +11,6 @@ class DataDao(Base):
     municipality: Mapped[str] = mapped_column(nullable=False)
     settlement: Mapped[str] = mapped_column(nullable=False)
     type: Mapped[str] = mapped_column(nullable=False)
-    population: Mapped[int] = mapped_column(nullable=False)
-    children: Mapped[int] = mapped_column(nullable=False)
     latitude_dms: Mapped[str] = mapped_column(nullable=False)
     longitude_dms: Mapped[str] = mapped_column(nullable=False)
     latitude_dd: Mapped[float] = mapped_column(nullable=False)

@@ -12,7 +12,7 @@
         <loadData file="feature_table.csv" tableName="feature">
             <column name="indicator_type" type="VARCHAR"/>
             <column name="is_drawable" type="BOOLEAN"/>
-            <column name="years" type="INTEGER []"/>
+            <column name="years" type="INTEGER[]"/>
             <column name="min_value" type="FLOAT"/>
             <column name="max_value" type="FLOAT"/>
             <column name="description" type="VARCHAR"/>

@@ -117,6 +117,8 @@
 
 
 
+
+
     </style>
 
     <!--    <script>-->
@@ -159,7 +161,7 @@
             <a class="dropdown-item" href="/update/">Обновить одно значение</a>
             {% endif %}
             {% if is_login %}
-                <a class="dropdown-item" href="/delete/column/">Удалить данные</a>
+            <a class="dropdown-item" href="/delete/column/">Удалить данные</a>
             {% endif %}
             {% if is_admin %}
             <a id="register" class="dropdown-item" href="{{ href_register }}">Добавить пользователя</a>
@@ -174,11 +176,16 @@
         <label class="input-group-text label_shape" for="inputGroupSelect01" style="color:teal">Выберите
             индикатор</label>
         <select class="custom-select dropdown_shape" id="inputGroupSelect01" name="indicator"
-                onchange="this.form.submit()">
-            <option selected value="Empty Map">Empty Map</option>
-            <option value="Population">Population</option>
-            <option value="Children">Children</option>
+                onchange="showSubIndicator(this)">
         </select>
+    </div>
+    <div id="subIndicatorDiv" style="display:none;">
+        <div class="input-group mb-3">
+            <label class="input-group-text label_shape" for="inputGroupSelect02" style="color:teal">Выберите год</label>
+            <select class="custom-select dropdown_shape" id="inputGroupSelect02" name="year"
+                    onchange="this.form.submit();">
+            </select>
+        </div>
     </div>
 
     <!--    <div class="input-group mb-3">-->
@@ -203,6 +210,8 @@
 
 
 
+
+
 </script>
 
 <div id="loading" style="display: block; position: absolute; top: 60%; left: 50%; transform: translate(-50%, -50%);">
@@ -211,7 +220,7 @@
 
 
 <iframe id="myIframe" class="map" src="{{ template_name }}" width="100%" height="650" frameborder="1"
-        onload="window.parent.hideLoading();" ></iframe>
+        onload="window.parent.hideLoading();"></iframe>
 <h3><b style="background-color: lightcoral; color: lightcyan;">
 </b></h3>
 
@@ -230,36 +239,72 @@
 
 <script>
 
-    var columns = {{ columns|tojson }};
-    var groups = {{ groups|tojson }};
-    addOptions(columns, groups);
+    var indicator_types = {{ indicator_types|tojson }};
+    var descriptions = {{ descriptions|tojson }};
+    var selected_indicator = {{ selected_indicator|tojson }};
 
-    function addOptions(columns, groups) {
+    addOptions(indicator_types, descriptions);
+
+    function addOptions(indicator_types, descriptions) {
         var dropdown = document.getElementById("inputGroupSelect01");
-
-        columns.forEach(function(option, index) {
+        indicator_types.forEach(function(option) {
             var newOption = document.createElement("option");
-            newOption.text = option;
+            newOption.text = descriptions[option];
             newOption.value = option;
-
-            var groupName = groups[index];
-            var optgroup = dropdown.querySelector('optgroup[label="' + groupName + '"]');
-            if (!optgroup) {
-                optgroup = document.createElement('optgroup');
-                optgroup.label = groupName;
-                dropdown.appendChild(optgroup);
+            if (option === selected_indicator) {
+                newOption.selected = true;
             }
-            optgroup.appendChild(newOption);
+            dropdown.appendChild(newOption);
         });
     }
 
+    var drawable_columns = {{ drawable_columns|tojson }};
+    var drawable_values = {{ drawable_values|tojson }};
+    var selected_year = {{ selected_year|default("")|tojson }}
 
+    function showSubIndicator(selectElement) {
+        var selectedValue = selectElement.value;
+        var subIndicatorDiv = document.getElementById("subIndicatorDiv");
+        var subIndicatorSelect = document.getElementById("inputGroupSelect02");
 
+        subIndicatorSelect.innerHTML = "";
 
+        if (drawable_columns.includes(selectedValue)) {
+            var subIndicatorOptions = drawable_values[selectedValue];
+            subIndicatorOptions.forEach(function(option) {
+                var opt = document.createElement("option");
+                opt.value = option;
+                opt.text = option;
+                if (option == selected_year) {
+                    opt.selected = true;
+                }
+                subIndicatorSelect.appendChild(opt);
+            });
+            subIndicatorDiv.style.display = "block";
+        } else {
+            subIndicatorDiv.style.display = "none";
+            selectElement.form.submit();
+        }
+    }
 
+    document.getElementById("inputGroupSelect02").addEventListener('mousedown', function() {
+        if (this.options.length === 1) {
+            this.form.submit();
+        }
+    });
 
+    document.getElementById("inputGroupSelect01").addEventListener('mousedown', function() {
+        if (this.options.length === 1) {
+            showSubIndicator(this);
+        }
+    });
 
-
+    window.onload = function() {
+        var indicator = document.getElementById("inputGroupSelect01").value;
+         if (drawable_columns.includes(indicator)) {
+            showSubIndicator(document.getElementById("inputGroupSelect01"));
+        }
+    };
 
 </script>
 

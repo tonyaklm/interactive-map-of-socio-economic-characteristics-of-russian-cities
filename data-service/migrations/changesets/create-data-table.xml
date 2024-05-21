@@ -34,14 +34,6 @@
                 <constraints nullable="false"/>
             </column>
 
-            <column name="population" type="INTEGER" remarks="Население">
-                <constraints nullable="false"/>
-            </column>
-
-            <column name="children" type="INTEGER" remarks="Дети">
-                <constraints nullable="false"/>
-            </column>
-
             <column name="latitude_dms" type="VARCHAR" remarks="Ширина dms">
                 <constraints nullable="false"/>
             </column>
@@ -68,6 +60,14 @@
             </column>
 
             <column name="rosstat" type="INTEGER" remarks="rosstat">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="Population" type="INTEGER" remarks="Население">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="Children" type="INTEGER" remarks="Дети">
                 <constraints nullable="false"/>
             </column>
 
@@ -101,240 +101,240 @@
             <column name="Index_2003" type="FLOAT" remarks="Index_2003">
                 <constraints nullable="true"/>
             </column>
-<!--            <column name="Index100_2003" type="FLOAT" remarks="Index100_2003">-->
-<!--                <constraints nullable="true"/>-->
-<!--            </column>-->
-<!--            <column name="Value_2003" type="FLOAT" remarks="Value_2003">-->
-<!--                <constraints nullable="true"/>-->
-<!--            </column>-->
-<!--            <column name="Index_2004" type="FLOAT" remarks="Index_2004">-->
-<!--                <constraints nullable="true"/>-->
-<!--            </column>-->
-<!--            <column name="Index100_2004" type="FLOAT" remarks="Index100_2004">-->
-<!--                <constraints nullable="true"/>-->
-<!--            </column>-->
-<!--            <column name="Value_2004" type="FLOAT" remarks="Value_2004">-->
-<!--                <constraints nullable="true"/>-->
-<!--            </column>-->
-<!--            <column name="Index_2005" type="FLOAT" remarks="Index_2005">-->
-<!--                <constraints nullable="true"/>-->
-<!--            </column>-->
-<!--            <column name="Index100_2005" type="FLOAT" remarks="Index100_2005">-->
-<!--                <constraints nullable="true"/>-->
-<!--            </column>-->
-<!--            <column name="Value_2005" type="FLOAT" remarks="Value_2005">-->
-<!--                <constraints nullable="true"/>-->
-<!--            </column>-->
-<!--            <column name="Index_2006" type="FLOAT" remarks="Index_2006">-->
-<!--                <constraints nullable="true"/>-->
-<!--            </column>-->
-<!--            <column name="Index100_2006" type="FLOAT" remarks="Index100_2006">-->
-<!--                <constraints nullable="true"/>-->
-<!--            </column>-->
-<!--            <column name="Value_2006" type="FLOAT" remarks="Value_2006">-->
-<!--                <constraints nullable="true"/>-->
-<!--            </column>-->
-<!--            <column name="Index_2007" type="FLOAT" remarks="Index_2007">-->
-<!--                <constraints nullable="true"/>-->
-<!--            </column>-->
-<!--            <column name="Index100_2007" type="FLOAT" remarks="Index100_2007">-->
-<!--                <constraints nullable="true"/>-->
-<!--            </column>-->
-<!--            <column name="Value_2007" type="FLOAT" remarks="Value_2007">-->
-<!--                <constraints nullable="true"/>-->
-<!--            </column>-->
-<!--            <column name="Index_2008" type="FLOAT" remarks="Index_2008">-->
-<!--                <constraints nullable="true"/>-->
-<!--            </column>-->
-<!--            <column name="Index100_2008" type="FLOAT" remarks="Index100_2008">-->
-<!--                <constraints nullable="true"/>-->
-<!--            </column>-->
-<!--            <column name="Value_2008" type="FLOAT" remarks="Value_2008">-->
-<!--                <constraints nullable="true"/>-->
-<!--            </column>-->
-<!--            <column name="Index_2009" type="FLOAT" remarks="Index_2009">-->
-<!--                <constraints nullable="true"/>-->
-<!--            </column>-->
-<!--            <column name="Index100_2009" type="FLOAT" remarks="Index100_2009">-->
-<!--                <constraints nullable="true"/>-->
-<!--            </column>-->
-<!--            <column name="Value_2009" type="FLOAT" remarks="Value_2009">-->
-<!--                <constraints nullable="true"/>-->
-<!--            </column>-->
-<!--            <column name="Index_2010" type="FLOAT" remarks="Index_2010">-->
-<!--                <constraints nullable="true"/>-->
-<!--            </column>-->
-<!--            <column name="Index100_2010" type="FLOAT" remarks="Index100_2010">-->
-<!--                <constraints nullable="true"/>-->
-<!--            </column>-->
-<!--            <column name="Value_2010" type="FLOAT" remarks="Value_2010">-->
-<!--                <constraints nullable="true"/>-->
-<!--            </column>-->
-<!--            <column name="Index_2011" type="FLOAT" remarks="Index_2011">-->
-<!--                <constraints nullable="true"/>-->
-<!--            </column>-->
-<!--            <column name="Index100_2011" type="FLOAT" remarks="Index100_2011">-->
-<!--                <constraints nullable="true"/>-->
-<!--            </column>-->
-<!--            <column name="Value_2011" type="FLOAT" remarks="Value_2011">-->
-<!--                <constraints nullable="true"/>-->
-<!--            </column>-->
-<!--            <column name="Index_2012" type="FLOAT" remarks="Index_2012">-->
-<!--                <constraints nullable="true"/>-->
-<!--            </column>-->
-<!--            <column name="Index100_2012" type="FLOAT" remarks="Index100_2012">-->
-<!--                <constraints nullable="true"/>-->
-<!--            </column>-->
-<!--            <column name="Value_2012" type="FLOAT" remarks="Value_2012">-->
-<!--                <constraints nullable="true"/>-->
-<!--            </column>-->
-<!--            <column name="Index_2013" type="FLOAT" remarks="Index_2013">-->
-<!--                <constraints nullable="true"/>-->
-<!--            </column>-->
-<!--            <column name="Index100_2013" type="FLOAT" remarks="Index100_2013">-->
-<!--                <constraints nullable="true"/>-->
-<!--            </column>-->
-<!--            <column name="Value_2013" type="FLOAT" remarks="Value_2013">-->
-<!--                <constraints nullable="true"/>-->
-<!--            </column>-->
-<!--            <column name="Index_2014" type="FLOAT" remarks="Index_2014">-->
-<!--                <constraints nullable="true"/>-->
-<!--            </column>-->
-<!--            <column name="Index100_2014" type="FLOAT" remarks="Index100_2014">-->
-<!--                <constraints nullable="true"/>-->
-<!--            </column>-->
-<!--            <column name="Value_2014" type="FLOAT" remarks="Value_2014">-->
-<!--                <constraints nullable="true"/>-->
-<!--            </column>-->
-<!--            <column name="Index_2015" type="FLOAT" remarks="Index_2015">-->
-<!--                <constraints nullable="true"/>-->
-<!--            </column>-->
-<!--            <column name="Index100_2015" type="FLOAT" remarks="Index100_2015">-->
-<!--                <constraints nullable="true"/>-->
-<!--            </column>-->
-<!--            <column name="Value_2015" type="FLOAT" remarks="Value_2015">-->
-<!--                <constraints nullable="true"/>-->
-<!--            </column>-->
-<!--            <column name="Index_2016" type="FLOAT" remarks="Index_2016">-->
-<!--                <constraints nullable="true"/>-->
-<!--            </column>-->
-<!--            <column name="Index100_2016" type="FLOAT" remarks="Index100_2016">-->
-<!--                <constraints nullable="true"/>-->
-<!--            </column>-->
-<!--            <column name="Value_2016" type="FLOAT" remarks="Value_2016">-->
-<!--                <constraints nullable="true"/>-->
-<!--            </column>-->
-<!--            <column name="Index_2017" type="FLOAT" remarks="Index_2017">-->
-<!--                <constraints nullable="true"/>-->
-<!--            </column>-->
-<!--            <column name="Index100_2017" type="FLOAT" remarks="Index100_2017">-->
-<!--                <constraints nullable="true"/>-->
-<!--            </column>-->
-<!--            <column name="Value_2017" type="FLOAT" remarks="Value_2017">-->
-<!--                <constraints nullable="true"/>-->
-<!--            </column>-->
-<!--            <column name="Index_2018" type="FLOAT" remarks="Index_2018">-->
-<!--                <constraints nullable="true"/>-->
-<!--            </column>-->
-<!--            <column name="Index100_2018" type="FLOAT" remarks="Index100_2018">-->
-<!--                <constraints nullable="true"/>-->
-<!--            </column>-->
-<!--            <column name="Value_2018" type="FLOAT" remarks="Value_2018">-->
-<!--                <constraints nullable="true"/>-->
-<!--            </column>-->
-<!--            <column name="Index_2019" type="FLOAT" remarks="Index_2019">-->
-<!--                <constraints nullable="true"/>-->
-<!--            </column>-->
-<!--            <column name="Index100_2019" type="FLOAT" remarks="Index100_2019">-->
-<!--                <constraints nullable="true"/>-->
-<!--            </column>-->
-<!--            <column name="Value_2019" type="FLOAT" remarks="Value_2019">-->
-<!--                <constraints nullable="true"/>-->
-<!--            </column>-->
-<!--            <column name="Index_2020" type="FLOAT" remarks="Index_2020">-->
-<!--                <constraints nullable="true"/>-->
-<!--            </column>-->
-<!--            <column name="Index100_2020" type="FLOAT" remarks="Index100_2020">-->
-<!--                <constraints nullable="true"/>-->
-<!--            </column>-->
-<!--            <column name="Value_2020" type="FLOAT" remarks="Value_2020">-->
-<!--                <constraints nullable="true"/>-->
-<!--            </column>-->
-<!--            <column name="Index_2021" type="FLOAT" remarks="Index_2021">-->
-<!--                <constraints nullable="true"/>-->
-<!--            </column>-->
-<!--            <column name="Index100_2021" type="FLOAT" remarks="Index100_2021">-->
-<!--                <constraints nullable="true"/>-->
-<!--            </column>-->
-<!--            <column name="Value_2021" type="FLOAT" remarks="Value_2021">-->
-<!--                <constraints nullable="true"/>-->
-<!--            </column>-->
-<!--            <column name="Type_2000" type="INTEGER" remarks="Type_2000">-->
-<!--                <constraints nullable="true"/>-->
-<!--            </column>-->
-<!--            <column name="Type_2001" type="INTEGER" remarks="Type_2001">-->
-<!--                <constraints nullable="true"/>-->
-<!--            </column>-->
-<!--            <column name="Type_2002" type="INTEGER" remarks="Type_2002">-->
-<!--                <constraints nullable="true"/>-->
-<!--            </column>-->
-<!--            <column name="Type_2003" type="INTEGER" remarks="Type_2003">-->
-<!--                <constraints nullable="true"/>-->
-<!--            </column>-->
-<!--            <column name="Type_2004" type="INTEGER" remarks="Type_2004">-->
-<!--                <constraints nullable="true"/>-->
-<!--            </column>-->
-<!--            <column name="Type_2005" type="INTEGER" remarks="Type_2005">-->
-<!--                <constraints nullable="true"/>-->
-<!--            </column>-->
-<!--            <column name="Type_2006" type="INTEGER" remarks="Type_2006">-->
-<!--                <constraints nullable="true"/>-->
-<!--            </column>-->
-<!--            <column name="Type_2007" type="INTEGER" remarks="Type_2007">-->
-<!--                <constraints nullable="true"/>-->
-<!--            </column>-->
-<!--            <column name="Type_2008" type="INTEGER" remarks="Type_2008">-->
-<!--                <constraints nullable="true"/>-->
-<!--            </column>-->
-<!--            <column name="Type_2009" type="INTEGER" remarks="Type_2009">-->
-<!--                <constraints nullable="true"/>-->
-<!--            </column>-->
-<!--            <column name="Type_2010" type="INTEGER" remarks="Type_2010">-->
-<!--                <constraints nullable="true"/>-->
-<!--            </column>-->
-<!--            <column name="Type_2011" type="INTEGER" remarks="Type_2011">-->
-<!--                <constraints nullable="true"/>-->
-<!--            </column>-->
-<!--            <column name="Type_2012" type="INTEGER" remarks="Type_2012">-->
-<!--                <constraints nullable="true"/>-->
-<!--            </column>-->
-<!--            <column name="Type_2013" type="INTEGER" remarks="Type_2013">-->
-<!--                <constraints nullable="true"/>-->
-<!--            </column>-->
-<!--            <column name="Type_2014" type="INTEGER" remarks="Type_2014">-->
-<!--                <constraints nullable="true"/>-->
-<!--            </column>-->
-<!--            <column name="Type_2015" type="INTEGER" remarks="Type_2015">-->
-<!--                <constraints nullable="true"/>-->
-<!--            </column>-->
-<!--            <column name="Type_2016" type="INTEGER" remarks="Type_2016">-->
-<!--                <constraints nullable="true"/>-->
-<!--            </column>-->
-<!--            <column name="Type_2017" type="INTEGER" remarks="Type_2017">-->
-<!--                <constraints nullable="true"/>-->
-<!--            </column>-->
-<!--            <column name="Type_2018" type="INTEGER" remarks="Type_2018">-->
-<!--                <constraints nullable="true"/>-->
-<!--            </column>-->
-<!--            <column name="Type_2019" type="INTEGER" remarks="Type_2019">-->
-<!--                <constraints nullable="true"/>-->
-<!--            </column>-->
-<!--            <column name="Type_2020" type="INTEGER" remarks="Type_2020">-->
-<!--                <constraints nullable="true"/>-->
-<!--            </column>-->
-<!--            <column name="Type_2021" type="INTEGER" remarks="Type_2021">-->
-<!--                <constraints nullable="true"/>-->
-<!--            </column>-->
+            <column name="Index100_2003" type="FLOAT" remarks="Index100_2003">
+                <constraints nullable="true"/>
+            </column>
+            <column name="Value_2003" type="FLOAT" remarks="Value_2003">
+                <constraints nullable="true"/>
+            </column>
+            <column name="Index_2004" type="FLOAT" remarks="Index_2004">
+                <constraints nullable="true"/>
+            </column>
+            <column name="Index100_2004" type="FLOAT" remarks="Index100_2004">
+                <constraints nullable="true"/>
+            </column>
+            <column name="Value_2004" type="FLOAT" remarks="Value_2004">
+                <constraints nullable="true"/>
+            </column>
+            <column name="Index_2005" type="FLOAT" remarks="Index_2005">
+                <constraints nullable="true"/>
+            </column>
+            <column name="Index100_2005" type="FLOAT" remarks="Index100_2005">
+                <constraints nullable="true"/>
+            </column>
+            <column name="Value_2005" type="FLOAT" remarks="Value_2005">
+                <constraints nullable="true"/>
+            </column>
+            <column name="Index_2006" type="FLOAT" remarks="Index_2006">
+                <constraints nullable="true"/>
+            </column>
+            <column name="Index100_2006" type="FLOAT" remarks="Index100_2006">
+                <constraints nullable="true"/>
+            </column>
+            <column name="Value_2006" type="FLOAT" remarks="Value_2006">
+                <constraints nullable="true"/>
+            </column>
+            <column name="Index_2007" type="FLOAT" remarks="Index_2007">
+                <constraints nullable="true"/>
+            </column>
+            <column name="Index100_2007" type="FLOAT" remarks="Index100_2007">
+                <constraints nullable="true"/>
+            </column>
+            <column name="Value_2007" type="FLOAT" remarks="Value_2007">
+                <constraints nullable="true"/>
+            </column>
+            <column name="Index_2008" type="FLOAT" remarks="Index_2008">
+                <constraints nullable="true"/>
+            </column>
+            <column name="Index100_2008" type="FLOAT" remarks="Index100_2008">
+                <constraints nullable="true"/>
+            </column>
+            <column name="Value_2008" type="FLOAT" remarks="Value_2008">
+                <constraints nullable="true"/>
+            </column>
+            <column name="Index_2009" type="FLOAT" remarks="Index_2009">
+                <constraints nullable="true"/>
+            </column>
+            <column name="Index100_2009" type="FLOAT" remarks="Index100_2009">
+                <constraints nullable="true"/>
+            </column>
+            <column name="Value_2009" type="FLOAT" remarks="Value_2009">
+                <constraints nullable="true"/>
+            </column>
+            <column name="Index_2010" type="FLOAT" remarks="Index_2010">
+                <constraints nullable="true"/>
+            </column>
+            <column name="Index100_2010" type="FLOAT" remarks="Index100_2010">
+                <constraints nullable="true"/>
+            </column>
+            <column name="Value_2010" type="FLOAT" remarks="Value_2010">
+                <constraints nullable="true"/>
+            </column>
+            <column name="Index_2011" type="FLOAT" remarks="Index_2011">
+                <constraints nullable="true"/>
+            </column>
+            <column name="Index100_2011" type="FLOAT" remarks="Index100_2011">
+                <constraints nullable="true"/>
+            </column>
+            <column name="Value_2011" type="FLOAT" remarks="Value_2011">
+                <constraints nullable="true"/>
+            </column>
+            <column name="Index_2012" type="FLOAT" remarks="Index_2012">
+                <constraints nullable="true"/>
+            </column>
+            <column name="Index100_2012" type="FLOAT" remarks="Index100_2012">
+                <constraints nullable="true"/>
+            </column>
+            <column name="Value_2012" type="FLOAT" remarks="Value_2012">
+                <constraints nullable="true"/>
+            </column>
+            <column name="Index_2013" type="FLOAT" remarks="Index_2013">
+                <constraints nullable="true"/>
+            </column>
+            <column name="Index100_2013" type="FLOAT" remarks="Index100_2013">
+                <constraints nullable="true"/>
+            </column>
+            <column name="Value_2013" type="FLOAT" remarks="Value_2013">
+                <constraints nullable="true"/>
+            </column>
+            <column name="Index_2014" type="FLOAT" remarks="Index_2014">
+                <constraints nullable="true"/>
+            </column>
+            <column name="Index100_2014" type="FLOAT" remarks="Index100_2014">
+                <constraints nullable="true"/>
+            </column>
+            <column name="Value_2014" type="FLOAT" remarks="Value_2014">
+                <constraints nullable="true"/>
+            </column>
+            <column name="Index_2015" type="FLOAT" remarks="Index_2015">
+                <constraints nullable="true"/>
+            </column>
+            <column name="Index100_2015" type="FLOAT" remarks="Index100_2015">
+                <constraints nullable="true"/>
+            </column>
+            <column name="Value_2015" type="FLOAT" remarks="Value_2015">
+                <constraints nullable="true"/>
+            </column>
+            <column name="Index_2016" type="FLOAT" remarks="Index_2016">
+                <constraints nullable="true"/>
+            </column>
+            <column name="Index100_2016" type="FLOAT" remarks="Index100_2016">
+                <constraints nullable="true"/>
+            </column>
+            <column name="Value_2016" type="FLOAT" remarks="Value_2016">
+                <constraints nullable="true"/>
+            </column>
+            <column name="Index_2017" type="FLOAT" remarks="Index_2017">
+                <constraints nullable="true"/>
+            </column>
+            <column name="Index100_2017" type="FLOAT" remarks="Index100_2017">
+                <constraints nullable="true"/>
+            </column>
+            <column name="Value_2017" type="FLOAT" remarks="Value_2017">
+                <constraints nullable="true"/>
+            </column>
+            <column name="Index_2018" type="FLOAT" remarks="Index_2018">
+                <constraints nullable="true"/>
+            </column>
+            <column name="Index100_2018" type="FLOAT" remarks="Index100_2018">
+                <constraints nullable="true"/>
+            </column>
+            <column name="Value_2018" type="FLOAT" remarks="Value_2018">
+                <constraints nullable="true"/>
+            </column>
+            <column name="Index_2019" type="FLOAT" remarks="Index_2019">
+                <constraints nullable="true"/>
+            </column>
+            <column name="Index100_2019" type="FLOAT" remarks="Index100_2019">
+                <constraints nullable="true"/>
+            </column>
+            <column name="Value_2019" type="FLOAT" remarks="Value_2019">
+                <constraints nullable="true"/>
+            </column>
+            <column name="Index_2020" type="FLOAT" remarks="Index_2020">
+                <constraints nullable="true"/>
+            </column>
+            <column name="Index100_2020" type="FLOAT" remarks="Index100_2020">
+                <constraints nullable="true"/>
+            </column>
+            <column name="Value_2020" type="FLOAT" remarks="Value_2020">
+                <constraints nullable="true"/>
+            </column>
+            <column name="Index_2021" type="FLOAT" remarks="Index_2021">
+                <constraints nullable="true"/>
+            </column>
+            <column name="Index100_2021" type="FLOAT" remarks="Index100_2021">
+                <constraints nullable="true"/>
+            </column>
+            <column name="Value_2021" type="FLOAT" remarks="Value_2021">
+                <constraints nullable="true"/>
+            </column>
+            <column name="Type_2000" type="INTEGER" remarks="Type_2000">
+                <constraints nullable="true"/>
+            </column>
+            <column name="Type_2001" type="INTEGER" remarks="Type_2001">
+                <constraints nullable="true"/>
+            </column>
+            <column name="Type_2002" type="INTEGER" remarks="Type_2002">
+                <constraints nullable="true"/>
+            </column>
+            <column name="Type_2003" type="INTEGER" remarks="Type_2003">
+                <constraints nullable="true"/>
+            </column>
+            <column name="Type_2004" type="INTEGER" remarks="Type_2004">
+                <constraints nullable="true"/>
+            </column>
+            <column name="Type_2005" type="INTEGER" remarks="Type_2005">
+                <constraints nullable="true"/>
+            </column>
+            <column name="Type_2006" type="INTEGER" remarks="Type_2006">
+                <constraints nullable="true"/>
+            </column>
+            <column name="Type_2007" type="INTEGER" remarks="Type_2007">
+                <constraints nullable="true"/>
+            </column>
+            <column name="Type_2008" type="INTEGER" remarks="Type_2008">
+                <constraints nullable="true"/>
+            </column>
+            <column name="Type_2009" type="INTEGER" remarks="Type_2009">
+                <constraints nullable="true"/>
+            </column>
+            <column name="Type_2010" type="INTEGER" remarks="Type_2010">
+                <constraints nullable="true"/>
+            </column>
+            <column name="Type_2011" type="INTEGER" remarks="Type_2011">
+                <constraints nullable="true"/>
+            </column>
+            <column name="Type_2012" type="INTEGER" remarks="Type_2012">
+                <constraints nullable="true"/>
+            </column>
+            <column name="Type_2013" type="INTEGER" remarks="Type_2013">
+                <constraints nullable="true"/>
+            </column>
+            <column name="Type_2014" type="INTEGER" remarks="Type_2014">
+                <constraints nullable="true"/>
+            </column>
+            <column name="Type_2015" type="INTEGER" remarks="Type_2015">
+                <constraints nullable="true"/>
+            </column>
+            <column name="Type_2016" type="INTEGER" remarks="Type_2016">
+                <constraints nullable="true"/>
+            </column>
+            <column name="Type_2017" type="INTEGER" remarks="Type_2017">
+                <constraints nullable="true"/>
+            </column>
+            <column name="Type_2018" type="INTEGER" remarks="Type_2018">
+                <constraints nullable="true"/>
+            </column>
+            <column name="Type_2019" type="INTEGER" remarks="Type_2019">
+                <constraints nullable="true"/>
+            </column>
+            <column name="Type_2020" type="INTEGER" remarks="Type_2020">
+                <constraints nullable="true"/>
+            </column>
+            <column name="Type_2021" type="INTEGER" remarks="Type_2021">
+                <constraints nullable="true"/>
+            </column>
 
         </createTable>
     </changeSet>

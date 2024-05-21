@@ -1,15 +1,15 @@
 import asyncio
 
 from dash import Dash, html, dcc, Input, Output, State
-import pandas as pd
 import plotly.express as px
-from typing import Dict, List
-from graph.utils_graph import get_indicators
+import plotly.graph_objs as go
+
+from graph.utils_graph import get_indicators, get_settlement, get_years, get_indicators_data, get_region_data
 
 
 class Graph:
     def __init__(self):
-        self.path: str = '/dashboard/'
+        self.path: str = "/dashboard/"
         self.app: Dash = Dash(__name__, external_stylesheets=['https://codepen.io/chriddyp/pen/bWLwgP.css'],
                               requests_pathname_prefix=self.path)
 
@@ -59,88 +59,85 @@ class Graph:
             [Output('title-graph', 'children')],
             Input('url', 'search')
         )
-        def update_graph(search):
-            settlement = "somth"
-            return ['График индикаторов по городу {}'.format(settlement)]
+        def update_title(search):
+            city_name = None
+            if search.find('id=') != -1:
+                min_mun_id = 0
+                try:
+                    min_mun_id = int(search.split('id=')[1])
+                except IndexError:
+                    city_name = None
+                except ValueError:
+                    city_name = None
+                city = asyncio.run(get_settlement(min_mun_id))
+                if city:
+                    city_name = city.settlement
 
-    # def add_update_range_callback(self) -> None:
-    #     @self.app.callback(
-    #         [Output('range', 'marks'),
-    #          Output('range', 'min'),
-    #          Output('range', 'max'),
-    #          Output('range', 'value')],
-    #         [Input('dropdown', 'value')],
-    #         State('url', 'search')
-    #     )
-    #     def update_range(indicator_chosen, search):
-    #         if not indicator_chosen:
-    #             return None, None, None, None
-    #         settlement = int(search.split('id=')[1])
-    #         indicators_years = {}
-    #         indicators_data = {}
-    #         for indicator in indicators:
-    #             years = []
-    #             indicators_data[indicator] = []
-    #             for column in data.columns:
-    #                 if column.split('_')[0] == indicator:
-    #                     year = int(column.split('_')[1])
-    #                     value = df[df['id'] == settlement][column].values[0]
-    #                     years.append(year)
-    #                     indicators_data[indicator].append({
-    #                         'Year': year,
-    #                         indicator: value
-    #                     })
-    #             indicators_years[indicator] = years
-    #         min_value = min(indicators_years[indicator_chosen])
-    #         max_value = max(indicators_years[indicator_chosen])
-    #         range_value = [min(indicators_years[indicator_chosen]), max(indicators_years[indicator_chosen])]
-    #         marks = {i: '{}'.format(i) for i in indicators_years[indicator_chosen]}
-    #         return marks, min_value, max_value, range_value
-    #
-    # def add_update_graph_callback(self) -> None:
-    #     @self.app.callback(
-    #         Output('crossfilter-indicator', 'figure'),
-    #         [Input('range', 'value'),
-    #          Input('dropdown', 'value')],
-    #         State('url', 'search')
-    #     )
-    #     def update_graph(range_chosen, indicator_chosen, search):
-    #         # print(search)
-    #         if not indicator_chosen:
-    #             return px.line()
-    #         settlement = int(search.split('id=')[1])
-    #         indicators_years = {}
-    #         indicators_data = {}
-    #         for indicator in indicators:
-    #             years = []
-    #             indicators_data[indicator] = []
-    #             for column in data.columns:
-    #                 if column.split('_')[0] == indicator:
-    #                     year = int(column.split('_')[1])
-    #                     value = df[df['id'] == settlement][column].values[0]
-    #                     years.append(year)
-    #                     indicators_data[indicator].append({
-    #                         'Year': year,
-    #                         indicator: value
-    #                     })
-    #             indicators_years[indicator] = years
-    #         title_graph = 'Значение индикатора {} по городу {}'.format(indicator_chosen, settlement)
-    #
-    #         dff = pd.DataFrame.from_records(indicators_data[indicator_chosen])
-    #
-    #         fig = px.line(dff[(dff.Year >= range_chosen[0]) & (dff.Year <= range_chosen[1])].sort_values(['Year']),
-    #                       x='Year',
-    #                       y=indicator_chosen)
-    #
-    #         fig.update_layout(title=title_graph,
-    #                           xaxis_title=f"{settlement}",
-    #                           yaxis_title='Значение индикатора',
-    #                           hovermode='x'
-    #                           )
-    #         return fig
+            return ['График индикаторов по городу {}'.format(city_name)]
+
+    def add_update_range_callback(self) -> None:
+        @self.app.callback(
+            [Output('range', 'marks'),
+             Output('range', 'min'),
+             Output('range', 'max'),
+             Output('range', 'value'),
+             Output('range', 'step')],
+            [Input('dropdown', 'value')]
+        )
+        def update_range(indicator_chosen):
+            if not indicator_chosen:
+                return None, None, None, None, 1
+            indicators_years = asyncio.run(get_years(indicator_chosen))
+            min_value = min(indicators_years)
+            max_value = max(indicators_years)
+            range_value = [min_value, max_value]
+            marks = {i: '{}'.format(i) for i in indicators_years}
+            return marks, min_value, max_value, range_value, None
+
+    def add_update_graph_callback(self) -> None:
+        @self.app.callback(
+            Output('crossfilter-indicator', 'figure'),
+            [Input('range', 'value'),
+             Input('dropdown', 'value')],
+            State('url', 'search')
+        )
+        def update_graph(range_chosen, indicator_chosen, search):
+            none_value = px.line()
+            if not indicator_chosen or search.find('id=') == -1:
+                return none_value
+            try:
+                min_mun_id = int(search.split('id=')[1])
+            except IndexError:
+                return none_value
+            except ValueError:
+                return none_value
+            city = asyncio.run(get_settlement(min_mun_id))
+            if not city:
+                return none_value
+            title_graph = 'Значение индикатора {} по городу {}'.format(indicator_chosen, city.settlement)
+            indicators_years = asyncio.run(get_years(indicator_chosen))
+            years = [year for year in indicators_years if range_chosen[0] <= year <= range_chosen[1]]
+            try:
+                settlement_data = asyncio.run(get_indicators_data(city, indicator_chosen, years))
+                region_data = asyncio.run(get_region_data(city, indicator_chosen, years))
+            except AttributeError:
+                return none_value
+
+            fig = go.Figure()
+            fig.add_scatter(x=years, y=list(settlement_data), name=f'Город: {city.settlement}', mode='markers+lines')
+            fig.add_scatter(x=years, y=list(region_data), name=f'Регион: {city.region}', mode='markers+lines')
+
+            fig.update_layout(title=title_graph,
+                              xaxis_title=f"Годы",
+                              yaxis_title='Значение индикатора',
+                              legend_title_text=f'Город или регион',
+                              hovermode="x"
+                              )
+            fig.update_traces(hovertemplate=f'<b>{indicator_chosen}=%{{y}}</b><br><b>Year=%{{x}}</b>')
+            return fig
 
     def get_path(self) -> str:
-        return self.path
+        return self.path[:-1]
 
     def get_app(self) -> Dash:
         return self.app

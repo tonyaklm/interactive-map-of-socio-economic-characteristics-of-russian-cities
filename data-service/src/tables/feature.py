@@ -12,10 +12,11 @@ class FeatureDao(Base):
     years = Column(ARRAY(Integer), nullable=False, default=[])
     min_value: Mapped[float] = mapped_column(nullable=True)
     max_value: Mapped[float] = mapped_column(nullable=True)
-    description: Mapped[str] = mapped_column(nullable=True)
+    description: Mapped[str] = mapped_column(nullable=True, default="")
     agg_function: Mapped[str] = mapped_column(nullable=False, default="avg")
 
     __table_args__ = (
+        PrimaryKeyConstraint('indicator_type', name="indicator_type_pkey"),
         Index('indicator_type_index' 'indicator_type'),
         Index('drawable_index' 'is_drawable'),
     )

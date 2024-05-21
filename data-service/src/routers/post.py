@@ -9,11 +9,11 @@ from io import BytesIO
 from models.data_models import CreateColumn, UpdateData
 from fastapi import HTTPException
 from cache.cache_maps import cache_map
-from cache.cache_graphs import update_all_settlements
 from common.sqlalchemy_data_type import matching_columns
 from sqlalchemy.exc import InvalidRequestError
 from tables.data import DataDao
 from typing import Optional
+from utils.feature_data import post_new_feature
 import os
 from jose import jwt
 from config import settings
@@ -66,6 +66,8 @@ async def post_file(request: Request, file: UploadFile = File(...), column_type:
         year = new_column_name.split('_')[1]
         if not year or not year.isdigit():
             error_message = f"Если в индикаторе используется '_', то это должен быть год из чисел"
+        elif len(year) != 4 or year < "1970":
+            error_message = f"Год должен быть из 4 цифр и больше 1970, получен {year}"
     if new_column_name != new_column_name.strip():
         error_message = f"В названии столбца присутствуют пробелы"
 
@@ -96,9 +98,9 @@ async def post_file(request: Request, file: UploadFile = File(...), column_type:
         return RedirectResponse(redirect_url, status_code=status.HTTP_303_SEE_OTHER)
     await session.commit()
 
-    await cache_map(new_column_name, session)
+    await post_new_feature(new_column_name, session)
 
-    await update_all_settlements()
+    await cache_map(new_column_name, session)
 
     redirect_url = request.url_for('get_upload_form').include_query_params(
         message=f"Данные для конки {new_column_name} успешно загружены",
