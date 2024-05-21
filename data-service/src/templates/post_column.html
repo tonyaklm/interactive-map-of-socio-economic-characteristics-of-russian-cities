@@ -52,6 +52,7 @@
         }
 
 
+
 </style>
 
 <body>
@@ -65,6 +66,17 @@
         где имя первой колонки будет соответствовать сопоставляющей (id, oktmo) <br>
         и ее значения, а имя второй колонки соответствовать новой колонке и ее значения. <br>
         Также необходимо выбрать тип колонки (int = Integer, float = Float) <br>
+
+        Если вы вводите новый тип индикатора, то добавьте к нему описание и агрегирующую функцию из представленных: <br>
+        <br><b>avg</b>: взять среднее, <br>
+        <b>count</b>: посчитать количество, <br>
+        <b>sum</b>: взять сумму, <br>
+        <b>max</b>: взять максимум, <br>
+        <b>min</b>: взять минимум<br>
+
+        <div style="text-align: center;">
+            <p style="color: #004D4F;">По умолчанию агрегирующая функция=<b>avg</b></p>
+        </div>
 
         <div style="text-align: center;">
             <p style="color: #004D4F;">Если в индикаторе используется '_', то после знака '_' должен быть год из
@@ -91,16 +103,28 @@
             </select><br><br><br>
         </div>
 
+        <div class="input-group mb-3">
+            <label class="input-group-text label_shape" id="label_description" for="description" style="color:teal">Введите
+                краткое описание, если у вас новый индикатор:</label>
+            <input class="dropdown_shape" type="text" id="description" name="description" size="136"/>
+        </div>
+        <br>
+
+        <div class="input-group mb-3">
+            <label class="input-group-text label_shape" id="label_agg_func" for="agg_func" style="color:teal">Введите
+                аггрегирующую функцию:</label>
+            <input class="dropdown_shape" type="text" id="agg_func" name="agg_func" size="136"/>
+        </div>
+        <br>
+
         <div class="custom-file">
-            <input name="file" type="file" accept=".csv" class="custom-file-input" id="fileInput">
+            <input name="file" type="file" accept=".csv" class="custom-file-input" id="fileInput" required>
             <label class="custom-file-label load_shape" for="fileInput">Выберите файл</label>
         </div>
 
         <input class="btn btn-primary submit" type="submit" id="submit" value="Отправить">
     </form>
 </div>
-
-
 
 
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
@@ -124,6 +148,7 @@
 
 
 
+
 </script>
 
 <script>
@@ -142,7 +167,11 @@
         });
     }
 
-
+    document.getElementById("dropdown").addEventListener('mousedown', function() {
+        if (this.options.length === 1) {
+            showSubIndicator(this);
+        }
+    });
 
 
 

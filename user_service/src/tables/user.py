@@ -5,6 +5,7 @@ from sqlalchemy import Column, Integer, String, Boolean
 import os
 import jwt
 
+
 class User(Base):
     __tablename__ = 'user'
 
@@ -21,7 +22,8 @@ class User(Base):
         return pwd_context.verify(password, self.password_hash)
 
     def get_token(self):
-        token = jwt.encode({'user_id': self.id, "is_admin" : self.admin}, key=os.getenv("JWT_SECRET_KEY"), algorithm='HS256')
+        token = jwt.encode({'user_id': self.id, "is_admin": self.admin}, key=os.getenv("JWT_SECRET_KEY"),
+                           algorithm='HS256')
         return token
 
         # additional_claims = {"is_admin": self.admin}

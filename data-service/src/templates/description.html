@@ -51,6 +51,7 @@
                 margin-top: 100px;
         }
 
+
 </style>
 
 <a id="backButton" class="btn btn-primary back" href="/map/" role="button">Главная</a>
@@ -60,58 +61,32 @@
 </div><br>
 
 <div class="">
-    <h5 style='text-align: center'>Выберите название колонки, в которой хотите обновить значение,<br>
-        Введите значение сопоставляющей колонки,<br>
-        Выберите сопоставляющую колонку из {{matching_columns}},<br>
-        Введите значение на которое хотите заменить,<br>
-        Введите тип нового значения<br>
+    <h5 style='text-align: center'>Выберите название индикатора, описание которого хотите изменить из списка. <br>
+        Введите краткое описание (до 100 символов), оно будет отображаться на главной странице сайта<br>
         <br>
-        <br><p style="color: #004D4F;">Обновляемые колонки не могут быть среди дефолтных: {{unupdateable_columns}}</p>
     </h5>
-</div><br><hr><br>
+</div><br>
+<hr><br>
 
 <div>
-    <form method="POST" action="/update" enctype="multipart/form-data">
+    <form method="POST" action="/feature/description" enctype="multipart/form-data">
         <div style="text-align: center;">
             <p style="color: {{color}}; font-size:20px;">{{message}}</p>
         </div>
 
         <div class="input-group mb-3">
-            <label id="label" class="input-group-text label_shape" for="dropdown" style="color:teal">Выберите название колонки, которую хотите заменить:</label>
-            <select class="custom-select dropdown_shape" id="dropdown" name="column_name">
+            <label id="label" class="input-group-text label_shape" for="dropdown" style="color:teal">Выберите индикатор,
+                описание которого хотите заменить:</label>
+            <select class="custom-select dropdown_shape" id="dropdown" name="indicator">
             </select><br><br><br>
         </div>
 
         <br>
-        <div class="input-group mb-3">
-            <label id="label_matching_column" class="input-group-text label_shape" for="matching_dropdown" style="color:teal">Выберите колонку, по которой произойдет сопоставление:</label>
-            <select class="custom-select dropdown_shape" id="matching_dropdown" name="matching_column">
-                <option value="id">id</option>
-                <option value="oktmo">oktmo</option>
-            </select>
-        </div>
 
-        <br>
-
-        <div class="input-group mb-3">
-            <label class="input-group-text label_shape" id="label_matching_value" for="matching_value" style="color:teal">Введите значения для сопоставления:</label>
-            <input class="dropdown_shape" type="text" id="matching_value" name="matching_value" size="136" required/>
-        </div>
-        <br>
-
-        <div class="input-group mb-3">
-            <label class="input-group-text label_shape" style="color:teal" id="label_new_value" for="new_value">Введите новое значение:</label>
-            <input class="dropdown_shape" type="text" id="new_value" name="new_value" size="148" required/>
-        </div>
-        <br>
-
-        <div class="input-group mb-3">
-            <label class="input-group-text label_shape" style="color:teal" id="label_type_dropdown" for="type_dropdown">Выберите тип нового значения:</label>
-            <select class="custom-select dropdown_shape" id="type_dropdown" name="new_value_type">
-                <option value="Float">Float</option>
-                <option value="String">String</option>
-                <option value="Integer">Integer</option>
-            </select>
+        <div class="input-group mb-3" >
+            <label class="input-group-text label_shape" id="label_description" for="description" style="color:teal">Введите
+                краткое описание:</label>
+            <input required class="dropdown_shape" type="text" id="description" name="description" size="136"/>
         </div>
         <br>
 
@@ -133,7 +108,7 @@
 
 <script>
 
-    var columns = {{ columns|tojson }};
+    var columns = {{ indicator_types|tojson }};
     addOptions(columns);
 
     function addOptions(columns) {
@@ -152,7 +127,6 @@
             showSubIndicator(this);
         }
     });
-
 
 </script>
 

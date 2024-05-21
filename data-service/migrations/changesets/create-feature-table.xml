@@ -1,0 +1,45 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+        xmlns:pro="http://www.liquibase.org/xml/ns/pro"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd
+        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd
+        http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-latest.xsd">
+
+    <changeSet author="antonina" id="create-feature-table">
+        <createTable tableName="feature" remarks="Таблица с описание и характеристиками индикаторов">
+
+            <column autoIncrement="false" name="indicator_type" type="VARCHAR" remarks="Тип индикатора">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="indicator_type_pkey"/>
+            </column>
+
+            <column name="is_drawable" type="BOOLEAN" remarks="Нужно ли отрисовывать" defaultValueBoolean="false">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="years" type="INTEGER[]" remarks="Годы, за которые индикатор доступен" defaultValue="{}">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="min_value" type="FLOAT" remarks="Минимально допустимое значение иникатора">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="max_value" type="FLOAT" remarks="МАксимально допустимое значение иникатора">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="description" type="VARCHAR" remarks="Описание индикатора" defaultValue="">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="agg_function" type="VARCHAR" remarks="Агрегирующая функция" defaultValue="avg">
+                <constraints nullable="false"/>
+            </column>
+
+        </createTable>
+    </changeSet>
+
+</databaseChangeLog>

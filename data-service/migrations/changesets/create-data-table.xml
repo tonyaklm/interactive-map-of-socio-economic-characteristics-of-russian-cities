@@ -34,14 +34,6 @@
                 <constraints nullable="false"/>
             </column>
 
-            <column name="population" type="INTEGER" remarks="Население">
-                <constraints nullable="false"/>
-            </column>
-
-            <column name="children" type="INTEGER" remarks="Дети">
-                <constraints nullable="false"/>
-            </column>
-
             <column name="latitude_dms" type="VARCHAR" remarks="Ширина dms">
                 <constraints nullable="false"/>
             </column>
@@ -68,6 +60,14 @@
             </column>
 
             <column name="rosstat" type="INTEGER" remarks="rosstat">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="Population" type="INTEGER" remarks="Население">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="Children" type="INTEGER" remarks="Дети">
                 <constraints nullable="false"/>
             </column>
 

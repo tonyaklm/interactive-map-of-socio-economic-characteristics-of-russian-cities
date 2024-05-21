@@ -9,14 +9,14 @@ from io import BytesIO
 from models.data_models import CreateColumn, UpdateData
 from fastapi import HTTPException
 from cache.cache_maps import cache_map
-from cache.cache_graphs import update_all_settlements
-from common.sqlalchemy_data_type import matching_columns
+from common.sqlalchemy_data_type import matching_columns, available_agg_funcs, description_of_agg_func
 from sqlalchemy.exc import InvalidRequestError
 from tables.data import DataDao
 from typing import Optional
-import os
-from jose import jwt
+from utils.feature_data import post_new_feature
 from config import settings
+from models.user import UserData
+from utils.auth import get_user
 
 templates = Jinja2Templates(directory="templates")
 
@@ -25,16 +25,13 @@ router = APIRouter(prefix="/post")
 
 @router.post("/column")
 async def post_file(request: Request, file: UploadFile = File(...), column_type: str = Form(...),
+                    description: Optional[str] = Form(""), agg_func: Optional[str] = Form(None),
                     session: AsyncSession = Depends(get_session),
-                    access_token_cookie: Optional[str] = Cookie(default=None)):
-    if access_token_cookie == None:
+                    user: UserData = Depends(get_user)):
+    if not user.is_login or user.is_error:
         url = f'http://{settings.user_service_address}/login/'
         return RedirectResponse(url=url)
-    # if access_token_cookie != None:
-    #     claims = jwt.get_unverified_claims(access_token_cookie)
-    #     if not claims.get('is_admin'):
-    #         url = f'http://{os.getenv("INTERNAL_ADDRESS")}:{os.getenv("USER_SERVICE_PORT")}/login/'
-    #         return RedirectResponse(url=url)
+
     if not file:
         redirect_url = request.url_for('get_upload_form').include_query_params(message="Необходимо загрузить файл",
                                                                                color="red")
@@ -66,8 +63,16 @@ async def post_file(request: Request, file: UploadFile = File(...), column_type:
         year = new_column_name.split('_')[1]
         if not year or not year.isdigit():
             error_message = f"Если в индикаторе используется '_', то это должен быть год из чисел"
+        elif len(year) != 4 or year < "1970":
+            error_message = f"Год должен быть из 4 цифр и больше 1970, получен {year}"
     if new_column_name != new_column_name.strip():
         error_message = f"В названии столбца присутствуют пробелы"
+
+    if agg_func and agg_func not in available_agg_funcs:
+        error_message = f"Аггрегирующая функция должна быть из представаленных, получена '{agg_func}'"
+
+    if len(description) > 100:
+        error_message = f"Допустима длина описания - 100 символов"
 
     if error_message:
         redirect_url = request.url_for('get_upload_form').include_query_params(message=error_message,
@@ -96,9 +101,9 @@ async def post_file(request: Request, file: UploadFile = File(...), column_type:
         return RedirectResponse(redirect_url, status_code=status.HTTP_303_SEE_OTHER)
     await session.commit()
 
-    await cache_map(new_column_name, session)
+    await post_new_feature(new_column_name, session, description, agg_func)
 
-    await update_all_settlements()
+    await cache_map(new_column_name, session)
 
     redirect_url = request.url_for('get_upload_form').include_query_params(
         message=f"Данные для конки {new_column_name} успешно загружены",
@@ -107,19 +112,16 @@ async def post_file(request: Request, file: UploadFile = File(...), column_type:
 
 
 @router.get("/column")
-async def get_upload_form(request: Request, message: str = "", color: str = None,
-                          access_token_cookie: Optional[str] = Cookie(default=None)):
-    if access_token_cookie == None:
+async def get_upload_form(request: Request, message: Optional[str] = "", color: Optional[str] = None,
+                          user: UserData = Depends(get_user)):
+    if not user.is_login or user.is_error:
         url = f'http://{settings.user_service_address}/login/'
         return RedirectResponse(url=url)
-    # if access_token_cookie != None:
-    #     claims = jwt.get_unverified_claims(access_token_cookie)
-    #     if not claims.get('is_admin'):
-    #         url = f'http://{os.getenv("INTERNAL_ADDRESS")}:{os.getenv("USER_SERVICE_PORT")}/login/'
-    #         return RedirectResponse(url=url)
+
     return templates.TemplateResponse(name="post_column.html",
                                       context={"request": request,
                                                "types": ['Float', 'Integer'],
                                                "message": message,
+                                               "description_of_agg_func": description_of_agg_func,
                                                "color": color
                                                })
