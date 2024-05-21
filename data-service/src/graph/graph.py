@@ -128,7 +128,7 @@ class Graph:
             fig.add_scatter(x=years, y=list(region_data), name=f'Регион: {city.region}', mode='markers+lines')
 
             fig.update_layout(title=title_graph,
-                              xaxis_title=f"Годы",
+                              xaxis_title=f"Год",
                               yaxis_title='Значение индикатора',
                               legend_title_text=f'Город или регион',
                               hovermode="x"

@@ -1,6 +1,6 @@
 import uvicorn
 from fastapi import FastAPI
-from routers import update, post, map, delete
+from routers import update, post, map, delete, feature
 from contextlib import asynccontextmanager
 from cache.cache_maps import cache_maps
 from cache.cache_graphs import cache_graph
@@ -26,6 +26,7 @@ app.include_router(update.router)
 app.include_router(post.router)
 app.include_router(map.router)
 app.include_router(delete.router)
+app.include_router(feature.router)
 
 if __name__ == "__main__":
     uvicorn.run("main:app", host="0.0.0.0", port=8000)

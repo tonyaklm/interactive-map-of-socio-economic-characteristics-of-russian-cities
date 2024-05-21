@@ -9,7 +9,7 @@ from io import BytesIO
 from models.data_models import CreateColumn, UpdateData
 from fastapi import HTTPException
 from cache.cache_maps import cache_map
-from common.sqlalchemy_data_type import matching_columns
+from common.sqlalchemy_data_type import matching_columns, available_agg_funcs, description_of_agg_func
 from sqlalchemy.exc import InvalidRequestError
 from tables.data import DataDao
 from typing import Optional
@@ -25,6 +25,7 @@ router = APIRouter(prefix="/post")
 
 @router.post("/column")
 async def post_file(request: Request, file: UploadFile = File(...), column_type: str = Form(...),
+                    description: Optional[str] = Form(""), agg_func: Optional[str] = Form(None),
                     session: AsyncSession = Depends(get_session),
                     access_token_cookie: Optional[str] = Cookie(default=None)):
     if access_token_cookie == None:
@@ -71,6 +72,12 @@ async def post_file(request: Request, file: UploadFile = File(...), column_type:
     if new_column_name != new_column_name.strip():
         error_message = f"В названии столбца присутствуют пробелы"
 
+    if agg_func and agg_func not in available_agg_funcs:
+        error_message = f"Аггрегирующая функция должна быть из представаленных, получена '{agg_func}'"
+
+    if len(description) > 100:
+        error_message = f"Допустима длина описания - 100 символов"
+
     if error_message:
         redirect_url = request.url_for('get_upload_form').include_query_params(message=error_message,
                                                                                color="red")
@@ -98,7 +105,7 @@ async def post_file(request: Request, file: UploadFile = File(...), column_type:
         return RedirectResponse(redirect_url, status_code=status.HTTP_303_SEE_OTHER)
     await session.commit()
 
-    await post_new_feature(new_column_name, session)
+    await post_new_feature(new_column_name, session, description, agg_func)
 
     await cache_map(new_column_name, session)
 
@@ -109,7 +116,7 @@ async def post_file(request: Request, file: UploadFile = File(...), column_type:
 
 
 @router.get("/column")
-async def get_upload_form(request: Request, message: str = "", color: str = None,
+async def get_upload_form(request: Request, message: Optional[str] = "", color: Optional[str] = None,
                           access_token_cookie: Optional[str] = Cookie(default=None)):
     if access_token_cookie == None:
         url = f'http://{settings.user_service_address}/login/'
@@ -123,5 +130,6 @@ async def get_upload_form(request: Request, message: str = "", color: str = None
                                       context={"request": request,
                                                "types": ['Float', 'Integer'],
                                                "message": message,
+                                               "description_of_agg_func": description_of_agg_func,
                                                "color": color
                                                })

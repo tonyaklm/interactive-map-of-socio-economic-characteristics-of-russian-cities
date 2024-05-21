@@ -164,6 +164,9 @@
             <a class="dropdown-item" href="/delete/column/">Удалить данные</a>
             {% endif %}
             {% if is_admin %}
+            <a class="dropdown-item" href="/feature/description/">Изменить описание</a>
+            {% endif %}
+            {% if is_admin %}
             <a id="register" class="dropdown-item" href="{{ href_register }}">Добавить пользователя</a>
             {% endif %}
             <a class="dropdown-item" href="#">Инструкция</a>
@@ -173,9 +176,9 @@
 
 <form action="/map/indicator" method="get">
     <div class="input-group mb-3">
-        <label class="input-group-text label_shape" for="inputGroupSelect01" style="color:teal">Выберите
+        <label class="input-group-text label_shape" for="dropdown" style="color:teal">Выберите
             индикатор</label>
-        <select class="custom-select dropdown_shape" id="inputGroupSelect01" name="indicator"
+        <select class="custom-select dropdown_shape" id="dropdown" name="indicator"
                 onchange="showSubIndicator(this)">
         </select>
     </div>
@@ -246,7 +249,7 @@
     addOptions(indicator_types, descriptions);
 
     function addOptions(indicator_types, descriptions) {
-        var dropdown = document.getElementById("inputGroupSelect01");
+        var dropdown = document.getElementById("dropdown");
         indicator_types.forEach(function(option) {
             var newOption = document.createElement("option");
             newOption.text = descriptions[option];
@@ -293,16 +296,16 @@
         }
     });
 
-    document.getElementById("inputGroupSelect01").addEventListener('mousedown', function() {
+    document.getElementById("dropdown").addEventListener('mousedown', function() {
         if (this.options.length === 1) {
             showSubIndicator(this);
         }
     });
 
     window.onload = function() {
-        var indicator = document.getElementById("inputGroupSelect01").value;
+        var indicator = document.getElementById("dropdown").value;
          if (drawable_columns.includes(indicator)) {
-            showSubIndicator(document.getElementById("inputGroupSelect01"));
+            showSubIndicator(document.getElementById("dropdown"));
         }
     };
 

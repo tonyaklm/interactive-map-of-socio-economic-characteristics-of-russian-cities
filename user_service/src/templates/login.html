@@ -29,10 +29,10 @@
 </style>
 
 <script>
-        function setHref() {
-            document.getElementById('backButton').href = window.location.protocol + "//" + window.location.hostname + "/map/";
-        }
-        window.onload = setHref;
+    function setHref() {
+        document.getElementById('backButton').href = window.location.protocol + "//" + window.location.hostname + ":8005/map/";
+    }
+    window.onload = setHref;
 </script>
 
 <a id="backButton" class="btn btn-primary back" href="/map/" role="button">Главная</a>
