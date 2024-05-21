@@ -11,7 +11,6 @@ async def cache_maps():
 
         for indicator in await get_indicator_names(session):
             await cache_map(indicator, session)
-            break
         FoliumMap().save()
 
 
@@ -21,5 +20,4 @@ async def cache_map(indicator: str, session: AsyncSession):
     folium_map.add_colormap(data)
     for row in data:
         folium_map.add_marker(row)
-    # folium_map.add_none_markers()
     folium_map.save()
