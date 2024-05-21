@@ -12,6 +12,8 @@ from jose import jwt
 from config import settings
 from utils.data import get_indicator_names
 from utils.feature_data import delete_feature
+from models.user import UserData
+from utils.auth import get_user
 
 templates = Jinja2Templates(directory="templates")
 
@@ -20,13 +22,8 @@ router = APIRouter(prefix="/delete")
 
 @router.get("/column")
 async def get_delete_page(request: Request, session: AsyncSession = Depends(get_session), message: str = "",
-                          color: str = None, access_token_cookie: Optional[str] = Cookie(default=None)):
-    if access_token_cookie == None:
-        url = f'http://{settings.user_service_address}/login/'
-        return RedirectResponse(url=url)
-    if access_token_cookie != None:
-        claims = jwt.get_unverified_claims(access_token_cookie)
-        if not claims.get('is_admin'):
+                          color: str = None, user: UserData = Depends(get_user)):
+    if not user.is_login or user.is_error:
             url = f'http://{settings.user_service_address}/login/'
             return RedirectResponse(url=url)
     indicator_names = await get_indicator_names(session)
@@ -40,15 +37,10 @@ async def get_delete_page(request: Request, session: AsyncSession = Depends(get_
 @router.post("/column")
 async def delete_column(request: Request, column_name: str = Form(...),
                         session: AsyncSession = Depends(get_session),
-                        access_token_cookie: Optional[str] = Cookie(default=None)):
-    if access_token_cookie == None:
+                        user: UserData = Depends(get_user)):
+    if not user.is_login or user.is_error:
         url = f'http://{settings.user_service_address}/login/'
         return RedirectResponse(url=url)
-    if access_token_cookie != None:
-        claims = jwt.get_unverified_claims(access_token_cookie)
-        if not claims.get('is_admin'):
-            url = f'http://{settings.user_service_address}/login/'
-            return RedirectResponse(url=url)
     indicator_names = await get_indicator_names(session)
     if column_name not in indicator_names:
         redirect_url = request.url_for('get_delete_page').include_query_params(

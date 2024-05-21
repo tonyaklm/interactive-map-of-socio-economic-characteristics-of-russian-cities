@@ -14,9 +14,9 @@ from sqlalchemy.exc import InvalidRequestError
 from tables.data import DataDao
 from typing import Optional
 from utils.feature_data import post_new_feature
-import os
-from jose import jwt
 from config import settings
+from models.user import UserData
+from utils.auth import get_user
 
 templates = Jinja2Templates(directory="templates")
 
@@ -27,15 +27,11 @@ router = APIRouter(prefix="/post")
 async def post_file(request: Request, file: UploadFile = File(...), column_type: str = Form(...),
                     description: Optional[str] = Form(""), agg_func: Optional[str] = Form(None),
                     session: AsyncSession = Depends(get_session),
-                    access_token_cookie: Optional[str] = Cookie(default=None)):
-    if access_token_cookie == None:
+                    user: UserData = Depends(get_user)):
+    if not user.is_login or user.is_error:
         url = f'http://{settings.user_service_address}/login/'
         return RedirectResponse(url=url)
-    if access_token_cookie != None:
-        claims = jwt.get_unverified_claims(access_token_cookie)
-        if not claims.get('is_admin'):
-            url = f'http://{settings.user_service_address}/login/'
-            return RedirectResponse(url=url)
+
     if not file:
         redirect_url = request.url_for('get_upload_form').include_query_params(message="Необходимо загрузить файл",
                                                                                color="red")
@@ -117,15 +113,11 @@ async def post_file(request: Request, file: UploadFile = File(...), column_type:
 
 @router.get("/column")
 async def get_upload_form(request: Request, message: Optional[str] = "", color: Optional[str] = None,
-                          access_token_cookie: Optional[str] = Cookie(default=None)):
-    if access_token_cookie == None:
+                          user: UserData = Depends(get_user)):
+    if not user.is_login or user.is_error:
         url = f'http://{settings.user_service_address}/login/'
         return RedirectResponse(url=url)
-    if access_token_cookie != None:
-        claims = jwt.get_unverified_claims(access_token_cookie)
-        if not claims.get('is_admin'):
-            url = f'http://{settings.user_service_address}/login/'
-            return RedirectResponse(url=url)
+
     return templates.TemplateResponse(name="post_column.html",
                                       context={"request": request,
                                                "types": ['Float', 'Integer'],

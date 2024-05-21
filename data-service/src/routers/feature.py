@@ -8,6 +8,8 @@ from jose import jwt
 from config import settings
 from utils.description import get_indicator_types
 from utils.feature_data import update_feature_description
+from models.user import UserData
+from utils.auth import get_user
 
 templates = Jinja2Templates(directory="templates")
 
@@ -17,15 +19,10 @@ router = APIRouter(prefix="/feature")
 @router.get("/description")
 async def get_update_description(request: Request, message: str = "", color: str = None,
                                  session: AsyncSession = Depends(get_session),
-                                 access_token_cookie: Optional[str] = Cookie(default=None)):
-    if access_token_cookie == None:
+                                 user: UserData = Depends(get_user)):
+    if not user.is_login or user.is_error:
         url = f'http://{settings.user_service_address}/login/'
         return RedirectResponse(url=url)
-    if access_token_cookie != None:
-        claims = jwt.get_unverified_claims(access_token_cookie)
-        if not claims.get('is_admin'):
-            url = f'http://{settings.user_service_address}/login/'
-            return RedirectResponse(url=url)
 
     indicator_types = await get_indicator_types(session)
     return templates.TemplateResponse(name="description.html",
@@ -39,15 +36,11 @@ async def get_update_description(request: Request, message: str = "", color: str
 @router.post("/description")
 async def update_description(request: Request, indicator: str = Form(...), description: str = Form(""),
                              session: AsyncSession = Depends(get_session),
-                             access_token_cookie: Optional[str] = Cookie(default=None)):
-    if access_token_cookie == None:
+                             user: UserData = Depends(get_user)):
+    if not user.is_login or user.is_error:
         url = f'http://{settings.user_service_address}/login/'
         return RedirectResponse(url=url)
-    if access_token_cookie != None:
-        claims = jwt.get_unverified_claims(access_token_cookie)
-        if not claims.get('is_admin'):
-            url = f'http://{settings.user_service_address}/login/'
-            return RedirectResponse(url=url)
+
     error_message = None
 
     indicator_types = await get_indicator_types(session)

@@ -52,6 +52,7 @@
         }
 
 
+
 </style>
 
 <body>
@@ -66,7 +67,7 @@
         и ее значения, а имя второй колонки соответствовать новой колонке и ее значения. <br>
         Также необходимо выбрать тип колонки (int = Integer, float = Float) <br>
 
-        Если вы вводите новый тип индикатора, то добавьте к нему описание и аггрегирующую функцию из представленных: <br>
+        Если вы вводите новый тип индикатора, то добавьте к нему описание и агрегирующую функцию из представленных: <br>
         <br><b>avg</b>: взять среднее, <br>
         <b>count</b>: посчитать количество, <br>
         <b>sum</b>: взять сумму, <br>
@@ -103,13 +104,15 @@
         </div>
 
         <div class="input-group mb-3">
-            <label class="input-group-text label_shape" id="label_description" for="description" style="color:teal">Введите краткое описание, если у вас новый индикатор:</label>
+            <label class="input-group-text label_shape" id="label_description" for="description" style="color:teal">Введите
+                краткое описание, если у вас новый индикатор:</label>
             <input class="dropdown_shape" type="text" id="description" name="description" size="136"/>
         </div>
         <br>
 
         <div class="input-group mb-3">
-            <label class="input-group-text label_shape" id="label_agg_func" for="agg_func" style="color:teal">Введите аггрегирующую функцию:</label>
+            <label class="input-group-text label_shape" id="label_agg_func" for="agg_func" style="color:teal">Введите
+                аггрегирующую функцию:</label>
             <input class="dropdown_shape" type="text" id="agg_func" name="agg_func" size="136"/>
         </div>
         <br>
@@ -122,8 +125,6 @@
         <input class="btn btn-primary submit" type="submit" id="submit" value="Отправить">
     </form>
 </div>
-
-
 
 
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
@@ -144,6 +145,7 @@
       var labelNextToInput = this.nextElementSibling;
       labelNextToInput.innerText = fileName;
     });
+
 
 
 
@@ -170,6 +172,7 @@
             showSubIndicator(this);
         }
     });
+
 
 
 </script>
