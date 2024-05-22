@@ -3,6 +3,7 @@ import asyncio
 from dash import Dash, html, dcc, Input, Output, State
 import plotly.express as px
 import plotly.graph_objs as go
+from sqlalchemy.exc import ProgrammingError
 
 from graph.utils_graph import get_indicators, get_settlement, get_years, get_indicators_data, get_region_data
 
@@ -69,7 +70,13 @@ class Graph:
                     city_name = None
                 except ValueError:
                     city_name = None
-                city = asyncio.run(get_settlement(min_mun_id))
+                try:
+                    city = asyncio.run(get_settlement(min_mun_id))
+                except ProgrammingError:
+                    city_name = None
+                    city = None
+                except IndexError:
+                    city_name = None
                 if city:
                     city_name = city.settlement
 
@@ -87,7 +94,10 @@ class Graph:
         def update_range(indicator_chosen):
             if not indicator_chosen:
                 return None, None, None, None, 1
-            indicators_years = asyncio.run(get_years(indicator_chosen))
+            try:
+                indicators_years = asyncio.run(get_years(indicator_chosen))
+            except ProgrammingError:
+                return None, None, None, None, 1
             min_value = min(indicators_years)
             max_value = max(indicators_years)
             range_value = [min_value, max_value]
@@ -111,9 +121,15 @@ class Graph:
                 return none_value
             except ValueError:
                 return none_value
-            city = asyncio.run(get_settlement(min_mun_id))
+            try:
+                city = asyncio.run(get_settlement(min_mun_id))
+            except ProgrammingError:
+                return none_value
+            except IndexError:
+                city_name = None
             if not city:
                 return none_value
+
             title_graph = 'Значение индикатора {} по городу {}'.format(indicator_chosen, city.settlement)
             indicators_years = asyncio.run(get_years(indicator_chosen))
             years = [year for year in indicators_years if range_chosen[0] <= year <= range_chosen[1]]
@@ -121,6 +137,8 @@ class Graph:
                 settlement_data = asyncio.run(get_indicators_data(city, indicator_chosen, years))
                 region_data = asyncio.run(get_region_data(city, indicator_chosen, years))
             except AttributeError:
+                return none_value
+            except ProgrammingError:
                 return none_value
 
             fig = go.Figure()
