@@ -12,3 +12,11 @@ class UpdateData(BaseModel):
 class CreateColumn(BaseModel):
     column_name: str
     column_type: str
+
+
+class City(BaseModel):
+    settlement: str
+    region: str
+    region_id: int
+    longitude_dd: float
+    latitude_dd: float
