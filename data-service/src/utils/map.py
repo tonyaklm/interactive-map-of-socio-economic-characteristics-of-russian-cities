@@ -6,8 +6,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from tables.data import DataDao
 
 colors_names = [
-    'lightgreen', 'darkblue', 'blue', 'orange', 'cadetblue', 'darkpurple', 'beige', 'green', 'darkred', 'lightblue',
-    'white', 'darkgreen', 'lightgray', 'black', 'purple', 'pink', 'gray', 'lightred'
+    'lightgreen', 'darkblue', 'blue', 'orange', 'cadetblue', 'beige', 'green', 'darkred', 'lightblue', 'darkgreen',
+    'purple', 'pink', 'gray', 'lightred'
 ]
 
 

@@ -126,7 +126,7 @@ class Graph:
             except ProgrammingError:
                 return none_value
             except IndexError:
-                city_name = None
+                return none_value
             if not city:
                 return none_value
 
