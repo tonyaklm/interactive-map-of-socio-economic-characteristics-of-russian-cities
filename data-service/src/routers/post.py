@@ -76,6 +76,8 @@ async def post_file(request: Request, file: UploadFile = File(...), column_type:
 
     if len(description) > 100:
         error_message = f"Допустима длина описания - 100 символов"
+    if len(new_column_name) > 50:
+        error_message = f"Допустима длина названия - 50 символов"
 
     if error_message:
         redirect_url = request.url_for('get_upload_form').include_query_params(message=error_message,

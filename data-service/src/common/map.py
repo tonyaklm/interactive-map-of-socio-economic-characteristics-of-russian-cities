@@ -33,15 +33,22 @@ class FoliumMap:
     async def add_marker(self, item: Dict) -> None:
         tooltip_text = f'Регион: <b>{item["region"]}</b><br>Город: <b>{item["settlement"]}</b>'
 
-        popup_text = f'Значение <b>{self.indicator}</b> для города <b>{item["settlement"]}</b><br>:' \
+        if self.indicator.find('_') != -1:
+            indicator_text = f"{self.indicator.split('_')[0]} за {self.indicator.split('_')[1]} год"
+        else:
+            indicator_text = f"{self.indicator}"
+
+        popup_text = f'Значение <b>{indicator_text}</b> для города <b>{item["settlement"]}</b><br>:' \
                      f' {str(item[self.indicator])}<br><br>' \
                      f'Посмотреть <a href="http://{settings.data_service_address}/dashboard/?id={item["min_municipality_id"]}"' \
                      f' target="_blank">график</a>' \
                      f' индикаторов по годам'
 
         marker_color = '#000000'
+        layer = self.none_markers_layer
         if item[self.indicator] is not None and not math.isnan(item[self.indicator]):
             marker_color = self.colormap(item[self.indicator])
+            layer = self.markers_layer
 
         marker = folium.CircleMarker([item["latitude_dd"], item["longitude_dd"]],
                                      radius=10,
@@ -49,9 +56,7 @@ class FoliumMap:
                                      tooltip=folium.Tooltip(tooltip_text),
                                      fill=True, color=marker_color,
                                      fill_color=marker_color,
-                                     fill_opacity=1.0).add_to(self.markers_layer)
-        if marker_color == '#000000':
-            marker.add_to(self.none_markers_layer)
+                                     fill_opacity=1.0).add_to(layer)
         self.map.keep_in_front(marker)
 
     async def add_colormap(self, min_value: float, max_value: float) -> None:

@@ -15,7 +15,7 @@ from utils.column import get_columns
 from tables.data import DataDao
 from utils.convert_value import get_new_value
 from cache.cache_maps import update_cache_map
-from common.sqlalchemy_data_type import matching_columns, unupdateable_columns
+from common.sqlalchemy_data_type import matching_columns, technical_columns
 from models.user import UserData
 from utils.auth import get_user
 from config import settings
@@ -36,7 +36,7 @@ async def get_update_column(request: Request, message: str = "", color: str = No
                                                "message": message,
                                                "color": color,
                                                "matching_columns": matching_columns,
-                                               "unupdateable_columns": unupdateable_columns
+                                               "unupdateable_columns": technical_columns
                                                })
 
 
@@ -49,7 +49,7 @@ async def get_update_value(request: Request, message: str = "", color: str = Non
         return RedirectResponse(url=url)
 
     columns = await get_columns(DataDao.__tablename__, session)
-    column_names = set(columns.keys()).difference(unupdateable_columns)
+    column_names = set(columns.keys()).difference(technical_columns)
 
     return templates.TemplateResponse(name="update_value.html",
                                       context={"request": request,
@@ -57,7 +57,7 @@ async def get_update_value(request: Request, message: str = "", color: str = Non
                                                "message": message,
                                                "color": color,
                                                "matching_columns": matching_columns,
-                                               "unupdateable_columns": unupdateable_columns
+                                               "unupdateable_columns": technical_columns
                                                })
 
 
@@ -98,11 +98,11 @@ async def update_column(request: Request, file: UploadFile = File(...),
         error_message = f"""Сопостовляющая колонка должна быть одна из 
              {matching_columns}, введена {matching_column}"""
     columns = await get_columns(DataDao.__tablename__, session)
-    column_names = set(columns.keys()).difference(unupdateable_columns)
+    column_names = set(columns.keys()).difference(technical_columns)
 
     for column in new_data.columns.values.tolist()[1:]:
-        if column in unupdateable_columns:
-            error_message = f"""Колонка с обновляемыми данными не может быть ни одной из {unupdateable_columns}. \n
+        if column in technical_columns:
+            error_message = f"""Колонка с обновляемыми данными не может быть ни одной из {technical_columns}. \n
                                     Получена колонка {column}"""
             break
         if column not in column_names:
@@ -147,6 +147,7 @@ async def update_value(request: Request, column_name: str = Form(...), matching_
                        matching_value: float = Form(...), new_value: str = Form(...), new_value_type: str = Form(...),
                        session: AsyncSession = Depends(get_session),
                        user: UserData = Depends(get_user)):
+    global converted_new_value
     if not user.is_login or user.is_error:
         url = f'http://{settings.user_service_address}/login/'
         return RedirectResponse(url=url)
@@ -155,21 +156,24 @@ async def update_value(request: Request, column_name: str = Form(...), matching_
         error_message = f"""Сопостовляющая колонка должна быть одна из 
                  {matching_columns}, введена {matching_column}"""
     columns = await get_columns(DataDao.__tablename__, session)
-    column_names = set(columns.keys()).difference(unupdateable_columns)
+    column_names = set(columns.keys()).difference(technical_columns)
 
-    if column_name in unupdateable_columns:
-        error_message = f"""Колонка с обновляемыми данными не может быть ни одной из {unupdateable_columns}\n
+    if column_name in technical_columns:
+        error_message = f"""Колонка с обновляемыми данными не может быть ни одной из {technical_columns}\n
                                     Получена колонка {column_name}"""
     if column_name not in column_names:
         error_message = f"""Колонка с обновляемыми данными должна быть среди существующих.\n
                                 Колонки с имененим {column_name} не существует.\n
                                 Вы можете повторить запрос для других колонок."""
+    try:
+        converted_new_value = get_new_value(new_value, new_value_type)
+    except ValueError:
+        error_message = f"""Введен неверный тип данных"""
 
     if error_message:
         redirect_url = request.url_for('get_update_value').include_query_params(message=error_message,
                                                                                 color="red")
         return RedirectResponse(redirect_url, status_code=status.HTTP_303_SEE_OTHER)
-    converted_new_value = get_new_value(new_value, new_value_type)
     try:
         new_value = converted_new_value
         if math.isnan(converted_new_value):
