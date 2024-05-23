@@ -15,6 +15,7 @@ async def cache_maps():
 
         for indicator in await get_indicator_names(session):
             await cache_map(indicator, session, regions)
+            break
 
         folium_map = FoliumMap()
         await folium_map.create(regions, session)

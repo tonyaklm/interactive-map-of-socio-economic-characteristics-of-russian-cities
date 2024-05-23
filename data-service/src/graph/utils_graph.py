@@ -65,3 +65,10 @@ async def get_region_data(city: DataDao, indicator: str, years: List[int]):
                                                    agg_func,
                                                    session)
         return data[0]
+
+
+async def get_one_description(indicator: str) -> str:
+    async with async_session() as session:
+        description = await repo.select_indicators([FeatureDao.description], [FeatureDao.indicator_type == indicator],
+                                                   session)
+    return description.scalar()

@@ -5,7 +5,8 @@ import plotly.express as px
 import plotly.graph_objs as go
 from sqlalchemy.exc import ProgrammingError
 
-from graph.utils_graph import get_indicators, get_settlement, get_years, get_indicators_data, get_region_data
+from graph.utils_graph import get_indicators, get_settlement, get_years, get_indicators_data, get_region_data, \
+    get_one_description
 
 
 class Graph:
@@ -17,26 +18,31 @@ class Graph:
     def create(self) -> None:
         self.app.layout = html.Div([
             dcc.Location(id='url', refresh=False),
-            html.H1(style={'text-align': 'center'}, id='title-graph'),
+            html.H2(style={'text-align': 'center'}, id='title-graph'),
             html.Div([
                 html.Div([
-                    html.Label(['Выберите индикатор:'], style={'font-weight': 'bold'}),
+                    html.Label(['Выберите индикатор:'], style={'font-weight': 'bold', 'margin-left': '0%'}),
                     dcc.Dropdown(
                         placeholder='Выберите индикатор',
                         id='dropdown',
                     )
                 ],
-                    style={'width': '49%', 'display': 'inline-block'}),
-                html.Div(children='Выберите промежуток времени'),
-                dcc.RangeSlider(step=1,
-                                id='range'),
+                    style={'width': '80%', 'display': 'inline-block', 'margin-left': '1%'}),
+                html.Div([
+                    html.Label(['Выберите промежуток времени'], style={'font-weight': 'bold',
+                                                                       'margin-top': '2%',
+                                                                       'margin-left': '0%'}),
+                    dcc.RangeSlider(step=1,
+                                    id='range'
+                                    )
+                ], style={'width': '92%', 'display': 'inline-block', 'margin-left': '1%'}),
 
                 html.Div([
                     dcc.Graph(
                         id='crossfilter-indicator',
-                        style={'margin-top': '20px'}
+                        style={'margin-top': '1%'}
                     )
-                ], style={'width': '80%', 'margin': '10 auto'})
+                ], style={'width': '95%', 'margin': '1% 0'})
             ])
 
         ])
@@ -61,6 +67,7 @@ class Graph:
             Input('url', 'search')
         )
         def update_title(search):
+            global city
             city_name = None
             if search.find('id=') != -1:
                 min_mun_id = 0
@@ -130,7 +137,10 @@ class Graph:
             if not city:
                 return none_value
 
-            title_graph = 'Значение индикатора {} по городу {}'.format(indicator_chosen, city.settlement)
+            description = asyncio.run(get_one_description(indicator_chosen))
+
+            title_graph = 'Значение индикатора {}:{} по городу {}'.format(indicator_chosen, description,
+                                                                          city.settlement)
             indicators_years = asyncio.run(get_years(indicator_chosen))
             years = [year for year in indicators_years if range_chosen[0] <= year <= range_chosen[1]]
             try:
