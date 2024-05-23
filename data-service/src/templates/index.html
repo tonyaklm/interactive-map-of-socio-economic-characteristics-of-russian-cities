@@ -110,12 +110,17 @@
 
         .btn-group {
             position: absolute;
-            top: 10px; /* Расстояние от верхнего края страницы */
-            left: 10px; /* Расстояние от правого края страницы */
+            top: 1%; /* Расстояние от верхнего края страницы */
+            left: 1%; /* Расстояние от правого края страницы */
+            right: 40%;
         }
 
 
-
+        .map_center {
+            position: absolute;
+            top: 40%;
+            left: 40%;
+        }
 
 
 
@@ -134,8 +139,13 @@
 
 </head>
 <body>
-<h1 align="center" class="lead label">Интерактивная карта социально-экономических индикаторов городов
-    России</h1>
+<div style="text-align: center;">
+<!--<div>-->
+    <h1 class="lead label">Интерактивная карта социально-экономических индикаторов</h1>
+    <h1 class="lead label">городов России</h1>
+</div>
+<!--<h1 align="center" class="lead label">Интерактивная карта социально-экономических индикаторов городов-->
+<!--    России</h1>-->
 <header>
     <div class="btn-group">
         <button type="button" class="btn btn-primary">Меню</button>
@@ -143,11 +153,6 @@
                 aria-expanded="false">
         </button>
         <div class="dropdown-menu">
-            {% if is_login %}
-                <a id="logout" class="dropdown-item" href="{{ href_logout }}">Выйти</a>
-            {% else %}
-                <a id="login" class="dropdown-item" href="{{ href_login }}">Войти</a>
-            {% endif %}
             {% if is_login %}
                 <a class="dropdown-item" href="/post/column/">Загрузить данные</a>
             {% endif %}
@@ -166,7 +171,15 @@
             {% if is_admin %}
                 <a id="register" class="dropdown-item" href="{{ href_register }}">Добавить пользователя</a>
             {% endif %}
-            <a class="dropdown-item" href="#">Инструкция</a>
+            <a class="dropdown-item" href="/map/info/">Инструкция</a>
+            {% if is_login %}
+                <a class="dropdown-item" href="{{ href_change_password }}">Изменить пароль</a>
+            {% endif %}
+            {% if is_login %}
+                <a id="logout" class="dropdown-item" href="{{ href_logout }}">Выйти</a>
+            {% else %}
+                <a id="login" class="dropdown-item" href="{{ href_login }}">Войти</a>
+            {% endif %}
         </div>
     </div>
 </header>
@@ -209,7 +222,12 @@
 
 </script>
 
-<div id="loading" style="display: block; position: absolute; top: 60%; left: 50%; transform: translate(-50%, -50%);">
+<!--<div id="loading" class = "map_center" style="display: flex; justify-content: center; align-items: center; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 9999;">-->
+<!--    <img src="../static/images/loading_circle.gif" alt="Loading..." style="width: 100px; height: 100px;">-->
+<!--</div>-->
+
+
+<div id="loading" style="display: block; position: fixed; top: 50vh; left: 50%; transform: translate(-50%, -50%);">
     <img src="../static/images/loading_circle.gif" alt="Loading..." style="width: 100px; height: 100px;">
 </div>
 

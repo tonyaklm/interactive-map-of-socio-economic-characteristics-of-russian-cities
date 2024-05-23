@@ -69,6 +69,7 @@ async def update_column(request: Request, file: UploadFile = File(...),
     if not user.is_login or user.is_error:
         url = f'http://{settings.user_service_address}/login/'
         return RedirectResponse(url=url)
+
     if not file:
         redirect_url = request.url_for('get_update_column').include_query_params(message="Необходимо загрузить файл",
                                                                                  color="red")

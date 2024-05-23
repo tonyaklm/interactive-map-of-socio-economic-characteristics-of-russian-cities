@@ -23,6 +23,7 @@
             margin-top: 50px;
             margin-bottom: 10px;
             margin-right: 10px;
+            height: 38px;
         }
 
         .submit {
@@ -46,8 +47,8 @@
         }
 
         .submit {
-                margin-left: 400x;
-                margin-right: 700px;
+                margin-left: 45%;
+                margin-right: 50%;
                 margin-top: 100px;
         }
 
@@ -66,7 +67,8 @@
         Введите значение на которое хотите заменить,<br>
         Введите тип нового значения<br>
         <br>
-        <br><p style="color: #004D4F;">Обновляемые колонки не могут быть среди дефолтных: {{unupdateable_columns}}</p>
+        <br><p style="color: #004D4F;">Обновляемые колонки не могут быть среди дефолтных:</p>
+        <p style="color: #004D4F;">{{unupdateable_columns}}</p>
     </h5>
 </div><br><hr><br>
 
@@ -95,13 +97,13 @@
 
         <div class="input-group mb-3">
             <label class="input-group-text label_shape" id="label_matching_value" for="matching_value" style="color:teal">Введите значения для сопоставления:</label>
-            <input class="dropdown_shape" type="text" id="matching_value" name="matching_value" size="136" required/>
+            <input class="form-control dropdown_shape" type="text" id="matching_value" name="matching_value" size="136" required/>
         </div>
         <br>
 
         <div class="input-group mb-3">
             <label class="input-group-text label_shape" style="color:teal" id="label_new_value" for="new_value">Введите новое значение:</label>
-            <input class="dropdown_shape" type="text" id="new_value" name="new_value" size="148" required/>
+            <input class="form-control dropdown_shape" type="text" id="new_value" name="new_value" size="148" required/>
         </div>
         <br>
 

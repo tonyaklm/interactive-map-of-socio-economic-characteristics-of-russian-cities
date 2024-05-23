@@ -25,10 +25,6 @@ async def get_delete_page(request: Request, session: AsyncSession = Depends(get_
         url = f'http://{settings.user_service_address}/login/'
         return RedirectResponse(url=url)
     indicator_names = await get_indicator_names(session)
-
-    columns = await get_columns(DataDao.__tablename__, session)
-    column_names = list(columns.keys())[15:]
-
     return templates.TemplateResponse(name="delete_column.html",
                                       context={"request": request,
                                                "columns": sorted(list(indicator_names)),
@@ -45,13 +41,10 @@ async def delete_column(request: Request, column_name: str = Form(...),
         return RedirectResponse(url=url)
     indicator_names = await get_indicator_names(session)
     if column_name not in indicator_names:
-        columns = await get_columns(DataDao.__tablename__, session)
-        column_names = list(columns.keys())[15:]
-        if column_name not in column_names:
-            redirect_url = request.url_for('get_delete_page').include_query_params(
-                message=f"Индикатора {column_name} не сущетвует",
-                color="red")
-            return RedirectResponse(redirect_url, status_code=status.HTTP_303_SEE_OTHER)
+        redirect_url = request.url_for('get_delete_page').include_query_params(
+            message=f"Индикатора {column_name} не сущетвует",
+            color="red")
+        return RedirectResponse(redirect_url, status_code=status.HTTP_303_SEE_OTHER)
     try:
         await delete_feature(column_name, session)
         response = await delete_indicator(column_name, session)
