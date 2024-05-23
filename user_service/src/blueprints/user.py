@@ -5,7 +5,7 @@ from flask import Blueprint
 from flask import flash, make_response, session
 from flask_jwt_extended import get_jwt, create_access_token, get_jwt_identity, set_access_cookies, set_refresh_cookies, \
     create_refresh_token, unset_jwt_cookies
-from utils.forms import LoginForm, RegisterForm
+from utils.forms import LoginForm, RegisterForm, UpdateForm
 from flask import render_template, flash, redirect, request, url_for
 from tables.user import User
 from db import db_session
@@ -89,26 +89,24 @@ def login():
 @blueprint.route('/get_token/', methods=['GET'])
 def get_token():
     if request.method == 'GET':
-            token = request.cookies.get('access_token_cookie')
-            if not token:
-                print("here")
-                return Response("Access token not found", status=401)
-            else:
-                try:
-                    data = jwt.decode(token, os.getenv("JWT_SECRET_KEY"), algorithms=['HS256'])
-                    is_login = True
-                    is_admin = data.get('is_admin', False)
-                    return {'is_admin': is_admin, 'is_login': is_login}, 200
-                except jwt.ExpiredSignatureError:
-                    print(3)
-                    return Response("ExpiredSignatureError", status=402)
-                except jwt.InvalidTokenError:
-                    print(2)
-                    return Response("InvalidTokenError", status=403)
+        token = request.cookies.get('access_token_cookie')
+        if not token:
+            return Response("Access token not found", status=401)
+        else:
+            try:
+                data = jwt.decode(token, os.getenv("JWT_SECRET_KEY"), algorithms=['HS256'])
+                is_login = True
+                is_admin = data.get('is_admin', False)
+                return {'is_admin': is_admin, 'is_login': is_login}, 200
+            except jwt.ExpiredSignatureError:
+                print(3)
+                return Response("ExpiredSignatureError", status=402)
+            except jwt.InvalidTokenError:
+                print(2)
+                return Response("InvalidTokenError", status=403)
     else:
         print(request)
         return Response("Unsupported method", status=404)
-
 
 
 # @blueprint.after_request
@@ -143,6 +141,60 @@ def logout():
             response.delete_cookie("access_token_cookie")
             # response.delete_cookie("refresh_token_cookie")
             return response
+        except jwt.ExpiredSignatureError:
+            return redirect(url_for('user.login'))
+        except jwt.InvalidTokenError:
+            return redirect(url_for('user.login'))
+
+
+@blueprint.route('/change_password/', methods=['GET', 'POST'])
+# @jwt_required()
+def change_password():
+    token = request.cookies.get('access_token_cookie')
+    if not token:
+        return redirect(url_for('user.login'))
+    else:
+        try:
+            data = jwt.decode(token, os.getenv("JWT_SECRET_KEY"), algorithms=['HS256'])
+            user_id = data['user_id']
+            user = db_session.query(User).filter_by(id=user_id).first()
+            if user:
+                form = UpdateForm(request.form)
+                if request.method == 'POST' and form.validate():
+                    if db_session.query(User).filter_by(login=form.login.data).first() is None:
+                        flash('Пользователя с таким Login не существует', 'error')
+                        return render_template('change_password.html', form=form)
+                    else:
+                        if user.admin == False and user.login != form.login.data:
+                            flash('Вы неправильно указали свой Login', 'error')
+                            return render_template('change_password.html', form=form)
+                        elif user.admin == False and user.login == form.login.data:
+                            user.hash_password(form.password.data)
+                            db_session.commit()
+
+                            map_address = settings.data_service_address + '/map/'
+                            response = make_response(redirect(map_address, code=302))
+                            response.delete_cookie("access_token_cookie")
+                            return response
+                        elif user.admin:
+                            if user.login == form.login.data:
+                                user.hash_password(form.password.data)
+                                db_session.commit()
+
+                                map_address = settings.data_service_address + '/map/'
+                                response = make_response(redirect(map_address, code=302))
+                                response.delete_cookie("access_token_cookie")
+                                return response
+                            else:
+                                cur_user = db_session.query(User).filter_by(login=form.login.data).first()
+                                cur_user.hash_password(form.password.data)
+                                db_session.commit()
+                                flash(f'Вы успешно изменили пароль у {cur_user.login}', 'success')
+                                return render_template('change_password.html', form=form)
+                else:
+                    return render_template('change_password.html', form=form)
+            else:
+                return redirect(url_for('user.login'))
         except jwt.ExpiredSignatureError:
             return redirect(url_for('user.login'))
         except jwt.InvalidTokenError:
