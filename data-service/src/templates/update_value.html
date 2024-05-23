@@ -67,7 +67,7 @@
         Введите значение на которое хотите заменить,<br>
         Введите тип нового значения<br>
         <br>
-        <br><p style="color: #004D4F;">Обновляемые колонки не могут быть среди дефолтных:</p>
+        <br><p style="color: #004D4F;">Обновляемые колонки не могут быть среди технических:</p>
         <p style="color: #004D4F;">{{unupdateable_columns}}</p>
     </h5>
 </div><br><hr><br>
@@ -111,7 +111,6 @@
             <label class="input-group-text label_shape" style="color:teal" id="label_type_dropdown" for="type_dropdown">Выберите тип нового значения:</label>
             <select class="custom-select dropdown_shape" id="type_dropdown" name="new_value_type">
                 <option value="Float">Float</option>
-                <option value="String">String</option>
                 <option value="Integer">Integer</option>
             </select>
         </div>
@@ -151,7 +150,7 @@
 
     document.getElementById("dropdown").addEventListener('mousedown', function() {
         if (this.options.length === 1) {
-            showSubIndicator(this);
+            this.form.submit();
         }
     });
 

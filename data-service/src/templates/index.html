@@ -124,6 +124,8 @@
 
 
 
+
+
     </style>
 
     <!--    <script>-->
@@ -154,13 +156,13 @@
         </button>
         <div class="dropdown-menu">
             {% if is_login %}
-                <a class="dropdown-item" href="/post/column/">Загрузить данные</a>
+            <a class="dropdown-item" href="/post/column/">Загрузить данные</a>
             {% endif %}
             {% if is_login %}
-                <a class="dropdown-item" href="/update/column/">Обновить несколько индикаторов</a>
+            <a class="dropdown-item" href="/update/column/">Обновить несколько индикаторов</a>
             {% endif %}
             {% if is_login %}
-                <a class="dropdown-item" href="/update/">Обновить одно значение</a>
+            <a class="dropdown-item" href="/update/">Обновить одно значение</a>
             {% endif %}
             {% if is_admin %}
             <a class="dropdown-item" href="/feature/description/">Изменить описание</a>
@@ -169,7 +171,7 @@
                 <a class="dropdown-item" href="/delete/column/">Удалить данные</a>
             {% endif %}
             {% if is_admin %}
-                <a id="register" class="dropdown-item" href="{{ href_register }}">Добавить пользователя</a>
+            <a id="register" class="dropdown-item" href="{{ href_register }}">Добавить пользователя</a>
             {% endif %}
             <a class="dropdown-item" href="/map/info/">Инструкция</a>
             {% if is_login %}
@@ -214,28 +216,39 @@
 
 
 <script type="text/javascript">
-
     function hideLoading() {
         document.getElementById("loading").style.display = "none";
     }
 
+    var myRequest = new Request({{template_name| tojson}});
+
+    fetch(myRequest)
+        .then(function(response) {
+            if (response.status === 200) {
+                document.getElementById("myIframe").src = {{template_name| tojson}};
+                document.getElementById("myIframe").onload = function() {
+                    hideLoading();
+                };
+
+
+            } else {
+                hideLoading();
+                document.getElementById("myIframe").src = "../static/images/error_img.jpeg";
+            }
+        })
+        .catch(function(error) {
+            hideLoading();
+            document.getElementById("myIframe").src = "../static/images/error_img.jpeg";
+        });
 
 </script>
 
-<!--<div id="loading" class = "map_center" style="display: flex; justify-content: center; align-items: center; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 9999;">-->
-<!--    <img src="../static/images/loading_circle.gif" alt="Loading..." style="width: 100px; height: 100px;">-->
-<!--</div>-->
-
-
-<div id="loading" style="display: block; position: fixed; top: 50vh; left: 50%; transform: translate(-50%, -50%);">
+<div id="loading"
+     style="position: relative; width: 100%; height: 650px; display: flex; justify-content: center; align-items: center;">
     <img src="../static/images/loading_circle.gif" alt="Loading..." style="width: 100px; height: 100px;">
 </div>
 
-
-<iframe id="myIframe" class="map" src="{{ template_name }}" width="100%" height="650" frameborder="1"
-        onload="window.parent.hideLoading();"></iframe>
-<h3><b style="background-color: lightcoral; color: lightcyan;">
-</b></h3>
+<iframe id="myIframe" class="map" src="" width="100%" height="650" frameborder="1"></iframe>
 
 
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
@@ -318,6 +331,8 @@
             showSubIndicator(document.getElementById("dropdown"));
         }
     };
+
+
 
 </script>
 

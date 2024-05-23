@@ -170,7 +170,7 @@
 
     document.getElementById("dropdown").addEventListener('mousedown', function() {
         if (this.options.length === 1) {
-            showSubIndicator(this);
+            this.form.submit();
         }
     });
 
