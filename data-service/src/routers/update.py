@@ -1,5 +1,8 @@
+import asyncio
+import math
+
 import pandas as pd
-from fastapi import APIRouter, File, UploadFile, Request, status, Depends, Form, Cookie
+from fastapi import APIRouter, File, UploadFile, Request, status, Depends, Form
 from fastapi.responses import RedirectResponse
 from fastapi.templating import Jinja2Templates
 from utils.data import create_column, update_data
@@ -11,7 +14,7 @@ from fastapi import HTTPException
 from utils.column import get_columns
 from tables.data import DataDao
 from utils.convert_value import get_new_value
-from cache.cache_maps import cache_map
+from cache.cache_maps import update_cache_map
 from common.sqlalchemy_data_type import matching_columns, unupdateable_columns
 from models.user import UserData
 from utils.auth import get_user
@@ -115,11 +118,14 @@ async def update_column(request: Request, file: UploadFile = File(...),
 
         for column in new_data.columns.values.tolist()[1:]:
             for index, row in new_data.iterrows():
+                new_value = row[column]
+                if math.isnan(row[column]):
+                    new_value = None
                 await update_data(
                     UpdateData(matching_column_value=row[matching_column],
                                matching_column_name=matching_column,
                                column=column,
-                               new_value=row[column]),
+                               new_value=new_value),
                     session)
     except HTTPException as e:
         await session.rollback()
@@ -128,12 +134,10 @@ async def update_column(request: Request, file: UploadFile = File(...),
         return RedirectResponse(redirect_url, status_code=status.HTTP_303_SEE_OTHER)
     await session.commit()
 
-    for column in new_data.columns.values.tolist()[1:]:
-        await cache_map(column, session)
-
+    asyncio.create_task(update_cache_map(new_data.columns.values.tolist()[1:]))
 
     redirect_url = request.url_for('get_update_column').include_query_params(
-        message=f"Колонки {list(new_data.columns.values.tolist()[1:])} успешно обновлены",
+        message=f"Колонки {list(new_data.columns.values.tolist()[1:])} успешно обновлены. Карты в скором времени обновятся на сайте",
         color="green")
     return RedirectResponse(redirect_url, status_code=status.HTTP_303_SEE_OTHER)
 
@@ -167,11 +171,14 @@ async def update_value(request: Request, column_name: str = Form(...), matching_
         return RedirectResponse(redirect_url, status_code=status.HTTP_303_SEE_OTHER)
     converted_new_value = get_new_value(new_value, new_value_type)
     try:
+        new_value = converted_new_value
+        if math.isnan(converted_new_value):
+            new_value = None
         await update_data(
             UpdateData(matching_column_value=matching_value,
                        matching_column_name=matching_column,
                        column=column_name,
-                       new_value=converted_new_value),
+                       new_value=new_value),
             session)
     except HTTPException as e:
         await session.rollback()
@@ -181,10 +188,10 @@ async def update_value(request: Request, column_name: str = Form(...), matching_
 
     await session.commit()
 
-    await cache_map(column_name, session)
+    asyncio.create_task(update_cache_map([column_name]))
 
     redirect_url = request.url_for('get_update_value').include_query_params(
         message=f"""Для {column_name} с {matching_column}={matching_value}"
-                 успешно установлено новое значение {new_value}""",
+                 успешно установлено новое значение {new_value}. Карта в скором времени обновится на сайте""",
         color="green")
     return RedirectResponse(redirect_url, status_code=status.HTTP_303_SEE_OTHER)

@@ -17,6 +17,19 @@
             <column name="indicator_type"/>
         </createIndex>
 
+        <createIndex tableName="data" indexName="region_id_index">
+            <column name="region_id"/>
+        </createIndex>
+
+        <createIndex tableName="data" indexName="latitude_dd_index">
+            <column name="latitude_dd"/>
+        </createIndex>
+
+        <createIndex tableName="data" indexName="longitude_dd_index">
+            <column name="longitude_dd"/>
+        </createIndex>
+
+
     </changeSet>
 
 </databaseChangeLog>

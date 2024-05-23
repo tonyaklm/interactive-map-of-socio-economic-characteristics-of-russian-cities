@@ -1,5 +1,7 @@
-from sqlalchemy import select, update, func, delete
-from typing import Any
+import math
+
+from sqlalchemy import select, update, func, delete, Float
+from typing import Any, List
 from sqlalchemy.ext.asyncio import AsyncSession
 import json
 from sqlalchemy.orm import DeclarativeBase
@@ -27,7 +29,7 @@ class Repository:
     async def select_columns(self, table: Base, columns: list, indicator: str,
                              session: AsyncSession, agg_func: str) -> json:
         """Select specific columns"""
-        agg_func = getattr(func, agg_func)(getattr(table, indicator)).label(indicator)
+        agg_func = func.cast(getattr(func, agg_func)(getattr(table, indicator)).label(indicator), Float)
 
         stmt = select(*[getattr(table, column) for column in columns],
                       agg_func,
@@ -43,7 +45,7 @@ class Repository:
                       func.min(table.id).label('min_municipality_id')).group_by(
             *[getattr(table, column) for column in columns])
         results = await session.execute(stmt)
-        return results.all()
+        return results.scalars().all()
 
     async def select_settlement_indicators(self, table: Base, indicators: list, location_keys: list,
                                            location_values: str, session: AsyncSession):
@@ -74,6 +76,20 @@ class Repository:
         results = await session.execute(stmt)
         return results.all()
 
+    async def select_column_agg(self, agg_func: str, group_by_columns: List,
+                                target_func: str,
+                                column, column_name: str, session: AsyncSession):
+        sub_agg_funcs = func.cast(getattr(func, agg_func)(column).label(column_name), Float)
+        sub_query = (
+            select(sub_agg_funcs).group_by(*group_by_columns).alias()
+        )
+        target_agg = getattr(func, target_func)(getattr(sub_query.columns, f"{column_name}")).label(f"{column_name}_1")
+        stmt = (
+            select(target_agg).filter(getattr(sub_query.columns, f"{column_name}").is_not(None))
+        )
+        results = await session.execute(stmt)
+        return results.scalar()
+
     async def update_by_unique_column(self, table: Base, column: str, expected_value: Any, new_values: json,
                                       session: AsyncSession):
         """Updates item by its unique key"""
@@ -88,7 +104,7 @@ class Repository:
 
         return results
 
-    async def post_item(self, item:Base, session: AsyncSession) -> Base:
+    async def post_item(self, item: Base, session: AsyncSession) -> Base:
         """Posts new item into given table"""
         session.add(item)
         await session.commit()
@@ -103,5 +119,6 @@ class Repository:
         deleted_rows_count = results.rowcount
         await session.commit()
         return deleted_rows_count
+
 
 repo = Repository()

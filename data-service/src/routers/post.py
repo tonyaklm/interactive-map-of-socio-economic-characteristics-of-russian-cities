@@ -1,3 +1,6 @@
+import asyncio
+import math
+
 import pandas as pd
 from fastapi import APIRouter, File, UploadFile, Request, status, Depends, Form, Cookie
 from fastapi.responses import RedirectResponse
@@ -8,7 +11,7 @@ from utils.session import get_session
 from io import BytesIO
 from models.data_models import CreateColumn, UpdateData
 from fastapi import HTTPException
-from cache.cache_maps import cache_map
+from cache.cache_maps import update_cache_map
 from common.sqlalchemy_data_type import matching_columns, available_agg_funcs, description_of_agg_func
 from sqlalchemy.exc import InvalidRequestError
 from tables.data import DataDao
@@ -83,11 +86,14 @@ async def post_file(request: Request, file: UploadFile = File(...), column_type:
         await create_column(CreateColumn(column_name=new_column_name, column_type=column_type),
                             session)
         for index, row in new_data.iterrows():
+            new_value = row[new_column_name]
+            if math.isnan(row[new_column_name]):
+                new_value = None
             response = await update_data(
                 UpdateData(matching_column_value=row[matching_column],
                            matching_column_name=matching_column,
                            column=new_column_name,
-                           new_value=row[new_column_name]),
+                           new_value=new_value),
                 session)
     except HTTPException as e:
         await session.rollback()
@@ -103,10 +109,10 @@ async def post_file(request: Request, file: UploadFile = File(...), column_type:
 
     await post_new_feature(new_column_name, session, description, agg_func)
 
-    await cache_map(new_column_name, session)
+    asyncio.create_task(update_cache_map([new_column_name]))
 
     redirect_url = request.url_for('get_upload_form').include_query_params(
-        message=f"Данные для конки {new_column_name} успешно загружены",
+        message=f"Данные для конки {new_column_name} успешно загружены. Карта в скором времени появится на сайте",
         color="green")
     return RedirectResponse(redirect_url, status_code=status.HTTP_303_SEE_OTHER)
 

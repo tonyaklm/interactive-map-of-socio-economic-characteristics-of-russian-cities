@@ -1,34 +1,30 @@
-from typing import List, Dict
-
 import folium
 import json
-import math
-
-import numpy as np
-from branca.colormap import linear, LinearColormap
 from folium import Map
+from common.repository import repo
+from sqlalchemy.ext.asyncio import AsyncSession
+from tables.data import DataDao
 
 colors_names = [
     'lightgreen', 'darkblue', 'blue', 'orange', 'cadetblue', 'darkpurple', 'beige', 'green', 'darkred', 'lightblue',
-    'white', 'darkgreen', 'lightgray', 'black', 'purple', 'pink', 'red', 'gray', 'lightred'
+    'white', 'darkgreen', 'lightgray', 'black', 'purple', 'pink', 'gray', 'lightred'
 ]
 
 
-def color_region_by_id(id_region: int, folium_map: Map):
+async def color_region_by_id(id_region: int, geojson_layer: folium.FeatureGroup, session: AsyncSession):
     with open(f'shapefiles/russia_region_{id_region}.geojson') as response:
         region_geojson = json.load(response)
-    name_region = region_geojson['features'][0]['properties']['full_name']
+    region = await repo.select_indicators([DataDao.region], [DataDao.region_id == id_region], session)
+    name_region = region.scalars().all()[0]
     str_tooltip = f'<b>{name_region}</b>'
+    str_popup = f'<b>Регион:</b> {name_region}'
     folium.GeoJson(region_geojson,
                    style_function=lambda feature: {
-                       'fillColor': colors_names[id_region % 10],
-                       'color': colors_names[id_region % 10],
-                       'weight': 2,
-                       'fillOpacity': 0.5,
+                       'fillColor': colors_names[id_region % len(colors_names)],
+                       'color': "black",
+                       'weight': 1,
+                       'fillOpacity': 0.2,
                    },
                    name=name_region,
                    tooltip=str_tooltip,
-                   popup=folium.GeoJsonPopup(fields=['name'],
-                                             aliases=["Регион: "],
-                                             localize=True,
-                                             labels=True)).add_to(folium_map)
+                   popup=folium.Popup(str_popup)).add_to(geojson_layer)

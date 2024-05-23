@@ -1,12 +1,10 @@
-import decimal
 import math
-from typing import List, Dict
-
+from typing import Dict, Set
 import folium
-import json
+
+from sqlalchemy.ext.asyncio import AsyncSession
 from utils.map import color_region_by_id
 from branca.colormap import linear
-import os
 from config import settings
 
 
@@ -14,32 +12,25 @@ class FoliumMap:
     def __init__(self, indicator: str = "Empty_Map"):
         self.map = folium.Map(location=[55, 37], zoom_start=7, control_scale=True)
         self.colormap = None
-        self.create()
         self.indicator = indicator
         self.template_name = "static/{}.html".format(self.indicator)
-        self.none_markers = folium.FeatureGroup(name='Нулевые маркеры')
+        self.none_markers_layer = folium.FeatureGroup(name='Нулевые маркеры')
+        self.geojson_layer = None
+        self.markers_layer = None
 
-    def create(self) -> None:
-        with open('../shapefiles/russia_geojson.geojson') as response:
-            russia = json.load(response)
+    async def create(self, region_ids: Set[int], session: AsyncSession) -> None:
+        self.geojson_layer = folium.FeatureGroup(name='Регионы')
+        for region_id in region_ids:
+            await color_region_by_id(region_id, self.geojson_layer, session)
+        self.geojson_layer.add_to(self.map)
 
-        # folium.GeoJson(
-        #     russia,
-        #     style_function=lambda feature: {
-        #         'fillColor': 'blue',
-        #         'color': 'black',
-        #         'weight': 1,
-        #         'dashArray': '0.2, 0.2'
-        #     }
-        # ).add_to(self.map)
+    async def create_markers_layer(self):
+        self.none_markers_layer = folium.FeatureGroup(name='Нулевые маркеры')
+        self.markers_layer = folium.FeatureGroup(name='Все маркеры')
+        self.none_markers_layer.add_to(self.map)
+        self.markers_layer.add_to(self.map)
 
-        for region in russia['features']:
-            region_id = region['properties']['id']
-            color_region_by_id(region_id, self.map)
-
-        folium.LayerControl().add_to(self.map)
-
-    def add_marker(self, item: Dict) -> None:
+    async def add_marker(self, item: Dict) -> None:
         tooltip_text = f'Регион: <b>{item["region"]}</b><br>Город: <b>{item["settlement"]}</b>'
 
         popup_text = f'Значение <b>{self.indicator}</b> для города <b>{item["settlement"]}</b><br>:' \
@@ -48,7 +39,7 @@ class FoliumMap:
                      f' target="_blank">график</a>' \
                      f' индикаторов по годам'
 
-        marker_color = 'while'
+        marker_color = '#000000'
         if item[self.indicator] is not None and not math.isnan(item[self.indicator]):
             marker_color = self.colormap(item[self.indicator])
 
@@ -58,22 +49,19 @@ class FoliumMap:
                                      tooltip=folium.Tooltip(tooltip_text),
                                      fill=True, color=marker_color,
                                      fill_color=marker_color,
-                                     fill_opacity=1.0).add_to(self.map)
+                                     fill_opacity=1.0).add_to(self.markers_layer)
+        if marker_color == '#000000':
+            marker.add_to(self.none_markers_layer)
         self.map.keep_in_front(marker)
 
-    def add_colormap(self, data: List[Dict]) -> None:
-        min_value = 1e5
-        max_value = -1e5
-        for row in data:
-            if row[self.indicator] is not None and not math.isnan(row[self.indicator]):
-                min_value = min(row[self.indicator], min_value)
-                max_value = max(row[self.indicator], max_value)
+    async def add_colormap(self, min_value: float, max_value: float) -> None:
         self.colormap = linear.YlGnBu_05.scale(
-            float(min_value),
-            float(max_value)
+            min_value,
+            max_value
         ).to_step(10)
         self.colormap.caption = self.indicator
         self.map.add_child(self.colormap)
 
-    def save(self):
+    async def save(self):
+        folium.LayerControl().add_to(self.map)
         self.map.save(self.template_name)

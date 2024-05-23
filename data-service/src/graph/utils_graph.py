@@ -3,7 +3,6 @@ from typing import List
 from common.repository import repo
 from tables.data import DataDao
 from tables.feature import FeatureDao
-from sqlalchemy.exc import ProgrammingError
 from models.data_models import City
 
 from db import async_session

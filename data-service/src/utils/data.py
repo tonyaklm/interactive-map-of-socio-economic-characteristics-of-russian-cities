@@ -1,3 +1,5 @@
+from typing import Set
+
 from fastapi import HTTPException
 from sqlalchemy import Column
 from sqlalchemy import types
@@ -50,16 +52,12 @@ async def get_indicator_names(session: AsyncSession):
     return column_names
 
 
-async def get_indicator(indicator: str, session: AsyncSession):
+async def get_indicator(indicator: str, agg_func: str, session: AsyncSession):
     await check_columns(session)
     selected_columns = ['region', 'settlement', 'longitude_dd', 'latitude_dd']
 
     if indicator not in DataDao.__table__.columns.keys():
         raise HTTPException(status_code=404, detail={'no such indicator'})
-    indicator_type = indicator.split('_')[0] if indicator.find('_') != -1 else indicator
-    funcs = await repo.select_indicators([FeatureDao.agg_function], [FeatureDao.indicator_type == indicator_type],
-                                         session)
-    agg_func = funcs.scalars().all()[0]
     selected_data = await repo.select_columns(DataDao, selected_columns, indicator, session, agg_func)
     return [row._asdict() for row in selected_data]
 
@@ -75,3 +73,25 @@ async def delete_indicator(indicator: str, session: AsyncSession):
         await delete_column(DataDao.__tablename__, indicator, session)
     except ProgrammingError:
         raise HTTPException(status_code=404, detail=f"Колонки {indicator} не сущетсвует")
+
+
+async def get_target(indicator: str, agg_func: str, target_agg: str, session: AsyncSession):
+    result_data = await repo.select_column_agg(agg_func,
+                                               [DataDao.longitude_dd, DataDao.latitude_dd],
+                                               target_agg,
+                                               getattr(DataDao, indicator),
+                                               indicator, session)
+    print("REs:", result_data)
+    return result_data
+
+
+async def get_agg_func(indicator: str, session: AsyncSession):
+    indicator_type = indicator.split('_')[0] if indicator.find('_') != -1 else indicator
+    agg_func = await repo.select_indicators([FeatureDao.agg_function], [FeatureDao.indicator_type == indicator_type],
+                                            session)
+    return agg_func.scalars().all()[0]
+
+
+async def select_regions(session: AsyncSession) -> Set[int]:
+    regions = await repo.select_indicators([DataDao.region_id], [], session)
+    return set(regions.scalars().all())

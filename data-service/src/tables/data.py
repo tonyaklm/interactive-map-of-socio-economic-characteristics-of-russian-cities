@@ -1,5 +1,5 @@
 from sqlalchemy.orm import mapped_column, Mapped
-from sqlalchemy import PrimaryKeyConstraint
+from sqlalchemy import PrimaryKeyConstraint, Index
 from db import Base
 
 
@@ -21,4 +21,7 @@ class DataDao(Base):
 
     __table_args__ = (
         PrimaryKeyConstraint('id', name='municipality_pkey'),
+        Index('latitude_dd_index' 'latitude_dd'),
+        Index('longitude_dd_index' 'longitude_dd'),
+        Index('region_id_index' 'region_id')
     )

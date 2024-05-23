@@ -33,5 +33,5 @@ async def get_drawable_values(session: AsyncSession) -> Dict[str, List]:
                                           [FeatureDao.is_drawable == True], session)
     drawable_values = {}
     for element in [row._asdict() for row in values.all()]:
-        drawable_values[element['indicator_type']] = element['years']
+        drawable_values[element['indicator_type']] = sorted(element['years'])
     return drawable_values
