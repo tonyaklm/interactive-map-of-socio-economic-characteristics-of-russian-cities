@@ -15,13 +15,13 @@ from utils.auth import get_user
 templates = Jinja2Templates(directory="templates")
 router = APIRouter(prefix='/map')
 
-
 @router.get("/")
 async def render_map(request: Request, session: AsyncSession = Depends(get_session),
                      user: UserData = Depends(get_user)):
     href_login = "http://" + settings.user_service_address + "/login/"
     href_logout = "http://" + settings.user_service_address + "/logout/"
     href_register = "http://" + settings.user_service_address + "/register/"
+    href_change_password = "http://" + settings.user_service_address + "/change_password/"
 
     indicator_types = await get_indicator_types(session)
     descriptions = await get_descriptions(session)
@@ -39,7 +39,8 @@ async def render_map(request: Request, session: AsyncSession = Depends(get_sessi
                                                "is_login": user.is_login,
                                                "is_admin": user.is_admin,
                                                "href_login": href_login,
-                                               "href_logout": href_logout, "href_register": href_register})
+                                               "href_logout": href_logout, "href_register": href_register,
+                                               "href_change_password" : href_change_password})
 
 
 @router.get('/indicator')
@@ -53,6 +54,7 @@ async def chosen_indicator(request: Request, indicator: str = Query(...), year: 
     href_login = "http://" + settings.user_service_address + "/login/"
     href_logout = "http://" + settings.user_service_address + "/logout/"
     href_register = "http://" + settings.user_service_address + "/register/"
+    href_change_password = "http://" + settings.user_service_address + "/change_password/"
 
     if indicator_with_year not in indicator_names:
         return RedirectResponse(url="/map", status_code=status.HTTP_404_NOT_FOUND)
@@ -73,4 +75,9 @@ async def chosen_indicator(request: Request, indicator: str = Query(...), year: 
                                                "template_name": get_map(indicator_with_year),
                                                "is_login": user.is_login,
                                                "is_admin": user.is_admin, "href_login": href_login,
-                                               "href_logout": href_logout, "href_register": href_register})
+                                               "href_logout": href_logout, "href_register": href_register,
+                                               "href_change_password" : href_change_password})
+
+@router.get("/info")
+async def render_info(request: Request, session: AsyncSession = Depends(get_session)):
+    return templates.TemplateResponse(name="info.html", context={"request": request})
