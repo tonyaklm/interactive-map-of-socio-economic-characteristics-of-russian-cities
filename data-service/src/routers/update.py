@@ -86,8 +86,8 @@ async def update_column(request: Request, file: UploadFile = File(...),
         redirect_url = request.url_for('get_update_column').include_query_params(message=error_message,
                                                                                  color="red")
         return RedirectResponse(redirect_url, status_code=status.HTTP_303_SEE_OTHER)
-    if len(new_data.columns.values.tolist()) != 2:
-        error_message = "В файле должно быть 2 колонки - с сопоставляющей конокой и новыми данными"
+    if len(new_data.columns.values.tolist()) < 2:
+        error_message = "В файле должно быть минимум 2 колонки - с сопоставляющей конокой и новыми данными"
         redirect_url = request.url_for('get_update_column').include_query_params(message=error_message,
                                                                                  color="red")
         return RedirectResponse(redirect_url, status_code=status.HTTP_303_SEE_OTHER)
