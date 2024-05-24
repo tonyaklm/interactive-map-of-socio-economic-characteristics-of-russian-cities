@@ -1,3 +1,4 @@
+import math
 from typing import Set, Optional, List
 
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -15,6 +16,7 @@ async def cache_maps():
 
         for indicator in await get_indicator_names(session):
             await cache_map(indicator, session, regions)
+            break
 
         folium_map = FoliumMap()
         await folium_map.create(regions, session)
@@ -30,7 +32,11 @@ async def cache_map(indicator: str, session: AsyncSession, regions: Optional[Set
     agg_func = await get_agg_func(indicator, session)
     data = await get_indicator(indicator, agg_func, session)
     min_value = await get_target(indicator, agg_func, 'min', session)
+    if not min_value or math.isnan(min_value):
+        min_value = 0
     max_value = await get_target(indicator, agg_func, 'max', session)
+    if not max_value or math.isnan(max_value):
+        max_value = 0
     await folium_map.add_colormap(min_value, max_value)
     for row in data:
         await folium_map.add_marker(row)
