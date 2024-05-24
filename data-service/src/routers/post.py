@@ -41,13 +41,13 @@ async def post_file(request: Request, file: UploadFile = File(...), column_type:
         return RedirectResponse(redirect_url, status_code=status.HTTP_303_SEE_OTHER)
 
     if file.content_type != "text/csv":
-        redirect_url = request.url_for('get_upload_form').include_query_params(message="Формаn файла должен быть csv",
+        redirect_url = request.url_for('get_upload_form').include_query_params(message="Формат файла должен быть csv",
                                                                                color="red")
         return RedirectResponse(redirect_url, status_code=status.HTTP_303_SEE_OTHER)
 
     new_data = pd.read_csv(BytesIO(file.file.read()))
     if len(new_data.columns.values.tolist()) != 2:
-        error_message = "В файле должно быть 2 колонки - с сопоставляющей конокой и новыми данными"
+        error_message = "В файле должно быть 2 колонки - с сопоставляющей колонкой и новыми данными"
         redirect_url = request.url_for('get_upload_form').include_query_params(message=error_message,
                                                                                color="red")
         return RedirectResponse(redirect_url, status_code=status.HTTP_303_SEE_OTHER)
@@ -114,7 +114,7 @@ async def post_file(request: Request, file: UploadFile = File(...), column_type:
     asyncio.create_task(update_cache_map([new_column_name]))
 
     redirect_url = request.url_for('get_upload_form').include_query_params(
-        message=f"Данные для конки {new_column_name} успешно загружены. Карта в скором времени появится на сайте",
+        message=f"Данные для колонки {new_column_name} успешно загружены. Карта в скором времени появится на сайте",
         color="green")
     return RedirectResponse(redirect_url, status_code=status.HTTP_303_SEE_OTHER)
 
